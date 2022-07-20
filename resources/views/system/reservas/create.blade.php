@@ -52,7 +52,6 @@ reserva', 'activeButton' => 'reservas'])
                 @endif
                 <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
                 <div class="row">
-
                     <div class="card col-md-12">
                         <div class="card-header">
                             <div class="row align-items-center">
@@ -118,7 +117,6 @@ reserva', 'activeButton' => 'reservas'])
                                         </div>
                                     </div>
                                 </div>
-
                             @endif
                         </div>
                     </div>
