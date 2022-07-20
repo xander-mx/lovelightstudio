@@ -1,0 +1,162 @@
+<div class="sidebar" data-image="{{ asset('light-bootstrap/img/sidebar-5.jpg') }}" style="
+background: #ffc0cb;
+">
+    <!--
+Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
+
+Tip 2: you can also add an image using data-image tag
+-->
+    <div class="sidebar-wrapper" style="
+    background: #ffc0cb;
+">
+        <div class="logo">
+            <a href="https://lovelight.com.mx/" class="simple-text">
+                {{ __("Love Light Studio") }}
+            </a>
+        </div>
+        <ul class="nav">
+            <li class="nav-item @if($activePage == 'dashboard') active @endif">
+                <a class="nav-link" href="{{route('dashboard')}}">
+                    <i class="nc-icon nc-chart-pie-35"></i>
+                    <p>{{ __("Dashboard") }}</p>
+                </a>
+            </li>
+
+            @if (Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 2 ||Auth::user()->idPerfil == 8 )
+                <li class="nav-item @if($activePage == 'trabajador') active @endif">
+                    <a class="nav-link" href="{{route('trabajador.index')}}">
+                    {{-- <a class="nav-link" href=""> --}}
+                        <i class="nc-icon nc-bullet-list-67"></i>
+                        <p>{{ __("Trabajadores") }}</p>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#laravelExamples" @if($activeButton =='reservas') aria-expanded="true" @endif>
+                        <i class="nc-icon nc-notes"></i>
+                        <p>
+                            {{ __('Reserva') }}
+                            <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse @if($activeButton =='reservas') show @endif" id="laravelExamples">
+                        <ul class="nav pl-2">
+                            <li class="nav-item @if($activePage == 'reservas.create') active @endif">
+                                <a class="nav-link" href="{{route('reserva.create')}}">
+                                    <i class="nc-icon nc-simple-add"></i>
+                                    <p>{{ __("Nueva Reserva") }}</p>
+                                </a>
+                            </li>
+                            <li class="nav-item @if($activePage == 'reserva.index') active @endif">
+                                <a class="nav-link" href="{{route('reserva.index')}}">
+                                    <i class="nc-icon nc-circle-09"></i>
+                                    <p>{{ __("reservas activas") }}</p>
+                                </a>
+                            </li>
+                            <li class="nav-item @if($activePage == 'reserva.historial') active @endif">
+                                <a class="nav-link" href="{{route('reserva.historial')}}">
+                                    <i class="nc-icon nc-notes"></i>
+                                    <p>{{ __("vendidas") }}</p>
+
+                                </a>
+                            </li>
+                              <li class="nav-item @if($activePage == 'reserva.historial.eliminada') active @endif">
+                                <a class="nav-link" href="{{route('reserva.historial.eliminada')}}">
+                                    <i class="nc-icon nc-notes"></i>
+                                    <p>{{ __("canceladas") }}</p>
+                                </a>
+                            </li>
+                            {{-- <li class="nav-item @if($activePage == 'reserva.supervisor.finalizar') active @endif">
+                                <a class="nav-link" href="{{route('reserva.supervisor.finalizar')}}">
+                                    <i class="nc-icon nc-email-85"></i>
+                                    <p>{{ __("Finalziar Reservas") }}</p>
+                                </a>
+                            </li> --}}
+                        </ul>
+                    </div>
+                </li>
+               
+            @endif
+            {{-- modulos solo de Admin --}}
+            @if (Auth::user()->idPerfil == 1)
+            <li class="nav-item @if($activePage == 'trabajador') active @endif">
+                <a class="nav-link" href="{{route('sueldo.index')}}">
+                    <i class="nc-icon nc-bag"></i>
+                    <p>{{ __("Sueldo") }}</p>
+                </a>
+            </li> 
+            @endif
+         
+                {{-- recepcionista --}}
+            @if (Auth::user()->idPerfil == 4 )
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#laravelExamples" @if($activeButton =='reservas') aria-expanded="true" @endif>
+                        <i class="nc-icon nc-notes"></i>
+                        <p>
+                            {{ __('Reserva') }}
+                            <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse @if($activeButton =='reservas') show @endif" id="laravelExamples">
+                        <ul class="nav pl-2">
+                            <li class="nav-item @if($activePage == 'reservas.create') active @endif">
+                                <a class="nav-link" href="{{route('reserva.create')}}">
+                                    <i class="nc-icon nc-simple-add"></i>
+                                    <p>{{ __("Nueva Reserva") }}</p>
+                                </a>
+                            </li>
+                            <li class="nav-item @if($activePage == 'reserva.index') active @endif">
+                                <a class="nav-link" href="{{route('reserva.index')}}">
+                                    <i class="nc-icon nc-circle-09"></i>
+                                    <p>{{ __("reservas activas") }}</p>
+
+                                </a>
+                            </li>
+                            <li class="nav-item @if($activePage == 'reserva.historial') active @endif">
+                                <a class="nav-link" href="{{route('reserva.historial')}}">
+                                    <i class="nc-icon nc-notes"></i>
+                                    <p>{{ __("vendidas") }}</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            @endif
+
+            @if (Auth::user()->idPerfil == 3)
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#laravelExamples" @if($activeButton =='reservas') aria-expanded="true" @endif>
+                    <i class="nc-icon nc-notes"></i>
+                    <p>
+                        {{ __('Reserva') }}
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse @if($activeButton =='reservas') show @endif" id="laravelExamples">
+                    <ul class="nav pl-2">
+                        <li class="nav-item @if($activePage == 'reservas.create') active @endif">
+                            <a class="nav-link" href="{{route('reserva.create')}}">
+                                <i class="nc-icon nc-simple-add"></i>
+                                <p>{{ __("Nueva Reserva") }}</p>
+                            </a>
+                        </li>
+                        <li class="nav-item @if($activePage == 'reserva.index') active @endif">
+                            <a class="nav-link" href="{{route('reserva.index')}}">
+                                <i class="nc-icon nc-circle-09"></i>
+                                <p>{{ __("reservas activas") }}</p>
+                            </a>
+                        </li>
+                        <li class="nav-item @if($activePage == 'reserva.historial') active @endif">
+                            <a class="nav-link" href="{{route('reserva.historial')}}">
+                                <i class="nc-icon nc-notes"></i>
+                                <p>{{ __("vendidas") }}</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li> 
+            @endif
+ 
+        </ul>
+    </div>
+</div>

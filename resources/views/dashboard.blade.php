@@ -1,0 +1,210 @@
+@extends('layouts.app', ['activePage' => 'dashboard', 'title' => 'Dashboard', 'navName' => 'Dashboard', 'activeButton'
+=> 'laravel'])
+
+@section('content')
+    <style>
+        #watermark {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+            opacity: 0.5;
+            z-index: 99;
+            color: white;
+        }
+
+    </style>
+    <div class="content">
+        <div class="row ml-5">
+            <h1>{{ Auth::user()->name }} {{ Auth::user()->lastname }}</h1>
+        </div>
+        <div class="row ">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col text-center">
+                                <strong>Numero de seguro social:</strong>
+                                <h2 class="text-center">{{ Auth::user()->seguro_social }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center">
+                                <strong>Curp:</strong>
+                                <h2 class="text-center">{{ Auth::user()->curp }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="col text-center">
+                            <strong>Cantidad de sessiones reservadas en la quincena</strong><br>
+                            <h2 class="text-center" style="color: green;">{{ $reservas }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (Auth::user()->idPerfil == 3)
+            <div class="row ml-5">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="col text-center">
+                                <strong>Cantidad de sessiones Fotografica en la quincena</strong><br>
+                                <h2 class="text-center" style="color: green;">{{ $reservasFotografo }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+        @if (Auth::user()->idPerfil == 1)
+            <div class="row ml-5">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Hotel</th>
+                                        <th>Sessiones</th>
+                                        <th>Total vendido</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($center as $res)
+                                        <tr>
+                                            <td>{{ $res->name }}</td>
+                                            <td>{{ $numRese[$res->idCenter] }}</td>
+                                            <td> ${{ number_format($totalreseCenter[$res->idCenter], 2) }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td>Total</td>
+                                        <td></td>
+                                        <td>${{ number_format($totalFinalCentros, 2) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        @endif
+
+        @if (Auth::user()->idPerfil <= 2 || Auth::user()->idPerfil == 8)
+            <div class="row ml-5">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Trabajadores</th>
+                                        <th>Sessiones</th>
+                                        @if (Auth::user()->idPerfil == 1)
+                                            <th>Total vendido</th>
+                                            <th>Total comisiones</th>
+                                        @endif
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($trabajadAdmin as $res)
+                                        <tr>
+                                            <td>{{ $res->name }}</td>
+                                            <td>{{ $numReseTrabaAdmin[$res->idUser] }}</td>
+                                            @if (Auth::user()->idPerfil == 1)
+                                                <td> ${{ number_format($totalReseTrabajador[$res->idUser], 2) }}
+                                                </td>
+                                                <td>
+                                              ${{ number_format($sumaTrabajadores[$res->idUser], 2) }}
+
+                                                    
+                                                </td>
+                                            @endif
+
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+        @if (Auth::user()->idPerfil != 1)
+            <div class="row ml-5">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo de comisiòn</th>
+                                        <th>Cantidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (count($comisionesA) > 0)
+                                        @foreach ($comisionesA as $res)
+                                            <tr>
+                                                <td>{{ $res->tipo_comision }}</td>
+                                                <td> ${{ number_format($res->monto_comision, 2) }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        <tr>
+                                            <td><strong>Total</strong></td>
+                                            <td> ${{ number_format($quincena, 2) }} </td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td colspan="2">No se encuentran registos de Reservas</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="row ml-5">
+            <div class="col">
+             <div class="card">
+                 <div class="card-body">
+                     <div class="col text-center">
+                         <strong>Ganancias de la quincena</strong><br>
+                         <h2 class="text-center" style="color: green;">
+                            ${{ number_format((($quincena)), 2) }}    
+                        </h2>
+                         
+
+                     </div>
+                 </div>
+             </div>
+            </div>
+         </div> --}}
+        @endif
+        {{-- <img src="{{ asset('assets/img/apple-icon.png') }}" alt="" srcset="" width="200px" id="watermark"> --}}
+    </div>
+@endsection
+
+@push('js')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Javascript method's body can be found in assets/js/demos.js
+
+
+        });
+    </script>
+@endpush
