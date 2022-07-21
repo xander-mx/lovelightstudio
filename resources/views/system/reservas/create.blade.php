@@ -8,7 +8,6 @@ reserva', 'activeButton' => 'reservas'])
 @endpush
 
 @section('content')
-
     <div class="content">
         <div class="container-fluid">
             <div class="section-image">
@@ -93,7 +92,7 @@ reserva', 'activeButton' => 'reservas'])
                                     <div class="col-md-6">
                                         <div id="calendar"></div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-sm-12 col-md-6 col-lg-6">
                                         <div class="col-md-12 text-left">
                                             <h2>Sesión Fotográfica en {{ $centro->name }}</h2>
                                             <small>{{ $centro->description }}</small>
@@ -101,18 +100,36 @@ reserva', 'activeButton' => 'reservas'])
                                         <hr>
                                         <div class="col-md-12">
                                             <div class="row" id="listHorarios">
-                                                <div class="col">
+                                                <div class="col-4">
                                                     <h5>Por la mañana</h5>
                                                     <div id="mañana"></div>
                                                 </div>
-                                                <div class="col">
+                                                <div class="col-4">
                                                     <h5>Después del mediodía</h5>
                                                     <div id="mediodia"></div>
                                                 </div>
-                                                <div class="col">
+                                                <div class="col-4">
                                                     <h5>Por la tarde</h5>
                                                     <div id="tarde"></div>
                                                 </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12 text-left">
+                                                <h2>Reservaciones</h2>
+                                            </div>
+                                            <div class="col-12">
+                                                <table id="reservation-table" class="table table-responsive">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Horario</th>
+                                                        <th>Recepcionista</th>
+                                                        <th>Cliente</th>
+                                                        <th>Paquete</th>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -124,279 +141,72 @@ reserva', 'activeButton' => 'reservas'])
             </div>
         </div>
     </div>
-    @if (request()->get('edit') != null)
-    <div class="modal fade" id="modalReserva" data-backdrop="static" data-keyboard="false" tabindex="-1"
-    aria-labelledby="modalHorario" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel"> Nueva Reserva</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="createReserva">
+
+        @component('templates.modal', ['modalId' => 'modalReserva', 'title' => 'Nueva Reserva', 'backdrop' => true])
+            @slot('body')
+                <form id="reservation-form">
                     @csrf
-                    <input type="hidden" name="idEdit" value="{{ request()->get('edit') }}">
+                    @if (request()->get('edit') != null)
+                        <input type="hidden" name="idEdit" value="{{ request()->get('edit') }}">
+                    @endif
                     <input type="hidden" name="idSchedule" id="idSchedule" value="">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="name">Nombre</label>
-                            <input type="hidden" name="name" value="{{ $reserva->client->name }}">
-                            <input type="text" name="" id="name" class="form-control" value="{{ $reserva->client->name }}" required disabled>
+                    <input type="hidden" name="idCenter" id="idCenter" value="{{$centro->idCenter}}">
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                            <label for="name">Nombre y Apellido</label>
+                            <input type="text" name="name" id="name" class="form-control"
+                                   value="@isset($reserva){{ $reserva->client->name }}@endisset" required>
                         </div>
                     </div>
 
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="lastname">Apellido </label>
-                            <input type="hidden" name="lastname" value="{{ $reserva->client->lastname }}">
-                            <input type="text" name="" id="lastname" class="form-control" value="{{ $reserva->client->lastname }}" required disabled>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="form-group">
+                    <div class="row">
+                        <div class="form-group col-12">
                             <label for="pax">Pax</label>
-                            <input type="hidden" name="pax" value="{{ $reserva->pax}}">
-                            <input type="text" name="" id="pax" class="form-control"
-                                placeholder="EJEMPLO : 3 niños 4 hombre" value="{{ $reserva->pax}}" required disabled>
+                            <input type="text" name="pax" id="pax" class="form-control"
+                                   placeholder="EJEMPLO : 3 niños 4 hombre"
+                                   value="@isset($reserva){{ $reserva->pax}}@endisset" required>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="pax">Numero de habitaciòn</label>
-                            <input type="hidden" name="num_habitacion"  value="{{ $reserva->num_habitacion}}">
-                            <input type="text" name="" id="num_habitacion"  value="{{ $reserva->num_habitacion}}" class="form-control"
-                                required disabled>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="hidden" name="email"value="{{ $reserva->client->email}}" >
-                            <input type="email" name="" id="email" class="form-control" value="{{ $reserva->client->email}}" required disabled> 
-                        </div>
-                    </div>
-                   
-                    <div class="col-md-12">
 
-                        <div class="form-group">
-                            <label for="cellphone">Teléfono con prefijo ej: (+1301572359)</label>
-                            <input type="hidden" name="cellphone" value="{{ $reserva->client->cellphone}}" >
-                            <input type="text" name="" id="cellphone" class="form-control" value="{{ $reserva->client->cellphone}}"  required
-                                value="+52 "disabled>
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <label for="email">E-mail</label>
+                            <input type="email" name="email" id="email" class="form-control" v
+                                   alue="@isset($reserva){{ $reserva->client->email}}@endisset" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-md-6, col-lg-6">
+                            <label for="cellphone">Teléfono</label>
+                            <input type="text" name="cellphone" id="cellphone" class="form-control"
+                                   value="@isset($reserva){{ $reserva->client->cellphone}}@endisset" required>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6, col-lg-6">
+                            <label for="pax">Número de Habitación</label>
+                            <input type="text" name="num_habitacion" id="num_habitacion"
+                                   value="@isset($reserva){{ $reserva->num_habitacion}}@endisset" class="form-control" required>
                         </div>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer text-center">
-                <button type="button" class="btn btn-danger">Cancelar</button>
+            @endslot
+            @slot('footer')
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                 <button type="button" onclick="createReserva()" class="btn btn-primary">Aceptar</button>
-            </div>
-        </div>
-    </div>
-</div>
-    @else
-        <div class="modal fade" id="modalReserva" data-backdrop="static" data-keyboard="false" tabindex="-1"
-            aria-labelledby="modalHorario" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel"> Nueva Reserva</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="createReserva">
-                            @csrf
-                            <input type="hidden" name="idSchedule" id="idSchedule" value="">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="name">Nombre</label>
-                                    <input type="text" name="name" id="name" class="form-control" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="lastname">Apellido </label>
-                                    <input type="text" name="lastname" id="lastname" class="form-control" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="pax">Pax</label>
-                                    <input type="text" name="pax" id="pax" class="form-control"
-                                        placeholder="EJEMPLO : 3 niños 4 hombre" required>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="pax">Numero de habitaciòn</label>
-                                    <input type="text" name="num_habitacion" id="num_habitacion" class="form-control"
-                                        required>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" name="email" id="email" class="form-control" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-
-                                <div class="form-group">
-                                    <label for="cellphone">Teléfono con prefijo ej: (+1301572359)</label>
-                                    <input type="text" name="cellphone" id="cellphone" class="form-control" required
-                                        value="+52 ">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer text-center">
-                        <button type="button" class="btn btn-danger">Cancelar</button>
-                        <button type="button" onclick="createReserva()" class="btn btn-primary">Aceptar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
+            @endslot
+        @endcomponent
 @endsection
 
 @push('js')
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+    <script src="{{ asset('assets/js/calendar.js') }}"></script>
+    {!! Html::script('assets/js/reservations.js') !!}
     @if ($specific)
         <script>
-            var fechaSelected = "";
-            var horarios = []
-
-            function selectDay(day) {
-                var UrlPath_ = UrlHost_ + "/administrator/ajax/horario/day";
-                $.ajax({
-                    type: 'GET',
-                    url: UrlPath_,
-                    data: {
-                        day: day,
-                        idCenter: {{ $ids }}
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    beforeSend: function() {
-                        $(".content_loading").fadeIn("slow");
-                    },
-                    success: function(response) {
-                        console.log(response)
-                        horarios = response.data
-                        $(".content_loading").fadeOut("slow");
-                        showHorarios();
-                        fechaSelected = day;
-                    },
-                    error: function(xhr) {
-                        //   console.log("ERROR");
-                        $(".content_loading").fadeOut("slow");
-                        swal('Ops!', 'Hubo un error, por favor intentelo más tarde', 'error')
-                    }
-                });
-            }
-
-            function showHorarios() {
-                $('#mañana').empty()
-                $('#mediodia').empty()
-                $('#tarde').empty()
-                horarios.forEach((value) => {
-                    if (value.hour < 12) {
-                        $('#mañana').append(`
-                            <a href="Javascript:;" onclick="openModalReserva(${value.idSchedule})" class="btn btn-primary active"> ${value.hour}:${value.minute}</a>
-                        `)
-                    } else if (value.hour > 12 && value.hour < 18) {
-                        $('#mediodia').append(`
-                            <a href="Javascript:;" onclick="openModalReserva(${value.idSchedule})" class="btn btn-primary active"> ${value.hour}:${value.minute}</a>
-                        `)
-                    } else {
-                        $('#tarde').append(`
-                            <a href="Javascript:;" onclick="openModalReserva(${value.idSchedule})" class="btn btn-primary active"> ${value.hour}:${value.minute}</a>
-                        `)
-                    }
-                });
-
-            }
-
-            function openModalReserva(id) {
-                if (id != null && fechaSelected != "") {
-                    $('#idSchedule').val(id);
-                    $('#modalReserva').modal()
-                } else {
-                    if (id == null) {
-                        swal('Ops!', 'Por favor seleccione un horario', 'error')
-                    } else {
-                        swal('Ops!', 'Por favor seleccione una fecha', 'error')
-                    }
-                }
-            }
-
-            function createReserva() {
-                var formData = new FormData(document.getElementById("createReserva"));
-                formData.append("date", fechaSelected);
-                formData.append("idCenter", "{{ $centro->idCenter }}");
-
-                $.ajax({
-                    url: UrlHost_ + "/administrator/reserva/store",
-                    data: formData,
-                    type: 'post',
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    beforeSend: function() {
-                        $(".content_loading").fadeIn("slow");
-                    },
-                    success: function(response) {
-                        console.log(response)
-                        $(".content_loading").fadeOut("slow");
-                        if (response.code == 200) {
-                            swal('Muy bien!', 'La reserva se ha realizado correctamente', 'success');
-                            setTimeout(() => {
-                                window.location = '{{ route('reserva.index') }}'
-                            }, 3000);
-                        } else if (response.code == 400) {
-                            var datos = response.data
-                            var message = ""
-                            Object.entries(datos).forEach(([key, value]) => {
-                                value.forEach((error) => {
-                                    message += "- " + error + "\n";
-                                })
-                            });
-                            swal(response.message, message, 'error')
-                        } else {
-                            swal('Ops!', response.message, 'error')
-                        }
-                    },
-                    error: function(xhr) {
-                        $(".content_loading").fadeOut("slow");
-
-                        swal({
-                            title: 'Ups!',
-                            // text: 'Hemos tenido problemas al enviar (ERR), intenta mas tarde',
-                            text: 'campos vacio',
-                            type: "warning",
-                            animation: false,
-                            showConfirmButton: true
-                        });
-                    }
-                });
-            }
+            let fechaSelected = "";
+            let routeReservaIndex = '{{ route('reserva.index') }}';
+            let routeReservaStore = '{{ route('reserva.store') }}';
         </script>
     @endif
-    <script src="{{ asset('assets/js/calendar.js') }}"></script>
 
 @endpush

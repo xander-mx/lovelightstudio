@@ -28,12 +28,12 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use PHPUnit\Framework\Constraint\Count;
+use stdClass;
 
 class ReservaController extends Controller
 {
     public function index()
     {
-        // dd("hi")
         if (Auth::user()->idPerfil <= 2 ||Auth::user()->idPerfil == 8) {
             $reservations = Reservations::where('state', 1)
             ->orderby('date')
@@ -71,8 +71,6 @@ class ReservaController extends Controller
             }
 
         }
-        // dd($trabajadores,$reservasNumeroHoy);
-
         return view('system.reservas.index', compact('reservations','horamaxima','trabajadores','reservasNumeroHoy'));
     }
 
@@ -241,39 +239,33 @@ class ReservaController extends Controller
         $ids = $id;
 
         if ($id != null) {
-            $specific = true;
-            $centro = Centers::where('idCenter', $id)->where('state', 1)->first();
-            if (!empty($centro)) {
-                if ($request != null) {
-                    # code...
-                 
+          $specific = true;
+          $centro = Centers::where('idCenter', $id)->where('state', 1)->first();
+          if (!empty($centro)) {
+            if ($request != null) {
                 if ($request->edit != null) {
-                    # code...
-                    $reserva = Reservations::where('idReservation',$request->edit)->first();
-                    if (empty($reserva)) {
-                        # code...
-                        return back();
-                    }
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids','reserva'));
+                  $reserva = Reservations::where('idReservation',$request->edit)->first();
+                  if (empty($reserva)) {
+                    return back();
+                  }
+                  return view('system.reservas.create', compact('centro', 'specific', 'ids','reserva'));
                 }else{
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids'));
-
+                  return view('system.reservas.create', compact('centro', 'specific', 'ids'));
                 }
-                }else{
-                    // dd($request);
-
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids'));
-                }
-            } else {
-                Session::flash('message_error', 'El centro seleccionado no se encuentra activo');
-                return view('system.reservas.create');
+            }else{
+              return view('system.reservas.create', compact('centro', 'specific', 'ids'));
             }
+          } else {
+            Session::flash('message_error', 'El centro seleccionado no se encuentra activo');
+            return view('system.reservas.create');
+          }
         } else {
-            $specific = false;
-            $centros = Centers::where('state', 1)->get();
-            return view('system.reservas.create', compact('centros', 'specific', 'ids'));
+          $specific = false;
+          $centros = Centers::where('state', 1)->get();
+          return view('system.reservas.create', compact('centros', 'specific', 'ids'));
         }
     }
+
     public function edit($id ,Request $request  )
     {
         $ids = $id;
@@ -312,127 +304,101 @@ class ReservaController extends Controller
             return view('system.reservas.create', compact('centros', 'specific', 'ids'));
         }
     }
+
     public function store(Request $request)
     {
-        
-        $rules = [
-            'name' => 'required',
-            'lastname' => 'required',
-            'email' => 'required',
-            'cellphone' => 'required',
-            'pax' => 'required',
-            'idSchedule' => 'required',
-            'num_habitacion'=>'required',
-            'date' => 'required',
-            'idCenter' =>'required',
-      
+      $rules = [
+        'name' => 'required',
+        'email' => 'required',
+        'cellphone' => 'required',
+        'pax' => 'required',
+        'idSchedule' => 'required',
+        'num_habitacion'=>'required',
+        'date' => 'required',
+        'idCenter' =>'required',
         ];
-      
-        $messages = [
-            'name.required' => "El nombre es requerido",
-            'lastname.required' => "El apellido es requerido",
-            'email.required' => "El correo es requerido",
-            'email.email' => "El correo debe estar en el formato correcto",
-            'cellphone.required' => "El teléfono es requerido",
-            'num_habitacion.required' => "El num_habitacion es requerido",
-            'pax.required' => "El Pax es requerido",
-            'idSchedule.required' => "El perfil es requerido",
-            'idCenter.required' => "El Hotel es requerido",
-            'date.required' => "Error con la fecha seleccionada",
-            
+      $messages = [
+        'name.required' => "El nombre es requerido",
+        'email.required' => "El correo es requerido",
+        'email.email' => "El correo debe estar en el formato correcto",
+        'cellphone.required' => "El teléfono es requerido",
+        'num_habitacion.required' => "El num_habitacion es requerido",
+        'pax.required' => "El Pax es requerido",
+        'idSchedule.required' => "El perfil es requerido",
+        'idCenter.required' => "El Hotel es requerido",
+        'date.required' => "Error con la fecha seleccionada",
         ];
-        $this->validate($request, $rules, $messages);
-        
-        $center = Centers::where('idCenter',$request->idCenter)->first();
-        if(empty($center)){
-            return response()->json([
-                'code' => 401,
-                'data' => null,
-                'message' => "Centro no existe",
-            ]);
-        }
-
-        $scheduleCom = Schedules::where('idSchedule',$request->idSchedule)->first();
-        if(empty($scheduleCom)){
-            return response()->json([
-                'code' => 401,
-                'data' => null,
-                'message' => "scheduleCom no existe",
-            ]);
-        }
-        $date = str_replace('/', '-', $request->date);
-        DB::beginTransaction();
-        try {
-        
-            if ($request->idEdit != null) {
-                # code...
-                $reservation =Reservations::where('idReservation',$request->idEdit)->first();
-
-                $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
-
-
-
-            } else {
-                $user = new User();
-                $user->name = $request->name;
-                $user->lastname = $request->lastname;
-                $user->email = $request->email;
-                $user->cellphone = $request->cellphone;
-                $user->password = Hash::make(123);
-                $user->idPerfil = 6;
-                $user->state = 1;
-                $user->save();
-                # code...
-                $reservation = new Reservations();
-                $reservation->idReceptionist = Auth::user()->idUser;
-                $reservation->idClient = $user->idUser;
-            }
-        // dd($reservation);
-
-            
-            $reservation->date = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
-            $reservation->mes = date('m', strtotime($date . " 00:00:00"));
-            $reservation->idSchedule = $request->idSchedule;
-            $reservation->idCenter = $request->idCenter;
-            $reservation->idManager = null;
-            $reservation->pax = $request->pax;
-            $reservation->num_habitacion = $request->num_habitacion;
-            $reservation->state = 1;
-            $reservation->save();
-            DB::commit();
-        } catch (\Throwable $th) {
-            //throw $th;
-        // dd($request->all(),$th);
-
-            DB::rollback();
-            return response()->json([
-                'code' => 401,
-                'data' => null,
-                'message' => "Hubo un problema con el servidor, inténtelo más tarde",
-                'th' => $th
-            ]);
-        }
-
-        $meses = [
-            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-        ];
-
-        $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
-        if ($user != null && !empty($user)) {
-            # code...
-        Mail::to($user['email'])->send(new avisarCliente($reservation));
-        }
-        $supervisors = User::where('state',1)->whereIn('idPerfil',[8])->get();
-        foreach ($supervisors as $key => $value) {
-            # code...
-        Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
-
-        }
+      $this->validate($request, $rules, $messages);
+      $data = $request->all();
+      $center = Centers::where('idCenter',$request->idCenter)->first();
+      if(empty($center)){
         return response()->json([
-            'code' => 200,
-            'data' => null,
-            'message' => "Reservación creada correctamente"
+          'code' => 401,
+          'data' => null,
+          'message' => "Centro no existe",
+          ]);
+      }
+
+      $scheduleCom = Schedules::where('idSchedule',$request->idSchedule)->first();
+      if(empty($scheduleCom)){
+        return response()->json([
+          'code' => 401,
+          'data' => null,
+          'message' => "scheduleCom no existe",
+          ]);
+      }
+      $date = str_replace('/', '-', $request->date);
+      $schedule = Schedules::where('idSchedule',$data['idSchedule'])->first();
+      $rowToAdd = new stdClass();
+      //$rowToAdd->schedule = "<a href='Javascript:;' onclick='openModalReserva($schedule->idSchedule)' class='btn btn-primary active'>". $schedule->hour.":".$schedule->minute."</a>";
+      $rowToAdd->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $schedule->hour.":".$schedule->minute."</a>";
+      $rowToAdd->client = $data['name'];
+      $rowToAdd->recepcionist = Auth::user()->name;
+      $rowToAdd->pax = $data['pax'];
+      DB::beginTransaction();
+      try {
+        if ($request->idEdit != null) {
+          $reservation =Reservations::where('idReservation',$request->idEdit)->first();
+          $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
+        } else {
+          $user = new User($data);
+          $user->password = Hash::make(123);
+          $user->idPerfil = 6;
+          $user->state = 1;
+          $user->save();
+          $reservation = new Reservations($data);
+          $reservation->idReceptionist = Auth::user()->idUser;
+          $reservation->idClient = $user->idUser;
+        }
+
+        $reservation->date = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
+        $reservation->mes = date('m', strtotime($date . " 00:00:00"));
+        $reservation->state = 1;
+        $reservation->save();
+        DB::commit();
+      } catch (\Throwable $th) {
+        DB::rollback();
+        return response()->json([
+          'code' => 401,
+          'data' => null,
+          'message' => $th->getCode()." - ".$th->getMessage(),
+          'th' => $th
         ]);
+      }
+      $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
+      if ($user != null && !empty($user)) {
+        Mail::to($user['email'])->send(new avisarCliente($reservation));
+      }
+      $supervisors = User::where('state',1)->whereIn('idPerfil',[8])->get();
+      foreach ($supervisors as $value) {
+        Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
+      }
+
+      return response()->json([
+        'code' => 200,
+        'data' => $rowToAdd,
+        'message' => "Reservación creada correctamente"
+      ]);
     }
 
     private function sendSupervisor(User $user)

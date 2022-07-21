@@ -6,19 +6,16 @@ Reserva', 'activeButton' => 'reservas'])
     <style>
         .modal-backdrop {
             position: initial;
-    top: 0;
-    left: 0;
-    z-index: 1050;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000;
-}
-
-
+            top: 0;
+            left: 0;
+            z-index: 1050;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+        }
     </style>
 @endsection
 @section('content')
-
     <div class="content">
         <div class="container-fluid">
             <div class="section-image">
@@ -99,7 +96,6 @@ Reserva', 'activeButton' => 'reservas'])
              
                 <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
                 <div class="row">
-
                     <div class="card col-md-12">
                         <div class="card-header">
                             <div class="row align-items-center">
