@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Mail\avisarCliente;
 use App\Mail\avisarFotografo;
 use App\Mail\AvisarSupervisor;
-use App\Mail\avisarSupervisor2;
 use App\Mail\cancelacion;
 use App\Mail\CorreoFinalizar;
 use App\Models\Centers;
@@ -16,9 +15,9 @@ use App\Models\ReservaInfo;
 use App\Models\Reservations;
 use App\Models\Schedules;
 use App\Models\User;
-use App\Notifications\newReserva;
 use App\Notifications\notifyFotografo;
 use App\Notifications\sendSupervisor;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +26,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use PHPUnit\Framework\Constraint\Count;
 use stdClass;
 
 class ReservaController extends Controller
@@ -469,45 +467,38 @@ class ReservaController extends Controller
         ]);
     }
 
-    public function asignar(Request $request)
+    public function asignar(Request $request): RedirectResponse
     {
         $rules = [
             'idReserva' => 'required',
-            'idFotografo' => 'required', 
-      
+            'idFotografo' => 'required',
         ];
       
         $messages = [
-            'idReserva.required' => "El idReserva es requerido",
-            'idFotografo.required' => "El idFotografo es requerido", 
+            'idReserva.required' => "La reserva es requerida",
+            'idFotografo.required' => "El fotografo es requerida",
         ];
         $this->validate($request, $rules, $messages);
+
         DB::beginTransaction();
-        $idAnterior = null;
-        $managerAnterior = null;
+        $action = 'asignado';
         try {
             $reserva = Reservations::where('idReservation', $request->idReserva)->first();
-            $idAnterior = $reserva->idManager;
-            $managerAnterior = $reserva->idManager;
+            $managerAnterior = $reserva->manager;
             $reserva->idManager = $request->idFotografo;
             $reserva->update();
             DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
-        // dd($request->all(),$th);
-
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+          return redirect()->back()->with('message_error', 'error');
         }
-        $user = User::where('idUser',$request->idFotografo)->where('state',1)->first();
-        if ($idAnterior != $reserva->idManager && $idAnterior != null) {
-            # code...
-            Mail::to($managerAnterior['email'])->send(new cancelacion($reserva));
-        }
-        Mail::to($user['email'])->send(new avisarFotografo($reserva));
 
-        return redirect()->back()->with('message', 'Fotografo asignado correctamente');   
+        if ($managerAnterior != null && $managerAnterior->idUser != $reserva->idManager) {
+          Mail::to($managerAnterior['email'])->send(new cancelacion($reserva));
+          $action = 'reasignado';
+        }
+        Mail::to($reserva->manager->email)->send(new avisarFotografo($reserva));
+        return redirect()->back()->with('message', 'Fotografo '. $action .' correctamente');
     }
 
     public function changeState(Request $request)
@@ -515,8 +506,7 @@ class ReservaController extends Controller
         # code...
         $rules = [
             'idReserva' => 'required',
-            'state' => 'required', 
-      
+            'state' => 'required',
         ];
       
         $messages = [

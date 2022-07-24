@@ -431,7 +431,6 @@ Reserva', 'activeButton' => 'reservas'])
                     </button>
                 </div>
                 <div class="modal-body">
-                   
                     <div class="row">
                         <div class="col">
                             <table class="table table-responsive">
