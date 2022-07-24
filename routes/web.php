@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\ReservaController;
 use App\Models\User;
 use App\Notifications\newReserva;
 use App\Notifications\sendSupervisor;
@@ -54,19 +55,20 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
     });
 
     Route::group(['prefix' => 'reserva'], function() {
-        Route::get('/', [Admin\ReservaController::class, 'index'])->name('reserva.index');
-        Route::get('/finarlizar', [Admin\ReservaController::class, 'index'])->name('reserva.finarlizar');
-        Route::get('/historial', [Admin\ReservaController::class, 'historial'])->name('reserva.historial');
-        Route::get('/historial/eliminada', [Admin\ReservaController::class, 'historialEliminada'])->name('reserva.historial.eliminada');
-        Route::get('/create/{id?}', [Admin\ReservaController::class, 'create'])->name('reserva.create');
-        Route::get('/edit/{id}', [Admin\ReservaController::class, 'edit'])->name('reserva.edit');
-        Route::post('/create/ChangeHora', [Admin\ReservaController::class, 'ChangeHora'])->name('reserva.ChangeHora');
-        Route::post('/store', [Admin\ReservaController::class, 'store'])->name('reserva.store');
-        Route::post('/asignar', [Admin\ReservaController::class, 'asignar'])->name('reserva.asignar');
-        Route::post('/changeState', [Admin\ReservaController::class, 'changeState'])->name('reserva.changeState');
-        Route::post('/finalizar', [Admin\ReservaController::class, 'finalizar'])->name('reserva.finalizar');
-        Route::get('/finalizar/supervisor', [Admin\ReservaController::class, 'reservaFinalizada'])->name('reserva.supervisor.finalizar');
-        Route::post('/finalizar/supervisor', [Admin\ReservaController::class, 'finalizarSupervisor'])->name('reserva.supervisor.finalizar.post');
+        Route::get('/', [ReservaController::class, 'index'])->name('reserva.index');
+        Route::get('/table', [ReservaController::class, 'loadTable'])->name('reserva.table');
+        Route::get('/finalizar', [ReservaController::class, 'index'])->name('reserva.finarlizar');
+        Route::get('/historial', [ReservaController::class, 'historial'])->name('reserva.historial');
+        Route::get('/historial/eliminada', [ReservaController::class, 'historialEliminada'])->name('reserva.historial.eliminada');
+        Route::get('/create/{id?}', [ReservaController::class, 'create'])->name('reserva.create');
+        Route::get('/edit/{id}', [ReservaController::class, 'edit'])->name('reserva.edit');
+        Route::post('/create/ChangeHora', [ReservaController::class, 'ChangeHora'])->name('reserva.ChangeHora');
+        Route::post('/store', [ReservaController::class, 'store'])->name('reserva.store');
+        Route::post('/asignar', [ReservaController::class, 'asignar'])->name('reserva.asignar');
+        Route::post('/changeState', [ReservaController::class, 'changeState'])->name('reserva.changeState');
+        Route::post('/finalizar', [ReservaController::class, 'finalizar'])->name('reserva.finalizar');
+        Route::get('/finalizar/supervisor', [ReservaController::class, 'reservaFinalizada'])->name('reserva.supervisor.finalizar');
+        Route::post('/finalizar/supervisor', [ReservaController::class, 'finalizarSupervisor'])->name('reserva.supervisor.finalizar.post');
     });
 
     Route::group(['prefix' => 'ajax'], function () {

@@ -1,3 +1,7 @@
+@php
+  use \App\Http\Controllers\Admin\ReservaController;
+@endphp
+
 @extends('layouts.app', ['activePage' => 'reservas.index', 'title' => 'LLS - Listado Reserva', 'navName' => 'Listado
 Reserva', 'activeButton' => 'reservas'])
 
@@ -87,80 +91,19 @@ Reserva', 'activeButton' => 'reservas'])
                             </div>
                         </form>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <a class="btn btn-primary" href="{{ route('reserva.historial') }}">Historial</a>
-                        </div>
-                    </div>
                 @endif
              
                 <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
                 <div class="row">
                     <div class="card col-md-12">
-                        <div class="card-header">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <h3 class="mb-0">{{ __('Listado de reservas') }}</h3>
-                                </div>
-                            </div>
-                        </div>
                         <div class="card-body">
                             @if (Auth::user()->idPerfil <= 2 ||Auth::user()->idPerfil == 8 )
-                                <table class="table table-responsive">
-                                    <thead>
-                                        <tr>
-                                            <th>Fecha</th>
-                                            <th>Hora</th>
-                                            <th>Hotel</th>
-                                            <th>Nombre</th>
-                                            <th>Recepcionista</th>
-                                            <th>Encargado</th>
-                                            <th>Pax</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (count($reservations) > 0)
-                                            @foreach ($reservations as $res)
-                                                <tr>
-                                                    <td>{{ date('d-m-Y', strtotime($res->date)) }}</td>
-                                                    <td>{{ $res->schedule->hour }}: {{ $res->schedule->minute }}</td>
-                                                    <td>
-                                                        {{ $res->center->name }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $res->client->name . ' ' . $res->client->lastname }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $res->receptionist->name . ' ' . $res->receptionist->lastname }}
-                                                    </td>
-                                                    
-                                                    <td>
-                                                        @if ($res->idManager != null)
-                                                            {{ $res->manager->name . ' ' . $res->manager->lastname }} <br>
-                                                            <a href="javascript:;"
-                                                                class="btn btn-sm btn-warning" onclick="openModal({{ $res->idReservation }})">Cambiar</a>
-                                                        @else
-                                                            <a href="javascript:;"
-                                                                class="btn btn-sm btn-warning" onclick="openModal({{ $res->idReservation }})">Asignar</a>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        {{ $res->pax }}
-                                                    </td>
-                                                    <td>
-                                                        <a href="javascript:;" class="btn btn-sm btn-warning" onclick="openAction({{ $res->idReservation }},{{ $res->idCenter }})">Acciones</a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @else
-                                            <tr>
-                                                <td colspan="8">No se encuentran registos de Reservas</td>
-                                            </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-
+                                @include('templates.datatable', [
+                                  'tableId' => 'admin-table',
+                                  'title' => 'Listado de Reservas',
+                                  'headers' => ReservaController::$indexHeaders,
+                                  'fields' => ReservaController::$indexFields,
+                                  'urlTable' => route(ReservaController::$routeIndexTable)])
                             @else
                                 @switch(Auth::user()->idPerfil)
                                     @case(3)
@@ -185,7 +128,7 @@ Reserva', 'activeButton' => 'reservas'])
                                                             <td>{{ date('d-m-Y', strtotime($res->date)) }}</td>
                                                             <td>{{ $res->schedule->hour }}: {{ $res->schedule->minute }}
                                                             </td>
-                                                        </td>
+                                                        </tr>
                                                         <td>
                                                             {{ $res->center->name }}
                                                         </td>

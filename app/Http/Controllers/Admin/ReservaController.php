@@ -17,6 +17,7 @@ use App\Models\Schedules;
 use App\Models\User;
 use App\Notifications\notifyFotografo;
 use App\Notifications\sendSupervisor;
+use App\Traits\ReservaDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,8 +32,18 @@ use stdClass;
 class ReservaController extends Controller
 {
 
+  use ReservaDataTable;
   public static $headers = array('Horario', 'Cliente', 'Pax');
+  public static $indexHeaders = array('Fecha', 'Hora', 'Hotel', 'Nombre', 'Recepcionista', 'Encargado', 'Pax', 'Acciones');
   public static $fields = array('schedule', 'client', 'pax');
+  public static $indexFields = array('date', 'hour', 'center', 'client', 'receptionist', 'manager', 'pax', 'actions');
+  public static $routeIndexTable = 'reserva.table';
+
+  public function loadTable(Request $request) {
+    $this->setUpSearchConfig($request);
+    $reservations = Reservations::where('state', 1);
+    return $this->getSearchDataResult($reservations);
+  }
 
     public function index()
     {
@@ -501,7 +512,8 @@ class ReservaController extends Controller
           Mail::to($managerAnterior['email'])->send(new cancelacion($reserva));
           $action = 'reasignado';
         }
-        Mail::to($reserva->manager->email)->send(new avisarFotografo($reserva));
+        if(filled($reserva->manager->email))
+          Mail::to($reserva->manager->email)->send(new avisarFotografo($reserva));
         return redirect()->back()->with('message', 'Fotografo '. $action .' correctamente');
     }
 

@@ -2,6 +2,7 @@
 @php
     $responsive = $responsive ?? true;
     $showSearch = $showSearch ?? 'true';
+    $serverSide = $serverSide ?? false;
 @endphp
 
 <div class="row">
@@ -27,9 +28,20 @@
             "responsive" : '{{$responsive}}',
             "bFilter": '{{$showSearch}}',
             "bSort": true,
+            "serverSide": true,
+            "processing": true,
             "aaSorting": [[0,"desc"]],
             "bSortClasses": true,
             "bProcessing": true,
+            @isset($urlTable)
+            "ajax": '{{ $urlTable }}',
+            @endisset
+            "rowCallback" : function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                console.log('rowCallBack {{$tableId}}');
+                @if(isset($customViewButtons) && !is_null($customViewButtons))
+                        {!! $customViewButtons !!}
+                        @endif
+            },
             "columns": [
                     @foreach($fields as $field)
                 {"data" : "{{ $field }}" }@if(!$loop->last),@endif

@@ -119,23 +119,6 @@ reserva', 'activeButton' => 'reservas'])
                                             </div>
                                         </div>
 
-<!--                                        <div class="row">
-                                            <div class="col-md-12 text-left">
-                                                <h2>Reservaciones</h2>
-                                            </div>
-                                            <div class="col-12">
-                                                <table id="reservation-table" class="table table-responsive">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>Horario</th>
-                                                        <th>Recepcionista</th>
-                                                        <th>Cliente</th>
-                                                        <th>Paquete</th>
-                                                    </tr>
-                                                    </thead>
-                                                </table>
-                                            </div>
-                                        </div>-->
                                         @include('templates.datatable', [ 'tableId' => 'reservation-table',
                                           'title' => 'Reservaciones', 'headers' => ReservaController::$headers,
                                           'fields' => ReservaController::$fields])
