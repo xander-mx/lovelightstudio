@@ -10,10 +10,13 @@ class Reservations extends Model
     use HasFactory;
     protected $table = "reservations";
     protected $primaryKey = "idReservation";
+    protected $fillable = ['pax', 'num_habitacion', 'idSchedule', 'idCenter'];
+
     public function center()
     {
         return $this->hasOne(Centers::class, 'idCenter', 'idCenter');
     }
+
     public function scopeFecha($query,$nombre)
     {
         # code..
@@ -24,6 +27,7 @@ class Reservations extends Model
 
         }
     }
+
     public function scopeMes($query,$nombre)
     {
         # code..
