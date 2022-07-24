@@ -1,3 +1,7 @@
+@php
+  use \App\Http\Controllers\Admin\ReservaController;
+@endphp
+
 @extends('layouts.app', ['activePage' => 'reservas.create', 'title' => 'LLS - Nueva Reserva', 'navName' => 'Nueva
 reserva', 'activeButton' => 'reservas'])
 
@@ -115,7 +119,7 @@ reserva', 'activeButton' => 'reservas'])
                                             </div>
                                         </div>
 
-                                        <div class="row">
+<!--                                        <div class="row">
                                             <div class="col-md-12 text-left">
                                                 <h2>Reservaciones</h2>
                                             </div>
@@ -131,7 +135,10 @@ reserva', 'activeButton' => 'reservas'])
                                                     </thead>
                                                 </table>
                                             </div>
-                                        </div>
+                                        </div>-->
+                                        @include('templates.datatable', [ 'tableId' => 'reservation-table',
+                                          'title' => 'Reservaciones', 'headers' => ReservaController::$headers,
+                                          'fields' => ReservaController::$fields])
                                     </div>
                                 </div>
                             @endif
@@ -197,7 +204,6 @@ reserva', 'activeButton' => 'reservas'])
 @endsection
 
 @push('js')
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
     <script src="{{ asset('assets/js/calendar.js') }}"></script>
     {!! Html::script('assets/js/reservations.js') !!}
     @if ($specific)
@@ -205,7 +211,7 @@ reserva', 'activeButton' => 'reservas'])
             let fechaSelected = "";
             let routeReservaIndex = '{{ route('reserva.index') }}';
             let routeReservaStore = '{{ route('reserva.store') }}';
+            let routeReservaSchedule = '{{ route('ajax.horarios') }}';
         </script>
     @endif
-
 @endpush

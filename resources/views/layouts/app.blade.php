@@ -71,6 +71,7 @@
     <script src="{{ asset('assets/js/core/popper.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}" type="text/javascript"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
     <script src="{{ asset('assets/js/plugins/jquery.sharrre.js') }}"></script>
     <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
     <script src="{{ asset('assets/js/plugins/bootstrap-switch.js') }}"></script>

@@ -30,6 +30,10 @@ use stdClass;
 
 class ReservaController extends Controller
 {
+
+  public static $headers = array('Horario', 'Cliente', 'Pax');
+  public static $fields = array('schedule', 'client', 'pax');
+
     public function index()
     {
         if (Auth::user()->idPerfil <= 2 ||Auth::user()->idPerfil == 8) {

@@ -1,15 +1,7 @@
 const RESERVATION_FORM = $('#reservation-form');
 const RESERVATION_CREATE_BTN = $('#createReservationBtn');
 const RESERVATION_MODAL = $('#modalReserva');
-
-$('#reservation-table').DataTable({
-    "columns": [
-        {"data": "schedule"},
-        {"data": "recepcionist"},
-        {"data": "client"},
-        {"data": "pax"}
-    ]
-});
+const RESERVATION_DATATABLE = $('#reservation-table').DataTable();
 
 const createReserva = () => {
     let formData = new FormData(document.getElementById("reservation-form"));
@@ -33,14 +25,13 @@ const createReserva = () => {
     })
         .done(function(response) {
             console.log(response)
-
             if (response.code === 200) {
                 swal('Muy bien!', 'La reserva se ha realizado correctamente', 'success');
                 let table = $('#reservation-table').DataTable();
                 table.row.add(response.data).draw();
                 setTimeout(() => {
                     window.location = routeReservaIndex
-                }, 3000);
+                }, 1000);
             } else if (response.code === 400) {
                 let datos = response.data
                 let message = ""
@@ -54,7 +45,7 @@ const createReserva = () => {
                 swal('Ops!', response.message, 'error')
             }
         })
-        .fail(function() {
+        .fail(function(xhr) {
             $(".content_loading").fadeOut("slow");
             swal({
                 title: 'Ups!',
@@ -72,11 +63,10 @@ const createReserva = () => {
 }
 
 const selectDay = (day) => {
-    let UrlPath_ = UrlHost_ + "/administrator/ajax/horario/day";
     let ids = RESERVATION_FORM.find("[name = 'idCenter']").val();
 
     $.ajax({
-        url: UrlPath_,
+        url: routeReservaSchedule,
         type: 'GET',
         data: {
             day: day,
@@ -87,22 +77,21 @@ const selectDay = (day) => {
         },
         beforeSend: function() {
             $(".content_loading").fadeIn("slow");
-        },
-        success: function(response) {
+        }
+    })
+        .done(function(response) {
             console.log(response)
-            let table = $('#reservation-table').DataTable();
             //horarios = response.data;
-            table.clear().draw();
-            table.rows.add(response.table).draw();
+            RESERVATION_DATATABLE.clear().draw();
+            RESERVATION_DATATABLE.rows.add(response.table).draw();
             $(".content_loading").fadeOut("slow");
             showHorarios(response.data);
             fechaSelected = day;
-        },
-        error: function(xhr) {
+        })
+        .fail(function(xhr) {
             $(".content_loading").fadeOut("slow");
             swal('Ops!', 'Hubo un error, por favor intentelo más tarde', 'error')
-        }
-    })
+        })
 }
 
 const showHorarios = (schedule) => {
@@ -138,3 +127,5 @@ const openModalReserva = (id) => {
         }
     }
 }
+
+//# sourceURL=reservations.js

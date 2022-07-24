@@ -421,57 +421,46 @@ Reserva', 'activeButton' => 'reservas'])
         </div>
     </div>
 
-    <div class="modal" tabindex="-1" role="dialog" id="myModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Asignar Fotografo</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col">
-                            <table class="table table-responsive">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre fotografo</th>
-                                        <th>Nº Sesion </th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($trabajadores  as $key => $item)
-                                        <tr>
-                                            <td>{{ $item->name }}</td>
-                                            <td>{{ $reservasNumeroHoy[$item->idUser] }}</td>
-                                            <td>
-                                                <form action="{{ route('reserva.asignar') }}" method="post">
-                                                    @csrf
-                                                    <input type="hidden" name="idReserva" id="reserva_{{ $key }}">
-                                                    <input type="hidden" name="idFotografo" value="{{ $item->idUser }}">
-                                                    <button type="submit" class="btn btn-primary">Asignar</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
- 
-                </div>
-                <div class="modal-footer">
-                    <div class="row text-center">
-                        <div class="col text-center">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="cerrarModal()">Cerrar</button>
-                        </div>
-                    </div>
+    @component('templates.modal', ['modalId' => 'myModal', 'title' => 'Asignar Fotografo', 'backdrop' => true])
+        @slot('body')
+            <div class="row">
+                <div class="col">
+                    <table class="table table-responsive">
+                        <thead>
+                        <tr>
+                            <th>Nombre fotografo</th>
+                            <th>Nº Sesion </th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($trabajadores  as $key => $item)
+                            <tr>
+                                <td>{{ $item->name }}</td>
+                                <td>{{ $reservasNumeroHoy[$item->idUser] }}</td>
+                                <td>
+                                    <form action="{{ route('reserva.asignar') }}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="idReserva" id="reserva_{{ $key }}">
+                                        <input type="hidden" name="idFotografo" value="{{ $item->idUser }}">
+                                        <button type="submit" class="btn btn-primary">Asignar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
-    </div>
+        @endslot
+        @slot('footer')
+            <div class="row text-center">
+                <div class="col text-center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="cerrarModal()">Cerrar</button>
+                </div>
+            </div>
+        @endslot
+    @endcomponent
 @endif
 
 @endsection
