@@ -359,6 +359,8 @@ class ReservaController extends Controller
       try {
         if ($request->idEdit != null) {
           $reservation =Reservations::where('idReservation',$request->idEdit)->first();
+          $reservation->fill($data);
+          $reservation->idManager = null;
           $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
         } else {
           $user = new User($data);
@@ -370,7 +372,6 @@ class ReservaController extends Controller
           $reservation->idReceptionist = Auth::user()->idUser;
           $reservation->idClient = $user->idUser;
         }
-
         $reservation->date = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
         $reservation->mes = date('m', strtotime($date . " 00:00:00"));
         $reservation->state = 1;
@@ -387,11 +388,11 @@ class ReservaController extends Controller
       }
       $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
       if ($user != null && !empty($user)) {
-        Mail::to($user['email'])->send(new avisarCliente($reservation));
+        //Mail::to($user['email'])->send(new avisarCliente($reservation));
       }
       $supervisors = User::where('state',1)->whereIn('idPerfil',[8])->get();
       foreach ($supervisors as $value) {
-        Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
+        //Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
       }
 
       return response()->json([

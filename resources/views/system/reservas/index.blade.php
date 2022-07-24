@@ -112,12 +112,10 @@ Reserva', 'activeButton' => 'reservas'])
                                             <th>Fecha</th>
                                             <th>Hora</th>
                                             <th>Hotel</th>
-
                                             <th>Nombre</th>
                                             <th>Recepcionista</th>
-                                                    <th>Encargado</th>
+                                            <th>Encargado</th>
                                             <th>Pax</th>
-                                            {{-- <th>Estado</th> --}}
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -150,21 +148,6 @@ Reserva', 'activeButton' => 'reservas'])
                                                     <td>
                                                         {{ $res->pax }}
                                                     </td>
-                                                    {{-- <td>
-                                                        @switch($res->state)
-                                                            @case(1)
-                                                                <span class="badge badge-success">Activo</span>
-                                                            @break
-                                                            @case(2)
-                                                                <span class="badge badge-warning">Cancelado</span>
-                                                            @break
-                                                            @case(3)
-                                                                <span class="badge badge-success">Finalizado</span>
-                                                            @break
-                                                            @default
-                                                                <span class="badge badge-danger">Re-Agendado</span>
-                                                        @endswitch
-                                                    </td> --}}
                                                     <td>
                                                         <a href="javascript:;" class="btn btn-sm btn-warning" onclick="openAction({{ $res->idReservation }},{{ $res->idCenter }})">Acciones</a>
                                                     </td>
@@ -276,16 +259,10 @@ Reserva', 'activeButton' => 'reservas'])
                                                         <td>
                                                             {{ $res->center->name }}
                                                         </td>
-                                                        <td>
-                                                            {{ $res->num_habitacion }}
-
-                                                        </td>
+                                                        <td>{{ $res->num_habitacion }}</td>
                                                         <td>{{ date('d-m-Y', strtotime($res->date)) }}</td>
-                                                        <td>{{ $res->schedule->hour }}: {{ $res->schedule->minute }}
-                                                        </td>
-                                                        <td>
-                                                            {{ $res->pax }}
-                                                        </td>
+                                                        <td>{{ $res->schedule->hour }}: {{ $res->schedule->minute }}</td>
+                                                        <td>{{ $res->pax }}</td>
                                                         <td>
                                                             @switch($res->state)
                                                                 @case(1)
@@ -309,7 +286,7 @@ Reserva', 'activeButton' => 'reservas'])
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="7">No se encuentran registos de Reservas</td>
+                                                    <td colspan="7">No se encuentran registros de Reservas</td>
                                                 </tr>
                                             @endif
                                         </tbody>
@@ -366,7 +343,7 @@ Reserva', 'activeButton' => 'reservas'])
                               </div>
                              
                               <div class="mb-3">
-                                <label for="exampleFormControlInput1" class="form-label">N° Micelaneo</label>
+                                <label for="exampleFormControlInput1" class="form-label">N° Miscelaneo</label>
                                 <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" name="micelaneo" required> 
                               </div>
 
@@ -418,7 +395,6 @@ Reserva', 'activeButton' => 'reservas'])
                     </button>
                 </div>
                 <div class="modal-body">
-                   
                     <div class="row">
                         {{-- <div class="col">
                             <form action="{{ route('reserva.changeState') }}" method="post">
@@ -437,18 +413,13 @@ Reserva', 'activeButton' => 'reservas'])
                             </form>
                         </div>
                         <div class="col">
-                              
                                 <a class="btn btn-info" href=""  id="linssk">Reagendar</a>
                         </div>
-                    
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
-
 
     <div class="modal" tabindex="-1" role="dialog" id="myModal">
         <div class="modal-dialog" role="document">

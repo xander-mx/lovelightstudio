@@ -163,7 +163,6 @@ reserva', 'activeButton' => 'reservas'])
                         <div class="form-group col-12">
                             <label for="pax">Pax</label>
                             <input type="text" name="pax" id="pax" class="form-control"
-                                   placeholder="EJEMPLO : 3 niños 4 hombre"
                                    value="@isset($reserva){{ $reserva->pax}}@endisset" required>
                         </div>
                     </div>
@@ -171,8 +170,8 @@ reserva', 'activeButton' => 'reservas'])
                     <div class="row">
                         <div class="form-group col-12">
                             <label for="email">E-mail</label>
-                            <input type="email" name="email" id="email" class="form-control" v
-                                   alue="@isset($reserva){{ $reserva->client->email}}@endisset" required>
+                            <input type="email" name="email" id="email" class="form-control"
+                                   value="@isset($reserva){{ $reserva->client->email}}@endisset" required>
                         </div>
                     </div>
 
@@ -180,7 +179,7 @@ reserva', 'activeButton' => 'reservas'])
                         <div class="form-group col-sm-12 col-md-6, col-lg-6">
                             <label for="cellphone">Teléfono</label>
                             <input type="text" name="cellphone" id="cellphone" class="form-control"
-                                   value="@isset($reserva){{ $reserva->client->cellphone}}@endisset" required>
+                                   value="+52 @isset($reserva){{ $reserva->client->cellphone}}@endisset" required>
                         </div>
                         <div class="form-group col-sm-12 col-md-6, col-lg-6">
                             <label for="pax">Número de Habitación</label>
@@ -192,7 +191,7 @@ reserva', 'activeButton' => 'reservas'])
             @endslot
             @slot('footer')
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button type="button" onclick="createReserva()" class="btn btn-primary">Aceptar</button>
+                <button type="button" id="createReservationBtn" onclick="createReserva()" class="btn btn-primary">Aceptar</button>
             @endslot
         @endcomponent
 @endsection

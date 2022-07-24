@@ -1,4 +1,6 @@
 const RESERVATION_FORM = $('#reservation-form');
+const RESERVATION_CREATE_BTN = $('#createReservationBtn');
+const RESERVATION_MODAL = $('#modalReserva');
 
 $('#reservation-table').DataTable({
     "columns": [
@@ -13,9 +15,9 @@ const createReserva = () => {
     let formData = new FormData(document.getElementById("reservation-form"));
     formData.append("date", fechaSelected);
     formData.append("idCenter", RESERVATION_FORM.find("[name = 'idCenter']").val());
-
+    RESERVATION_CREATE_BTN.prop( "disabled", true );
     $.ajax({
-        url: routeReservaStore,//UrlHost_ + "/administrator/reserva/store",
+        url: routeReservaStore,
         data: formData,
         type: 'post',
         dataType: 'json',
@@ -27,10 +29,11 @@ const createReserva = () => {
         },
         beforeSend: function() {
             $(".content_loading").fadeIn("slow");
-        },
-        success: function(response) {
+        }
+    })
+        .done(function(response) {
             console.log(response)
-            $(".content_loading").fadeOut("slow");
+
             if (response.code === 200) {
                 swal('Muy bien!', 'La reserva se ha realizado correctamente', 'success');
                 let table = $('#reservation-table').DataTable();
@@ -50,8 +53,8 @@ const createReserva = () => {
             } else {
                 swal('Ops!', response.message, 'error')
             }
-        },
-        error: function(xhr) {
+        })
+        .fail(function() {
             $(".content_loading").fadeOut("slow");
             swal({
                 title: 'Ups!',
@@ -60,8 +63,12 @@ const createReserva = () => {
                 animation: false,
                 showConfirmButton: true
             });
-        }
-    })
+        })
+        .always(function() {
+            $(".content_loading").fadeOut("slow");
+            RESERVATION_CREATE_BTN.prop( "disabled", false );
+            RESERVATION_MODAL.modal('toggle');
+        });
 }
 
 const selectDay = (day) => {
@@ -122,7 +129,7 @@ const showHorarios = (schedule) => {
 const openModalReserva = (id) => {
     if (id != null && fechaSelected !== "") {
         $('#idSchedule').val(id);
-        $('#modalReserva').modal()
+        RESERVATION_MODAL.modal()
     } else {
         if (id == null) {
             swal('Ops!', 'Por favor seleccione un horario', 'error')
