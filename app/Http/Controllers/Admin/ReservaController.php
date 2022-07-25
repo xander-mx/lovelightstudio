@@ -35,13 +35,30 @@ class ReservaController extends Controller
   use ReservaDataTable;
   public static $headers = array('Horario', 'Cliente', 'Pax');
   public static $indexHeaders = array('Fecha', 'Hora', 'Hotel', 'Nombre', 'Recepcionista', 'Encargado', 'Pax', 'Acciones');
+  public static $indexHeadersPhotographer = array('Fecha', 'Hora', 'Hotel', 'Nombre', 'Habitación', 'Pax', 'Estado', 'Acciones');
+  public static $indexHeadersClient = array('Nombre', 'Hotel', 'Habitación', 'Fecha', 'Hora', 'Pax', 'Estado', 'Acciones');
   public static $fields = array('schedule', 'client', 'pax');
   public static $indexFields = array('date', 'hour', 'center', 'client', 'receptionist', 'manager', 'pax', 'actions');
+  public static $indexFieldsPhotographer = array('date', 'hour', 'center', 'client', 'num_habitacion', 'pax', 'state', 'actions');
+  public static $indexFieldsClient = array('client', 'center', 'num_habitacion', 'date', 'hour', 'pax', 'state', 'actions');
   public static $routeIndexTable = 'reserva.table';
 
   public function loadTable(Request $request) {
     $this->setUpSearchConfig($request);
-    $reservations = Reservations::where('state', 1);
+    $reservations = DB::table('reservations')
+      ->join(DB::raw('users as client'), 'reservations.idClient', '=', 'client.idUser')
+      ->leftJoin(DB::raw('users as receptionist'), 'reservations.idReceptionist', '=', 'receptionist.idUser')
+      ->leftJoin(DB::raw('users as manager'), 'reservations.idManager', '=', 'manager.idUser')
+      ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
+      ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
+      ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva')
+      ->where('reservations.state',1)
+      ->select('reservations.idReservation', 'reservations.date', 'reservations.pax', 'reservations.idCenter',
+      'reservations.num_habitacion', 'reservations.state', DB::raw("CONCAT(client.name,' ',COALESCE(client.lastname,'')) as client"),
+      DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"), 'reservations.idManager',
+      DB::raw("CONCAT(manager.name,' ', COALESCE(manager.lastname,'')) as manager"),'reservations.idClient', 'reservations.idReceptionist',
+      DB::raw('centers.name as center'), DB::raw('schedules.hour'), DB::raw('schedules.minute')
+      , 'reservations_info_finish.id_reserva');
     return $this->getSearchDataResult($reservations);
   }
 
@@ -363,7 +380,6 @@ class ReservaController extends Controller
       $date = str_replace('/', '-', $request->date);
       $schedule = Schedules::where('idSchedule',$data['idSchedule'])->first();
       $rowToAdd = new stdClass();
-      //$rowToAdd->schedule = "<a href='Javascript:;' onclick='openModalReserva($schedule->idSchedule)' class='btn btn-primary active'>". $schedule->hour.":".$schedule->minute."</a>";
       $rowToAdd->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $schedule->hour.":".$schedule->minute."</a>";
       $rowToAdd->client = $data['name'];
       $rowToAdd->recepcionist = Auth::user()->name;
@@ -401,11 +417,11 @@ class ReservaController extends Controller
       }
       $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
       if ($user != null && !empty($user)) {
-        //Mail::to($user['email'])->send(new avisarCliente($reservation));
+        Mail::to($user['email'])->send(new avisarCliente($reservation));
       }
       $supervisors = User::where('state',1)->whereIn('idPerfil',[8])->get();
       foreach ($supervisors as $value) {
-        //Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
+        Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
       }
 
       return response()->json([
@@ -512,14 +528,14 @@ class ReservaController extends Controller
           Mail::to($managerAnterior['email'])->send(new cancelacion($reserva));
           $action = 'reasignado';
         }
-        if(filled($reserva->manager->email))
-          Mail::to($reserva->manager->email)->send(new avisarFotografo($reserva));
+        $manager = User::find($reserva->idManager);
+        if(filled($manager->email))
+          Mail::to($manager->email)->send(new avisarFotografo($reserva));
         return redirect()->back()->with('message', 'Fotografo '. $action .' correctamente');
     }
 
     public function changeState(Request $request)
     {
-        # code...
         $rules = [
             'idReserva' => 'required',
             'state' => 'required',
@@ -529,6 +545,7 @@ class ReservaController extends Controller
             'idReserva.required' => "El idReserva es requerido",
             'state.required' => "El state es requerido", 
         ];
+        $status = "Activo";
         $this->validate($request, $rules, $messages);
         DB::beginTransaction();
         try {
@@ -537,27 +554,28 @@ class ReservaController extends Controller
             $reserva->update();
             DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
-        // dd($request->all(),$th);
-
-            
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+          return redirect()->back()->with('message_error', 'error');
         }
 
         if ($request->state == 2 && $reserva->idManager != null) {
-            # code...
             Mail::to($reserva->manager['email'])->send(new cancelacion($reserva));
-            
-        }
-        return redirect()->back()->with('message', 'Fotografo asignado correctamente');   
 
+        }
+      switch ($reserva->state) {
+        case 1: $status = "Activa"; break;
+        case 2: $status = "Cancelada"; break;
+        case 3: $status = "Finalizada"; break;
+        case 4: $status = "Reagendada"; break;
+      }
+
+        return redirect()->back()->with('message', 'Reservación '. $status);
     }
-    public function cliente(Request $request)
+
+    public function cliente(Request $request, $reserva)
     {
         # code...
-        $idCliente = $request->reserva;
+        $idCliente = $reserva;
 
         $reser = Reservations::where('idReservation',$idCliente)->first();
         

@@ -27,8 +27,8 @@ Route::get('/', function () {
         return view('auth.login');
     }
 });
-Route::get('/reserva/cliente', [Admin\ReservaController::class, 'cliente'])->name('reserva.cliente');
-Route::post('/reserva/cliente', [Admin\ReservaController::class, 'clientecrear'])->name('reserva.cliente.post');
+Route::get('/reserva/cliente/{reserva}', [ReservaController::class, 'cliente'])->name('reserva.cliente');
+Route::post('/reserva/cliente', [ReservaController::class, 'clientecrear'])->name('reserva.cliente.post');
 
 Auth::routes(['excepts' => 'register']);
 
@@ -61,7 +61,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
         Route::get('/historial', [ReservaController::class, 'historial'])->name('reserva.historial');
         Route::get('/historial/eliminada', [ReservaController::class, 'historialEliminada'])->name('reserva.historial.eliminada');
         Route::get('/create/{id?}', [ReservaController::class, 'create'])->name('reserva.create');
-        Route::get('/edit/{id}', [ReservaController::class, 'edit'])->name('reserva.edit');
+        Route::get('/edit/{center}/{id}', [ReservaController::class, 'edit'])->name('reserva.edit');
         Route::post('/create/ChangeHora', [ReservaController::class, 'ChangeHora'])->name('reserva.ChangeHora');
         Route::post('/store', [ReservaController::class, 'store'])->name('reserva.store');
         Route::post('/asignar', [ReservaController::class, 'asignar'])->name('reserva.asignar');

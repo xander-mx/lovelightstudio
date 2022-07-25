@@ -2,7 +2,7 @@
 @php
     $responsive = $responsive ?? true;
     $showSearch = $showSearch ?? 'true';
-    $serverSide = $serverSide ?? false;
+    $serverSide = $serverSide ?? 'false';
 @endphp
 
 <div class="row">
@@ -28,7 +28,7 @@
             "responsive" : '{{$responsive}}',
             "bFilter": '{{$showSearch}}',
             "bSort": true,
-            "serverSide": true,
+            "serverSide": {{$serverSide}},
             "processing": true,
             "aaSorting": [[0,"desc"]],
             "bSortClasses": true,
@@ -41,6 +41,11 @@
                 @if(isset($customViewButtons) && !is_null($customViewButtons))
                         {!! $customViewButtons !!}
                         @endif
+            },
+            "preDrawCallback" : function(settings) {
+                let search = $('#{{ $tableId }}').DataTable().search();
+                if(search.length !== 0 && search.length < 3)
+                    return false;
             },
             "columns": [
                     @foreach($fields as $field)

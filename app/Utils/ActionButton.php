@@ -174,8 +174,13 @@ class ActionButton
     $button .= filled($this->getButtonId()) ? "id='". $this->getButtonId() ."'" : " " ;
     $button .= filled($this->getClick()) ? "onclick='". $this->getClick() ."'" : " " ;
     $button .= "class='".$this->getClassButton()."'";
+    foreach ($this->attributes as $attribute)
+    {
+      $button .= $attribute;
+    }
     $button .= " style='margin-bottom: 0;'>";
     $button .= filled($this->getLabel()) ? $this->getLabel() : "";
+
     $button .= "</a>";
     return $button;
   }
