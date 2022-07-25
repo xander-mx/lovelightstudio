@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\avisarCliente;
 use App\Mail\avisarFotografo;
 use App\Mail\AvisarSupervisor;
+use App\Mail\avisarSupervisor2;
 use App\Mail\cancelacion;
 use App\Mail\CorreoFinalizar;
 use App\Models\Centers;
@@ -417,11 +418,13 @@ class ReservaController extends Controller
       }
       $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
       if ($user != null && !empty($user)) {
-        Mail::to($user['email'])->send(new avisarCliente($reservation));
+        if(filled($user['email']))
+          Mail::to($user['emai'])->send(new avisarCliente($reservation));
       }
       $supervisors = User::where('state',1)->whereIn('idPerfil',[8])->get();
       foreach ($supervisors as $value) {
-        Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
+        if(filled($value['email']))
+          Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
       }
 
       return response()->json([

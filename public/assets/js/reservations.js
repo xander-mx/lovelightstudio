@@ -81,7 +81,6 @@ const selectDay = (day) => {
     })
         .done(function(response) {
             console.log(response)
-            //horarios = response.data;
             RESERVATION_DATATABLE.clear().draw();
             RESERVATION_DATATABLE.rows.add(response.table).draw();
             $(".content_loading").fadeOut("slow");
@@ -118,7 +117,7 @@ const showHorarios = (schedule) => {
 const openModalReserva = (id) => {
     if (id != null && fechaSelected !== "") {
         $('#idSchedule').val(id);
-        RESERVATION_MODAL.modal()
+        RESERVATION_MODAL.modal('show');
     } else {
         if (id == null) {
             swal('Ops!', 'Por favor seleccione un horario', 'error')

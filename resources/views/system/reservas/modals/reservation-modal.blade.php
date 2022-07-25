@@ -1,4 +1,4 @@
-@component('templates.modal', ['modalId' => 'modalReserva', 'title' => 'Nueva Reserva', 'backdrop' => true])
+@component('templates.modal', ['modalId' => 'modalReserva', 'title' => 'Nueva Reserva', 'backdrop' => true, 'close' => true])
     @slot('body')
         <form id="reservation-form">
             @csrf
