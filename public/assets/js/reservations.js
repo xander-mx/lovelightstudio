@@ -127,4 +127,8 @@ const openModalReserva = (id) => {
     }
 }
 
+const closeModalReserva = () => {
+    RESERVATION_MODAL.modal('hide');
+}
+
 //# sourceURL=reservations.js

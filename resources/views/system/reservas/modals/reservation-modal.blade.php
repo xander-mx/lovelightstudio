@@ -1,10 +1,9 @@
-@component('templates.modal', ['modalId' => 'modalReserva', 'title' => 'Nueva Reserva', 'backdrop' => true, 'close' => true])
+@component('templates.modal', ['modalId' => 'modalReserva', 'title' => 'Nueva Reserva', 'backdrop' => true,
+           'close' => true, 'clickClose' => 'closeModalReserva()'])
     @slot('body')
         <form id="reservation-form">
             @csrf
-            @if (request()->get('edit') != null)
-                <input type="hidden" name="idEdit" value="{{ request()->get('edit') }}">
-            @endif
+            <input type="hidden" name="idEdit" value="@isset($reserva){{ $reserva->idReservation  }} @endisset">
             <input type="hidden" name="idSchedule" id="idSchedule" value="">
             <input type="hidden" name="idCenter" id="idCenter" value="{{$centro->idCenter}}">
             <div class="row">
