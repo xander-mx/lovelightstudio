@@ -45,6 +45,7 @@ class ReservaController extends Controller
   public static $routeIndexTable = 'reserva.table';
 
   public function loadTable(Request $request) {
+    $isPhotographer = Auth::user()->idPerfil == 3;
     $this->setUpSearchConfig($request);
     $reservations = DB::table('reservations')
       ->join(DB::raw('users as client'), 'reservations.idClient', '=', 'client.idUser')
@@ -53,7 +54,9 @@ class ReservaController extends Controller
       ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
       ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
       ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva')
-      ->where('reservations.state',1)
+      ->where('reservations.state',1)->when($isPhotographer, function($query) {
+        $query->where('reservations.idManager','=', 3);
+      })
       ->select('reservations.idReservation', 'reservations.date', 'reservations.pax', 'reservations.idCenter',
       'reservations.num_habitacion', 'reservations.state', DB::raw("CONCAT(client.name,' ',COALESCE(client.lastname,'')) as client"),
       DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"), 'reservations.idManager',
