@@ -130,8 +130,8 @@ reserva', 'activeButton' => 'reservas'])
                 </div>
             </div>
         </div>
+        @include('system.reservas.modals.reservation-modal')
     </div>
-    @include('system.reservas.modals.reservation-modal')
 
 @endsection
 

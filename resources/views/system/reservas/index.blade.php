@@ -5,19 +5,6 @@
 @extends('layouts.app', ['activePage' => 'reservas.index', 'title' => 'LLS - Listado Reserva', 'navName' => 'Listado
 Reserva', 'activeButton' => 'reservas'])
 
-@section('stylebb')
-    <style>
-        .modal-backdrop {
-            position: initial;
-            top: 0;
-            left: 0;
-            z-index: 1050;
-            width: 100vw;
-            height: 100vh;
-            background-color: #000;
-        }
-    </style>
-@endsection
 @section('content')
     <div class="content">
         <div class="container-fluid">
