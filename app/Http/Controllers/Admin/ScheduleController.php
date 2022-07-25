@@ -33,7 +33,6 @@ class ScheduleController extends Controller
         //$data->schedule = "<a href='Javascript:;' onclick='openModalReserva($value->idSchedule)' class='btn btn-primary active'>". $value->schedule->hour.":".$value->schedule->minute."</a>";
         $data->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $value->schedule->hour.":".$value->schedule->minute."</a>";
         $data->client = $value->client->name;
-        $data->recepcionist = $value->receptionist->name;
         $data->pax = $value->pax;
         $dataReservations[] = $data;
       }

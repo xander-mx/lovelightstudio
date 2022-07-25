@@ -1,5 +1,4 @@
-<div class="sidebar" data-image="{{ asset('light-bootstrap/img/sidebar-5.jpg') }}" style="
-background: #ffc0cb;
+<div class="sidebar" data-image="{{ asset('assets/img/sidebar-5.jpg') }}" style="background: #ffc0cb;
 ">
     <!--
 Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"

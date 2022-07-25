@@ -42,7 +42,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="col text-center">
-                            <strong>Cantidad de sessiones reservadas en la quincena</strong><br>
+                            <strong>Cantidad de sesiones reservadas en la quincena</strong><br>
                             <h2 class="text-center" style="color: green;">{{ $reservas }}</h2>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="col text-center">
-                                <strong>Cantidad de sessiones Fotografica en la quincena</strong><br>
+                                <strong>Cantidad de sesiones Fotográfica en la quincena</strong><br>
                                 <h2 class="text-center" style="color: green;">{{ $reservasFotografo }}</h2>
                             </div>
                         </div>
@@ -72,7 +72,7 @@
                                 <thead>
                                     <tr>
                                         <th>Hotel</th>
-                                        <th>Sessiones</th>
+                                        <th>Sesiones</th>
                                         <th>Total vendido</th>
                                     </tr>
                                 </thead>
@@ -110,7 +110,7 @@
                                 <thead>
                                     <tr>
                                         <th>Trabajadores</th>
-                                        <th>Sessiones</th>
+                                        <th>Sesiones</th>
                                         @if (Auth::user()->idPerfil == 1)
                                             <th>Total vendido</th>
                                             <th>Total comisiones</th>
@@ -128,8 +128,6 @@
                                                 </td>
                                                 <td>
                                               ${{ number_format($sumaTrabajadores[$res->idUser], 2) }}
-
-                                                    
                                                 </td>
                                             @endif
 
@@ -150,7 +148,7 @@
                             <table class="table table-responsive">
                                 <thead>
                                     <tr>
-                                        <th>Tipo de comisiòn</th>
+                                        <th>Tipo de comisión</th>
                                         <th>Cantidad</th>
                                     </tr>
                                 </thead>
@@ -169,7 +167,7 @@
                                         </tr>
                                     @else
                                         <tr>
-                                            <td colspan="2">No se encuentran registos de Reservas</td>
+                                            <td colspan="2">No se encuentran registros de Reservas</td>
                                         </tr>
                                     @endif
                                 </tbody>

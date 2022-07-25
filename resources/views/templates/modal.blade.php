@@ -10,7 +10,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel"> {{ $title ?? '' }}</h5>
                 @isset($close)
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" @isset($clickClose) onclick="{{$clickClose}}" @endisset aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 @endisset
