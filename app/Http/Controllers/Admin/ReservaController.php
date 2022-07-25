@@ -55,7 +55,7 @@ class ReservaController extends Controller
       ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
       ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva')
       ->where('reservations.state',1)->when($isPhotographer, function($query) {
-        $query->where('reservations.idManager','=', 3);
+        $query->where('reservations.idManager','=', Auth::user()->idUser);
       })
       ->select('reservations.idReservation', 'reservations.date', 'reservations.pax', 'reservations.idCenter',
       'reservations.num_habitacion', 'reservations.state', DB::raw("CONCAT(client.name,' ',COALESCE(client.lastname,'')) as client"),
@@ -299,34 +299,18 @@ class ReservaController extends Controller
         }
     }
 
-    public function edit($id ,Request $request  )
+    public function edit($center, $id, Request $request  )
     {
         $ids = $id;
-
         if ($id != null) {
             $specific = true;
-            $centro = Centers::where('idCenter', $id)->where('state', 1)->first();
+            $centro = Centers::where('idCenter', $center)->where('state', 1)->first();
             if (!empty($centro)) {
-                if ($request != null) {
-                    # code...
-                 
-                if ($request->edit != null) {
-                    # code...
-                    $reserva = Reservations::where('idReservation',$request->edit)->first();
-                    if (empty($reserva)) {
-                        # code...
-                        return back();
-                    }
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids','reserva'));
-                }else{
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids'));
-
-                }
-                }else{
-                    dd($request);
-
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids'));
-                }
+              $reserva = Reservations::where('idReservation',$id)->first();
+              if (empty($reserva)) {
+                  return back();
+              }
+              return view('system.reservas.create', compact('centro', 'specific', 'ids','reserva'));
             } else {
                 Session::flash('message_error', 'El centro seleccionado no se encuentra activo');
                 return view('system.reservas.create');
