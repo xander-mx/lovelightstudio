@@ -1,4 +1,5 @@
-@component('templates.modal', ['modalId' => 'photographer-modal', 'title' => 'Asignar Fotografo', 'backdrop' => true])
+@component('templates.modal', ['modalId' => 'photographer-modal', 'title' => 'Asignar Fotografo', 'backdrop' => true,
+           'clickClose' => 'cerrarModal()'])
     @slot('body')
         <div class="row">
             <div class="col">
