@@ -156,13 +156,12 @@ class ReservaController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
         dd($request->all(),$th);
-
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+        return redirect()->back()->with('message_error', 'error');
         }
-        // dd($reservaInfo,$reserva->center->name,$reserva->receptioninfo->linkPagina);
-        Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo,$reserva));
+      if(!env('TESTING')) {
+        Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo, $reserva));
+      }
 
         return redirect()->back()->with('message', 'Fotografo asignado correctamente'); 
     }
@@ -417,14 +416,16 @@ class ReservaController extends Controller
         ]);
       }
       $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
-      if ($user != null && !empty($user)) {
-        if(filled($user['email']))
-          Mail::to($user['emai'])->send(new avisarCliente($reservation));
-      }
-      $supervisors = User::where('state',1)->whereIn('idPerfil',[8])->get();
-      foreach ($supervisors as $value) {
-        if(filled($value['email']))
-          Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
+      if(!env('TESTING')) {
+        if ($user != null && !empty($user)) {
+          if (filled($user['email']))
+            Mail::to($user['emai'])->send(new avisarCliente($reservation));
+        }
+        $supervisors = User::where('state', 1)->whereIn('idPerfil', [8])->get();
+        foreach ($supervisors as $value) {
+          if (filled($value['email']))
+            Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
+        }
       }
 
       return response()->json([
@@ -527,13 +528,16 @@ class ReservaController extends Controller
           return redirect()->back()->with('message_error', 'error');
         }
 
-        if ($managerAnterior != null && $managerAnterior->idUser != $reserva->idManager) {
-          Mail::to($managerAnterior['email'])->send(new cancelacion($reserva));
-          $action = 'reasignado';
+        if(!env('TESTING')) {
+          if ($managerAnterior != null && $managerAnterior->idUser != $reserva->idManager) {
+            Mail::to($managerAnterior['email'])->send(new cancelacion($reserva));
+            $action = 'reasignado';
+          }
+          $manager = User::find($reserva->idManager);
+          if(filled($manager->email))
+            Mail::to($manager->email)->send(new avisarFotografo($reserva));
         }
-        $manager = User::find($reserva->idManager);
-        if(filled($manager->email))
-          Mail::to($manager->email)->send(new avisarFotografo($reserva));
+
         return redirect()->back()->with('message', 'Fotografo '. $action .' correctamente');
     }
 
@@ -561,10 +565,13 @@ class ReservaController extends Controller
           return redirect()->back()->with('message_error', 'error');
         }
 
+      if(!env('TESTING')) {
         if ($request->state == 2 && $reserva->idManager != null) {
-            Mail::to($reserva->manager['email'])->send(new cancelacion($reserva));
+          Mail::to($reserva->manager['email'])->send(new cancelacion($reserva));
 
         }
+      }
+
       switch ($reserva->state) {
         case 1: $status = "Activa"; break;
         case 2: $status = "Cancelada"; break;
@@ -693,14 +700,15 @@ class ReservaController extends Controller
 
             DB::rollBack();
         }
-        // dd($reservaInfo,$reserva->center->name);
-        Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo,$reserva));
-        $supervisors = User::where('state',1)->whereIn('idPerfil',[8])->get();
+      if(!env('TESTING')) {
+        Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo, $reserva));
+        $supervisors = User::where('state', 1)->whereIn('idPerfil', [8])->get();
         foreach ($supervisors as $key => $value) {
-            # code...
-        Mail::to($value['email'])->send(new AvisarSupervisor($reservaInfo,$reserva));
+          # code...
+          Mail::to($value['email'])->send(new AvisarSupervisor($reservaInfo, $reserva));
 
         }
+      }
         $monto = 0;
         if ($request->montoCobrado < 3500) {
             # code...
