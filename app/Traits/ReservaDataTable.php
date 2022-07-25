@@ -25,8 +25,8 @@ trait ReservaDataTable
       });
 
       $query->when($addFilter, function($query) use ($search) {
-        $query->where(DB::raw("CONCAT(receptionist.name, ' ', COALESCE(receptionist.lastname,'')"), 'like', '%'. $search .'%')
-          ->orWhere(DB::raw("CONCAT(manager.name, ' ', COALESCE(manager.lastname,'')"), 'like', '%'. $search .'%');
+        $query->orWhere(DB::raw("CONCAT(receptionist.name, ' ', COALESCE(receptionist.lastname,''))"), 'like', '%'. $search .'%')
+          ->orWhere(DB::raw("CONCAT(manager.name, ' ', COALESCE(manager.lastname,''))"), 'like', '%'. $search .'%');
       });
 
     }
