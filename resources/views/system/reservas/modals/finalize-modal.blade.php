@@ -22,6 +22,7 @@
                         <select name="formaCobro" id="formaCobro" class="form-control">
                             <option value="Tarjeta" selected>Tarjeta</option>
                             <option value="Efectivo" >Efectivo</option>
+                            <option value="Deposito" >Deposito</option>
                         </select>
                     </div>
 
@@ -46,7 +47,7 @@
                     </div>
 
                     <div class="col-auto">
-                        <button type="submit" class="btn btn-primary mb-3">Enviar!!</button>
+                        <button type="submit" class="btn btn-primary mb-3">Enviar</button>
                     </div>
                 </form>
             </div>

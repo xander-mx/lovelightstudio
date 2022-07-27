@@ -19,7 +19,8 @@ class ScheduleController extends Controller
       $dateFinal = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
       $dateHoy = date('Y-m-d');
       $dateHoyFinal = date('Y-m-d H:i:s', strtotime($dateHoy . " 00:00:00"));
-      $reservasDeldia = Reservations::where('idCenter',$request->idCenter)->where(DB::raw('DATE(date)'), $dateFinal)->get();
+      $reservasDeldia = Reservations::where('idCenter',$request->idCenter)
+        ->where(DB::raw('DATE(date)'), $dateFinal)->where('state',1)->get();
       $dataReservations = [];
       if($dateFinal == $dateHoyFinal){
         $hora = Carbon::now()->format('H');

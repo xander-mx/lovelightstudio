@@ -65,32 +65,32 @@ reserva', 'activeButton' => 'reservas'])
                         </div>
                         <div class="card-body pt-5">
                             @if (!$specific)
+                                <div class="row">
                                 @foreach ($centros as $key => $centro)
-                                    <div class="row">
-                                        <div class="col-md-2"></div>
-                                        <div class="card col-md-8 pl-5">
-                                            <div class="card-header">
-                                                <div class="row align-items-center ">
-                                                    <div class="col-md-8">
-                                                        <h3 class="mb-0">
-                                                            {{ __('Sesión Fotográfica en ') . $centro->name }}
-                                                        </h3>
-                                                    </div>
-                                                    <div class="col text-right align-items-center">
-                                                        <a href="{{ route('reserva.create', ['id' => $centro->idCenter]) }}"
-                                                            class="btn btn-primary"> Reservar</a>
+                                        <div class="col-sm-12 col-md-6 col-lg-6 ">
+                                            <div class="card ">
+                                                <div class="card-header">
+                                                    <div class="row align-items-center ">
+                                                        <div class="col-md-8">
+                                                            <h3 class="mb-0">
+                                                                {{  $centro->name }}
+                                                            </h3>
+                                                        </div>
+                                                        <div class="col text-right align-items-center">
+                                                            <a href="{{ route('reserva.create', ['id' => $centro->idCenter]) }}"
+                                                                class="btn btn-primary"> Reservar</a>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <small>
-                                                    {{ $centro->description }}
-                                                </small>
+                                                <div class="card-body">
+                                                    <small>
+                                                        {{ $centro->description }}
+                                                    </small>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2"></div>
-                                    </div>
                                 @endforeach
+                                </div>
                             @else
                                 <div class="row">
                                     <div class="col-md-6">
