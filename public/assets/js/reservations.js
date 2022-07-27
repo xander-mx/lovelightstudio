@@ -102,7 +102,7 @@ const showHorarios = (schedule) => {
             $('#mañana').append(`
                             <a href="Javascript:;" onclick="openModalReserva(${value.idSchedule})" class="btn btn-primary active"> ${value.hour}:${value.minute}</a>
                         `)
-        } else if (value.hour > 12 && value.hour < 18) {
+        } else if (value.hour >= 12 && value.hour < 18) {
             $('#mediodia').append(`
                             <a href="Javascript:;" onclick="openModalReserva(${value.idSchedule})" class="btn btn-primary active"> ${value.hour}:${value.minute}</a>
                         `)

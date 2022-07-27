@@ -365,16 +365,24 @@ class ReservaController extends Controller
           ]);
       }
       $date = str_replace('/', '-', $request->date);
+      $formatDate = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
       $schedule = Schedules::where('idSchedule',$data['idSchedule'])->first();
       $rowToAdd = new stdClass();
       $rowToAdd->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $schedule->hour.":".$schedule->minute."</a>";
       $rowToAdd->client = $data['name'];
       $rowToAdd->recepcionist = Auth::user()->name;
       $rowToAdd->pax = $data['pax'];
+      if($this->validateLimitReservations($center->idCenter,$data['idSchedule'], $formatDate)) {
+        return response()->json([
+          'code' => 401,
+          'data' => null,
+          'message' => "El horario ya esta saturado, seleccione otro disponible",
+        ]);
+      }
       DB::beginTransaction();
       try {
         if ($request->idEdit != null) {
-          $reservation =Reservations::where('idReservation',$request->idEdit)->first();
+          $reservation = Reservations::where('idReservation',$request->idEdit)->first();
           $reservation->fill($data);
           $reservation->idManager = null;
           $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
@@ -388,7 +396,7 @@ class ReservaController extends Controller
           $reservation->idReceptionist = Auth::user()->idUser;
           $reservation->idClient = $user->idUser;
         }
-        $reservation->date = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
+        $reservation->date = $formatDate;
         $reservation->mes = date('m', strtotime($date . " 00:00:00"));
         $reservation->state = 1;
         $reservation->save();
@@ -420,6 +428,13 @@ class ReservaController extends Controller
         'data' => $rowToAdd,
         'message' => "Reservación creada correctamente"
       ]);
+    }
+
+    private function validateLimitReservations($idCenter, $idSchedule, $formatDate): bool
+    {
+      $totalReservations = Reservations::where('idCenter','=',$idCenter)
+        ->where('idSchedule','=', $idSchedule)->where('state',1)->where('date',$formatDate)->count();
+      return $totalReservations > 2;
     }
 
     private function sendSupervisor(User $user)

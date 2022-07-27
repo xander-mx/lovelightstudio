@@ -223,7 +223,7 @@ Reserva', 'activeButton' => 'reservas'])
                                 </div>
                               
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary mb-3">Enviar!!</button>
+                                    <button type="submit" class="btn btn-primary mb-3">Enviar</button>
                                 </div>
                             </form>
                         </div>
