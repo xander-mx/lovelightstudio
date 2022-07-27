@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-     <img src="{{ asset('logo/love-light-studio-logo copia.jpg') }}" alt="" width="200px">
+     <img src="{{ asset('logo/love-light-studio-logo.jpg') }}" alt="" width="200px">
      {{-- {{ dd($reservation,date('Y-m-d', strtotime($reservation->date)) ,$reservation->schedule ) }} --}}
         <H1>¡ Hola {{ $reservation->client->name }} !</H1>
         <p>¡Tu sesión fotográfica se ha agendado con éxito!</p>

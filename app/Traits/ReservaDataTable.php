@@ -64,6 +64,8 @@ trait ReservaDataTable
     if(Auth::user()->idPerfil == 3) {
       if(filled($reservation->id_reserva)) {
         $finalizeButton = new ActionButton();
+        $finalizeButton->removeClassButton('btn-xs');
+        $finalizeButton->addClassButton('btn-sm ');
         $finalizeButton->setClick('openModalFinalizar('. $reservation->idReservation .')');
         $finalizeButton->setLabel('Finalizar');
         $finalizeButton->setHref('javascript:;');
@@ -71,7 +73,8 @@ trait ReservaDataTable
         $clientButton = new ActionButton();
         $clientButton->removeClassButton('btn-info');
         $clientButton->removeClassButton('btn-xs');
-        $clientButton->setHref(route('reserva.cliente', ['reserva' => $reservation->idReservation]));
+        $clientButton->setClick('openModalClient('. $reservation->idReservation .')');
+        //$clientButton->setHref(route('reserva.cliente', ['reserva' => $reservation->idReservation]));
         $clientButton->addClassButton('btn-sm btn-primary');
         $clientButton->setLabel('Ver formulario Cliente');
       }

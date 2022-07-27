@@ -1,6 +1,31 @@
 const PHOTOGRAPHER_MODAL = $('#photographer-modal');
 const ACTIONS_MODAL = $('#actions-modal');
 const FINALIZE_MODAL = $('#myModalFinalizar');
+const CLIENT_MODAL = $('#client-modal');
+const CLIENT_FORM = $('#client-form');
+const CLIENT_BUTTON = $('#clientBtn');
+
+/*const clientData = () => {
+    return {
+        id: CLIENT_FORM.find("[name='id']").val(),
+        email: CLIENT_FORM.find("[name='email']").val(),
+        email2: CLIENT_FORM.find("[name='email2']").val(),
+        tel1: CLIENT_FORM.find("[name='tel1']").val(),
+        tel2: CLIENT_FORM.find("[name='tel2']").val(),
+        canva: CLIENT_FORM.find("[name='canva']").val(),
+        direccion: CLIENT_FORM.find("[name='direccion']").val()
+    };
+}*/
+
+/*const sendInfoClient = () => {
+    $.ajax({
+        url: routeClientForm,
+        type: 'GET',
+        data: clientData()
+    })
+}*/
+
+//CLIENT_BUTTON.on('click', () => sendInfoClient());
 
 const openAction = (id,center =1) => {
     let url = routeEditReservation.replace(':center', center);
@@ -33,5 +58,13 @@ const openModalFinalizar = (id) => {
 const closeModalFinalizar = () => {
     FINALIZE_MODAL.modal('hide');
 }
+
+const openModalClient = (id) => {
+    CLIENT_MODAL.find("[name='id']").val(id);
+    //let url = routeClientForm.replace(':reservaId', id);
+    //CLIENT_FORM.attr('action', url);
+    CLIENT_MODAL.modal('show');
+}
+
 
 //# sourceURL=reservationIndex.js
