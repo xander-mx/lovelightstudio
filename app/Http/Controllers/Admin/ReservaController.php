@@ -569,75 +569,44 @@ class ReservaController extends Controller
         return redirect()->back()->with('message', 'Reservación '. $status);
     }
 
-    public function cliente(Request $request, $reserva)
+    public function cliente(Request $request)
     {
-        # code...
-        $idCliente = $reserva;
-
-        $reser = Reservations::where('idReservation',$idCliente)->first();
-        
-        return view('system.reservas.clientes',compact('idCliente','reser'));
+      $infoClient = $request;
+      $idReservation = $infoClient->id;
+      $reservation = Reservations::where('idReservation',$idReservation)->first();
+      return view('system.reservas.clientes',compact('idReservation','reservation', 'infoClient'));
     }
+
     public function clientecrear(Request $request)
     {
-        # code...
-           # code...
-           $rules = [
-            'idReserva' => 'required',
-            'email' => 'required', 
-            // 'tel1' => 'required', 
-            // 'tel2' => 'required', 
-            // 'canva' => 'required', 
-            // 'direccion' => 'required', 
-            'autoriza' => 'required', 
-            // 'recibo' => 'required', 
-      
+      $rules = [
+        'idReserva' => 'required',
+        'email' => 'required',
+        'autoriza' => 'required',
         ];
-      
-        $messages = [
-            'idReserva.required' => "El idReserva es requerido",
-            'email.required' => "El email es requerido", 
-            // 'tel1.required' => "El tel1 es requerido", 
-            // 'tel2.required' => "El tel2 es requerido", 
-            // 'canva.required' => "El canva es requerido", 
-            // 'direccion.required' => "El direccion es requerido", 
-            'autoriza.required' => "El autoriza es requerido", 
-            // 'recibo.required' => "El recibo es requerido", 
+
+      $messages = [
+        'idReserva.required' => "El idReserva es requerido",
+        'email.required' => "El email es requerido",
+        'autoriza.required' => "El autoriza es requerido",
         ];
-        $this->validate($request, $rules, $messages);
-        // dd($request->all());
 
-        DB::beginTransaction();
-        try {
-
-            $reserva = Reservations::where('idReservation', $request->idReserva)->first();
-            $reservaInfo = new ReservaInfo();
-            $reservaInfo->id_reserva = $request->idReserva;
-            $reservaInfo->email = $request->email;
-            $reservaInfo->email2 = $request->email2;
-            $reservaInfo->telefono1 = $request->tel1;
-            $reservaInfo->micelaneo = $request->micelaneo;
-            $reservaInfo->telefono2 = $request->tel2;
-            $reservaInfo->canva = $request->canva;
-            // $reservaInfo->recibo = $request->recibo;
-            $reservaInfo->direccion = $request->direccion;
-            $reservaInfo->autoriza_fotografia = $request->autoriza;
-            $reservaInfo->save();
-            DB::commit();
-
+      $this->validate($request, $rules, $messages);
+      DB::beginTransaction();
+      try {
+        $reservaInfo = new ReservaInfo($request->all());
+        $reservaInfo->id_reserva = $request->idReserva;
+        $reservaInfo->autoriza_fotografia = $request->autoriza;
+        $reservaInfo->save();
+        DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
-        dd($request->all(),$th);
-
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+          return redirect()->back()->with('message_error', 'error');
         }
-        // dd($reservaInfo,$reserva->center->name);
         // Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo,$reserva));
-
-        return redirect()->back()->with('message', 'Fotografo asignado correctamente'); 
+        return redirect()->route('reserva.index');
     }
+
     public function finalizar(Request $request)
     {
         # code...
@@ -691,9 +660,7 @@ class ReservaController extends Controller
         Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo, $reserva));
         $supervisors = User::where('state', 1)->whereIn('idPerfil', [8])->get();
         foreach ($supervisors as $key => $value) {
-          # code...
           Mail::to($value['email'])->send(new AvisarSupervisor($reservaInfo, $reserva));
-
         }
       }
         $monto = 0;

@@ -101,13 +101,15 @@ Reserva', 'activeButton' => 'reservas'])
     @if (Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 2 || Auth::user()->idPerfil == 8 || Auth::user()->idPerfil == 3 || Auth::user()->idPerfil == 4)
         @include('system.reservas.modals.actions-modal')
         @include('system.reservas.modals.assign-photographer-modal')
+        @include('system.reservas.modals.client-modal')
     @endif
 @endsection
 
 @push('js')
-    {!! Html::script('assets/js/reservationsIndex.js') !!}
     <script>
         let foto =JSON.parse( '{!! $trabajadores !!}');
         let routeEditReservation = '{{ route('reserva.edit', [':center',':id']) }}';
+        let routeClientForm = '{{route('reserva.info')}}';
     </script>
+    {!! Html::script('assets/js/reservationsIndex.js') !!}
 @endpush

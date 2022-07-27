@@ -29,133 +29,41 @@ Tip 2: you can also add an image using data-image tag
                         <p>{{ __("Trabajadores") }}</p>
                     </a>
                 </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="collapse" href="#laravelExamples" @if($activeButton =='reservas') aria-expanded="true" @endif>
-                        <i class="nc-icon nc-notes"></i>
-                        <p>
-                            {{ __('Reserva') }}
-                            <b class="caret"></b>
-                        </p>
-                    </a>
-                    <div class="collapse @if($activeButton =='reservas') show @endif" id="laravelExamples">
-                        <ul class="nav pl-2">
-                            <li class="nav-item @if($activePage == 'reservas.create') active @endif">
-                                <a class="nav-link" href="{{route('reserva.create')}}">
-                                    <i class="nc-icon nc-simple-add"></i>
-                                    <p>{{ __("Nueva Reserva") }}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item @if($activePage == 'reserva.index') active @endif">
-                                <a class="nav-link" href="{{route('reserva.index')}}">
-                                    <i class="nc-icon nc-circle-09"></i>
-                                    <p>{{ __("reservas activas") }}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item @if($activePage == 'reserva.historial') active @endif">
-                                <a class="nav-link" href="{{route('reserva.historial')}}">
-                                    <i class="nc-icon nc-notes"></i>
-                                    <p>{{ __("vendidas") }}</p>
-
-                                </a>
-                            </li>
-                              <li class="nav-item @if($activePage == 'reserva.historial.eliminada') active @endif">
-                                <a class="nav-link" href="{{route('reserva.historial.eliminada')}}">
-                                    <i class="nc-icon nc-notes"></i>
-                                    <p>{{ __("canceladas") }}</p>
-                                </a>
-                            </li>
-                            {{-- <li class="nav-item @if($activePage == 'reserva.supervisor.finalizar') active @endif">
-                                <a class="nav-link" href="{{route('reserva.supervisor.finalizar')}}">
-                                    <i class="nc-icon nc-email-85"></i>
-                                    <p>{{ __("Finalziar Reservas") }}</p>
-                                </a>
-                            </li> --}}
-                        </ul>
-                    </div>
-                </li>
-               
             @endif
-            {{-- modulos solo de Admin --}}
-            @if (Auth::user()->idPerfil == 1)
-            <li class="nav-item @if($activePage == 'trabajador') active @endif">
-                <a class="nav-link" href="{{route('sueldo.index')}}">
-                    <i class="nc-icon nc-bag"></i>
-                    <p>{{ __("Sueldo") }}</p>
+            <li class="nav-item @if($activePage == 'reservas.create') active @endif">
+                <a class="nav-link" href="{{route('reserva.create')}}">
+                    <i class="nc-icon nc-simple-add"></i>
+                    <p>{{ __("Nueva Reserva") }}</p>
                 </a>
-            </li> 
-            @endif
-         
-                {{-- recepcionista --}}
-            @if (Auth::user()->idPerfil == 4 )
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="collapse" href="#laravelExamples" @if($activeButton =='reservas') aria-expanded="true" @endif>
-                        <i class="nc-icon nc-notes"></i>
-                        <p>
-                            {{ __('Reserva') }}
-                            <b class="caret"></b>
-                        </p>
-                    </a>
-                    <div class="collapse @if($activeButton =='reservas') show @endif" id="laravelExamples">
-                        <ul class="nav pl-2">
-                            <li class="nav-item @if($activePage == 'reservas.create') active @endif">
-                                <a class="nav-link" href="{{route('reserva.create')}}">
-                                    <i class="nc-icon nc-simple-add"></i>
-                                    <p>{{ __("Nueva Reserva") }}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item @if($activePage == 'reserva.index') active @endif">
-                                <a class="nav-link" href="{{route('reserva.index')}}">
-                                    <i class="nc-icon nc-circle-09"></i>
-                                    <p>{{ __("reservas activas") }}</p>
-
-                                </a>
-                            </li>
-                            <li class="nav-item @if($activePage == 'reserva.historial') active @endif">
-                                <a class="nav-link" href="{{route('reserva.historial')}}">
-                                    <i class="nc-icon nc-notes"></i>
-                                    <p>{{ __("vendidas") }}</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-            @endif
-
-            @if (Auth::user()->idPerfil == 3)
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#laravelExamples" @if($activeButton =='reservas') aria-expanded="true" @endif>
+            </li>
+            <li class="nav-item @if($activePage == 'reserva.index') active @endif">
+                <a class="nav-link" href="{{route('reserva.index')}}">
+                    <i class="nc-icon nc-circle-09"></i>
+                    <p>{{ __("reservas activas") }}</p>
+                </a>
+            </li>
+            <li class="nav-item @if($activePage == 'reserva.historial') active @endif">
+                <a class="nav-link" href="{{route('reserva.historial')}}">
                     <i class="nc-icon nc-notes"></i>
-                    <p>
-                        {{ __('Reserva') }}
-                        <b class="caret"></b>
-                    </p>
+                    <p>{{ __("vendidas") }}</p>
                 </a>
-                <div class="collapse @if($activeButton =='reservas') show @endif" id="laravelExamples">
-                    <ul class="nav pl-2">
-                        <li class="nav-item @if($activePage == 'reservas.create') active @endif">
-                            <a class="nav-link" href="{{route('reserva.create')}}">
-                                <i class="nc-icon nc-simple-add"></i>
-                                <p>{{ __("Nueva Reserva") }}</p>
-                            </a>
-                        </li>
-                        <li class="nav-item @if($activePage == 'reserva.index') active @endif">
-                            <a class="nav-link" href="{{route('reserva.index')}}">
-                                <i class="nc-icon nc-circle-09"></i>
-                                <p>{{ __("reservas activas") }}</p>
-                            </a>
-                        </li>
-                        <li class="nav-item @if($activePage == 'reserva.historial') active @endif">
-                            <a class="nav-link" href="{{route('reserva.historial')}}">
-                                <i class="nc-icon nc-notes"></i>
-                                <p>{{ __("vendidas") }}</p>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li> 
+            </li>
+            @if (Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 2 ||Auth::user()->idPerfil == 8 )
+                <li class="nav-item @if($activePage == 'reserva.historial.eliminada') active @endif">
+                    <a class="nav-link" href="{{route('reserva.historial.eliminada')}}">
+                        <i class="nc-icon nc-notes"></i>
+                        <p>{{ __("canceladas") }}</p>
+                    </a>
+                </li>
             @endif
- 
+            @if (Auth::user()->idPerfil == 1)
+                <li class="nav-item @if($activePage == 'trabajador') active @endif">
+                    <a class="nav-link" href="{{route('sueldo.index')}}">
+                        <i class="nc-icon nc-bag"></i>
+                        <p>{{ __("Sueldo") }}</p>
+                    </a>
+                </li>
+            @endif
         </ul>
     </div>
 </div>
