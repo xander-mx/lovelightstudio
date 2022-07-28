@@ -37,7 +37,7 @@ class ScheduleController extends Controller
         $data->pax = $value->pax;
         $dataReservations[] = $data;
       }
-      $horarios = Schedules::where('state', 1)->where('hour','<',intval($horamaxima->extra))->get();
+      $horarios = Schedules::where('state', 1)->where('hour','<',intval($horamaxima->extra))->orderBy('hour','asc')->get();
       return response()->json([
         'code' => 200,
         'data' => $horarios,
