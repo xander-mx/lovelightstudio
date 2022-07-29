@@ -612,7 +612,6 @@ class ReservaController extends Controller
 
     public function finalizar(Request $request)
     {
-        # code...
         $rules = [
             'idReserva' => 'required',
             'formaCobro' => 'required', 
@@ -633,7 +632,6 @@ class ReservaController extends Controller
             'pwsd.required' => "El montoCobrado es requerido", 
         ];
         $this->validate($request, $rules, $messages);
-        // dd($request->all());
 
         DB::beginTransaction();
         try {
@@ -652,12 +650,8 @@ class ReservaController extends Controller
             DB::commit();
 
         } catch (\Throwable $th) {
-            //throw $th;
-        // dd($request->all(),$th);
-
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+          return redirect()->back()->with('message_error', 'error');
         }
       if(!env('TESTING')) {
         Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo, $reserva));
