@@ -401,7 +401,7 @@ class ReservaController extends Controller
           'th' => $th
         ]);
       }
-
+      Mail::to($reservation->email)->send(new avisarCliente($reservation));
       if(!env('TESTING')) {
         Mail::to($reservation->email)->send(new avisarCliente($reservation));
         $supervisors = User::where('state', 1)->whereIn('idPerfil', [8])->get();
