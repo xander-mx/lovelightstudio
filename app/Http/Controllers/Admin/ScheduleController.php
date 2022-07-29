@@ -33,11 +33,11 @@ class ScheduleController extends Controller
         $data = new stdClass();
         //$data->schedule = "<a href='Javascript:;' onclick='openModalReserva($value->idSchedule)' class='btn btn-primary active'>". $value->schedule->hour.":".$value->schedule->minute."</a>";
         $data->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $value->schedule->hour.":".$value->schedule->minute."</a>";
-        $data->client = $value->client->name;
+        $data->client = $value->customer;
         $data->pax = $value->pax;
         $dataReservations[] = $data;
       }
-      $horarios = Schedules::where('state', 1)->where('hour','<',intval($horamaxima->extra))->orderBy('hour','asc')->get();
+      $horarios = Schedules::where('state', 1)->where('hour','<',intval($horamaxima->extra))->orderBy('hour','asc')->orderBy('minute', 'asc')->get();
       return response()->json([
         'code' => 200,
         'data' => $horarios,

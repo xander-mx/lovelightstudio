@@ -10,7 +10,7 @@ class Reservations extends Model
     use HasFactory;
     protected $table = "reservations";
     protected $primaryKey = "idReservation";
-    protected $fillable = ['pax', 'num_habitacion', 'idSchedule', 'idCenter'];
+    protected $fillable = ['pax', 'num_habitacion', 'idSchedule', 'idCenter', 'customer', 'phone', 'email'];
 
     public function center()
     {

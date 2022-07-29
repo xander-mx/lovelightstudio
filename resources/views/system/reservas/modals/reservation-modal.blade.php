@@ -9,8 +9,8 @@
             <div class="row">
                 <div class="form-group col-sm-12 col-md-12 col-lg-12">
                     <label for="name">Nombre y Apellido</label>
-                    <input type="text" name="name" id="name" class="form-control"
-                           value="@isset($reserva){{ $reserva->client->name }}@endisset" required>
+                    <input type="text" name="customer" id="customer" class="form-control"
+                           value="@isset($reserva){{ $reserva->customer }}@endisset" required>
                 </div>
             </div>
 
@@ -26,15 +26,15 @@
                 <div class="form-group col-12">
                     <label for="email">E-mail</label>
                     <input type="email" name="email" id="email" class="form-control"
-                           value="@isset($reserva){{ $reserva->client->email}}@endisset" required>
+                           value="@isset($reserva){{ $reserva->email}}@endisset" required>
                 </div>
             </div>
 
             <div class="row">
                 <div class="form-group col-sm-12 col-md-6, col-lg-6">
                     <label for="cellphone">Teléfono</label>
-                    <input type="text" name="cellphone" id="cellphone" class="form-control"
-                           value="+52 @isset($reserva){{ $reserva->client->cellphone}}@endisset" required>
+                    <input type="text" name="phone" id="phone" class="form-control"
+                           value="+52 @isset($reserva){{ $reserva->phone}}@endisset" required>
                 </div>
                 <div class="form-group col-sm-12 col-md-6, col-lg-6">
                     <label for="pax">Número de Habitación</label>

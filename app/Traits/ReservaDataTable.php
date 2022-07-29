@@ -19,7 +19,7 @@ trait ReservaDataTable
       $search = strtoupper( $this->searchConfig['search'] );
       $query->where(function($query) use ($search) {
         $query->where('date', 'like', '%'. $search .'%')
-          ->orWhere(DB::raw("CONCAT(client.name, ' ', COALESCE(client.lastname,''))"),'like','%' . $search . '%')
+          ->orWhere('customer','like','%' . $search . '%')
           ->orWhere('centers.name','like','%' . $search . '%')
           ->orWhere('num_habitacion', 'like', '%'. $search .'%');
       });
@@ -32,7 +32,7 @@ trait ReservaDataTable
     }
     $this->searchConfig['recordsFiltered'] = $query->count();
     $reservations = $query->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )
-      ->orderBy('date', 'desc')->orderBy('schedules.hour', 'asc')->get();
+      ->orderBy('date', 'desc')->orderBy('schedules.hour', 'asc')->orderBy('schedules.minute', 'asc')->get();
     $data = [];
     foreach($reservations as $reservation)
       $data[] = $this->getDataRow($reservation);
