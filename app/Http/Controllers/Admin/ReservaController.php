@@ -23,7 +23,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -48,7 +47,6 @@ class ReservaController extends Controller
     $isPhotographer = Auth::user()->idPerfil == 3;
     $this->setUpSearchConfig($request);
     $reservations = DB::table('reservations')
-      ->join(DB::raw('users as client'), 'reservations.idClient', '=', 'client.idUser')
       ->leftJoin(DB::raw('users as receptionist'), 'reservations.idReceptionist', '=', 'receptionist.idUser')
       ->leftJoin(DB::raw('users as manager'), 'reservations.idManager', '=', 'manager.idUser')
       ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
@@ -58,7 +56,7 @@ class ReservaController extends Controller
         $query->where('reservations.idManager','=', Auth::user()->idUser);
       })
       ->select('reservations.idReservation', 'reservations.date', 'reservations.pax', 'reservations.idCenter',
-      'reservations.num_habitacion', 'reservations.state', DB::raw("CONCAT(client.name,' ',COALESCE(client.lastname,'')) as client"),
+      'reservations.num_habitacion', 'reservations.state', DB::raw("reservations.customer as client"),
       DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"), 'reservations.idManager',
       DB::raw("CONCAT(manager.name,' ', COALESCE(manager.lastname,'')) as manager"),'reservations.idClient', 'reservations.idReceptionist',
       DB::raw('centers.name as center'), DB::raw('schedules.hour'), DB::raw('schedules.minute')
@@ -325,9 +323,9 @@ class ReservaController extends Controller
     public function store(Request $request)
     {
       $rules = [
-        'name' => 'required',
+        'customer' => 'required',
         'email' => 'required',
-        'cellphone' => 'required',
+        'phone' => 'required',
         'pax' => 'required',
         'idSchedule' => 'required',
         'num_habitacion'=>'required',
@@ -335,10 +333,10 @@ class ReservaController extends Controller
         'idCenter' =>'required',
         ];
       $messages = [
-        'name.required' => "El nombre es requerido",
+        'customer.required' => "El nombre es requerido",
         'email.required' => "El correo es requerido",
         'email.email' => "El correo debe estar en el formato correcto",
-        'cellphone.required' => "El teléfono es requerido",
+        'phone.required' => "El teléfono es requerido",
         'num_habitacion.required' => "El num_habitacion es requerido",
         'pax.required' => "El Pax es requerido",
         'idSchedule.required' => "El perfil es requerido",
@@ -369,7 +367,7 @@ class ReservaController extends Controller
       $schedule = Schedules::where('idSchedule',$data['idSchedule'])->first();
       $rowToAdd = new stdClass();
       $rowToAdd->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $schedule->hour.":".$schedule->minute."</a>";
-      $rowToAdd->client = $data['name'];
+      $rowToAdd->client = $data['customer'];
       $rowToAdd->recepcionist = Auth::user()->name;
       $rowToAdd->pax = $data['pax'];
       if($this->validateLimitReservations($center->idCenter,$data['idSchedule'], $formatDate)) {
@@ -385,16 +383,9 @@ class ReservaController extends Controller
           $reservation = Reservations::where('idReservation',$request->idEdit)->first();
           $reservation->fill($data);
           $reservation->idManager = null;
-          $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
         } else {
-          $user = new User($data);
-          $user->password = Hash::make(123);
-          $user->idPerfil = 6;
-          $user->state = 1;
-          $user->save();
           $reservation = new Reservations($data);
           $reservation->idReceptionist = Auth::user()->idUser;
-          $reservation->idClient = $user->idUser;
         }
         $reservation->date = $formatDate;
         $reservation->mes = date('m', strtotime($date . " 00:00:00"));
@@ -410,12 +401,9 @@ class ReservaController extends Controller
           'th' => $th
         ]);
       }
-      $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
+
       if(!env('TESTING')) {
-        if ($user != null && !empty($user)) {
-          if (filled($user['email']))
-            Mail::to($user['emai'])->send(new avisarCliente($reservation));
-        }
+        Mail::to($reservation->email)->send(new avisarCliente($reservation));
         $supervisors = User::where('state', 1)->whereIn('idPerfil', [8])->get();
         foreach ($supervisors as $value) {
           if (filled($value['email']))
@@ -624,7 +612,6 @@ class ReservaController extends Controller
 
     public function finalizar(Request $request)
     {
-        # code...
         $rules = [
             'idReserva' => 'required',
             'formaCobro' => 'required', 
@@ -645,7 +632,6 @@ class ReservaController extends Controller
             'pwsd.required' => "El montoCobrado es requerido", 
         ];
         $this->validate($request, $rules, $messages);
-        // dd($request->all());
 
         DB::beginTransaction();
         try {
@@ -664,12 +650,8 @@ class ReservaController extends Controller
             DB::commit();
 
         } catch (\Throwable $th) {
-            //throw $th;
-        // dd($request->all(),$th);
-
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+          return redirect()->back()->with('message_error', 'error');
         }
       if(!env('TESTING')) {
         Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo, $reserva));

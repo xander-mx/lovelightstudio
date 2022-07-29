@@ -78,13 +78,13 @@
                                                 </div>
                                                 <span style="text-align: center"><strong>Español</strong></span>
                                                 <div class="card-body " style="text-align: justify">
-                                                    <span >Yo <strong>{{ $reservation->client->name }}</strong>, por buena y valiosa contraprestación cuya recepción
+                                                    <span >Yo <strong>{{ $reservation->customer }} </strong>, por buena y valiosa contraprestación cuya recepción
                                                         se reconoce por la presente autorizo irrevocablemente a <strong>Love Light Studio.</strong></span>
                                                     <br/>
                                                     <br/>
-                                                    <span>Para usar fotografias de mi persona o de mi propiedad la cual le doy a (el / sus y ellas / ella /  sus asignados)
+                                                    <span>Para usar fotografías de mi persona o de mi propiedad la cual le doy a (el / sus y ellas / ella /  sus asignados)
                                                         licencias, representantes legales y sus cesionarios usar y publicar (con o sin nombre, nombre de la compañia o con un
-                                                    nombre ficticio) fotografías, retratos o imagenes las cuales fueron otorgadas a la compañia.</span>
+                                                    nombre ficticio) fotografías, retratos o imágenes las cuales fueron otorgadas a la compañia.</span>
                                                     <br/>
                                                     <br/>
                                                     <span>En cualquier y de todas las formas de medios y en todas las maneras incluyendo  imágenes compuestas o representaciones
@@ -110,7 +110,7 @@
                                                     <br/>
                                                     <br/>
                                                     <span>To use photographs of my person or property which I give (him / her and they / her / his / her assigned) licenses,
-                                                    legal representatives and assignees use and publish (with or without name, company name or with a ficticious name)
+                                                    legal representatives and assignees use and publish (with or without name, company name or with a fictitious name)
                                                     photographs, portraits or images which were granted to the company.</span>
                                                     <br/>
                                                     <br/>
