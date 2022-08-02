@@ -129,7 +129,7 @@ Reserva', 'activeButton' => 'reservas'])
                                                     <td>{{ date('d-m-Y', strtotime($res->date)) }}</td>
                                                     <td>{{ $res->center->name }}</td>
                                                     <td>
-                                                        {{ $res->client->name . ' ' . $res->client->lastname }}
+                                                        {{ $res->customer }}
 
                                                     </td>
                                                     @if (Auth::user()->idPerfil ==1)
@@ -255,7 +255,7 @@ Reserva', 'activeButton' => 'reservas'])
                                                     <td>{{ date('d-m-Y', strtotime($res->date)) }}</td>
                                                     <td>{{ $res->center->name }}</td>
                                                     <td>
-                                                        {{ $res->client->name . ' ' . $res->client->lastname }}
+                                                        {{ $res->customer }}
                                                     </td>
                                                     <td>
                                                         @if (Auth::user()->idUser == $res->idReceptionist)
