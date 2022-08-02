@@ -70,7 +70,7 @@ Reserva', 'activeButton' => 'reservas'])
                                                     <td>{{ $res->center->name }}</td>
                                                     
                                                     <td>
-                                                        {{ $res->client->name . ' ' . $res->client->lastname }}
+                                                        {{ $res->customer }}
                                                     </td>
                                                     <td>
                                                         {{ $res->receptionist->name . ' ' . $res->receptionist->lastname }}
