@@ -163,9 +163,6 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 	
         Maatwebsite\Excel\ExcelServiceProvider::class,
-        /*
-         * Package Service Providers...
-         */
 
         /*
          * Application Service Providers...
@@ -175,7 +172,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-      Collective\Html\HtmlServiceProvider::class,
+        App\Providers\TwilioSenderProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
 
     ],
 

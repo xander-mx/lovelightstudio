@@ -64,6 +64,27 @@ Tip 2: you can also add an image using data-image tag
                     </a>
                 </li>
             @endif
+            @if (Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 10)
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#weddings-menu" @if($activeButton =='reservas') aria-expanded="true" @endif>
+                    <i class="bi bi-gem"></i>
+                    <p>
+                        {{ __('Bodas') }}
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse @if($activeButton =='weddings') show @endif" id="weddings-menu">
+                    <ul class="nav pl-2">
+                        <li class="nav-item @if($activePage == 'weddings.services.index') active @endif">
+                            <a class="nav-link" href="{{route('weddings.services.index')}}">
+                                <i class="bi bi-journal-album"></i>
+                                <p>{{ __("Paquetes") }}</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            @endif
         </ul>
     </div>
 </div>

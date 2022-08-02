@@ -2,6 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Admin\ReservaController;
+use App\Http\Controllers\Admin\ServicesController;
+use App\Models\Services;
 use App\Models\User;
 use App\Notifications\newReserva;
 use App\Notifications\sendSupervisor;
@@ -74,6 +76,14 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
 
     Route::group(['prefix' => 'ajax'], function () {
         Route::get('horario/day', [Admin\ScheduleController::class, 'ajaxHorarios'])->name('ajax.horarios');
+    });
+
+    Route::group(['prefix' => 'weddings'], function() {
+      Route::get('/services/index', [ServicesController::class, 'index'])->name('weddings.services.index');
+      Route::get('/services/table', [ServicesController::class, 'loadTable'])->name('weddings.services.table');
+      Route::get('/services/information/{id}', [ServicesController::class, 'getInformation'])->name('weddings.services.information');
+      Route::delete('/services/delete/{id}', [ServicesController::class, 'delete'])->name('weddings.services.delete');
+      Route::post('/services/save', [ServicesController::class, 'save'])->name('weddings.services.save');
     });
 
     Route::get('/notification', function () {

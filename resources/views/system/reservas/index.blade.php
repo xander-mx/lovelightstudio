@@ -87,7 +87,7 @@ Reserva', 'activeButton' => 'reservas'])
                                 @endswitch
                         @endif
                     </div>
-                </div>
+                    </div>
             </div>
         </div>
     </div>

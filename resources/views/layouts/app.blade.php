@@ -20,6 +20,7 @@
         <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets/img/apple-icon.png') }}">
         <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.ico') }}">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
         <title>{{ $title }}</title>
         <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
         <!--     Fonts and icons     -->
@@ -33,6 +34,7 @@
         <!-- CSS Just for demo purpose, don't include it in your project -->
         <link href="{{ asset('assets/css/demo.css') }}" rel="stylesheet" />
         <link href="{{ asset('assets/css/loading.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/css/bootstrap-icons.css') }}" rel="stylesheet" />
         @stack('styles')
         @yield('stylebb')
     </head>
@@ -68,7 +70,7 @@
     </script>
 
         <!--   Core JS Files   -->
-    <script src="{{ asset('assets/js/core/jquery.3.2.1.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('assets/js/core/jquery.3.6.0.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/js/core/popper.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}" type="text/javascript"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
@@ -86,11 +88,12 @@
     <script src="{{ asset('assets/js/light-bootstrap-dashboard.js?v=2.0.0') }}" type="text/javascript"></script>
     <!-- Sweetalert -->
     <script src="{{asset('assets/js/plugins/sweetalert/sweetalert.min.js')}}"></script>
+    <script src="{{asset('assets/js/sweetalert2.all.min.js')}}"></script>
     
     <!-- Light Bootstrap Dashboard DEMO methods, don't include it in your project! -->
     <script src="{{ asset('assets/js/demo.js') }}"></script>
     <script src="{{ asset('assets/js/lovelight.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+
     
     @stack('js')
     <script>
