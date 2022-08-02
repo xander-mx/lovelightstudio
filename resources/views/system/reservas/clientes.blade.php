@@ -105,7 +105,7 @@
 
                                                 <span style="text-align: center"><strong>English</strong></span>
                                                 <div class="card-body " style="text-align: justify">
-                                                    <span>I <strong>{{ $reservation->client->name }}</strong>, for good and valuable consideration whose reception is hereby
+                                                    <span>I <strong>{{ $reservation->customer }}</strong>, for good and valuable consideration whose reception is hereby
                                                         acknowledged, irrevocably authorize <strong>Love Light Studio</strong>.</span>
                                                     <br/>
                                                     <br/>
