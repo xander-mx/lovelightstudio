@@ -82,7 +82,7 @@ Reserva', 'activeButton' => 'reservas'])
                                         @foreach ($reservations as $res)
                                             <tr>
                                                 <td>
-                                                    {{ $res->client->name . ' ' . $res->client->lastname }}
+                                                    {{ $res->customer }}
                                                 </td>
                                                 <td>
                                                     {{ $res->center->name }}
