@@ -16,24 +16,56 @@ use App\Models\ReservaInfo;
 use App\Models\Reservations;
 use App\Models\Schedules;
 use App\Models\User;
-use App\Notifications\newReserva;
 use App\Notifications\notifyFotografo;
 use App\Notifications\sendSupervisor;
+use App\Traits\ReservaDataTable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use PHPUnit\Framework\Constraint\Count;
+use stdClass;
 
 class ReservaController extends Controller
 {
+
+  use ReservaDataTable;
+  public static $headers = array('Horario', 'Cliente', 'Pax');
+  public static $indexHeaders = array('Fecha', 'Hora', 'Hotel', 'Nombre', 'Recepcionista', 'Encargado', 'Pax', 'Acciones');
+  public static $indexHeadersPhotographer = array('Fecha', 'Hora', 'Hotel', 'Nombre', 'Habitación', 'Pax', 'Estado', 'Acciones');
+  public static $indexHeadersClient = array('Nombre', 'Hotel', 'Habitación', 'Fecha', 'Hora', 'Pax', 'Estado', 'Acciones');
+  public static $fields = array('schedule', 'client', 'pax');
+  public static $indexFields = array('date', 'hour', 'center', 'client', 'receptionist', 'manager', 'pax', 'actions');
+  public static $indexFieldsPhotographer = array('date', 'hour', 'center', 'client', 'num_habitacion', 'pax', 'state', 'actions');
+  public static $indexFieldsClient = array('client', 'center', 'num_habitacion', 'date', 'hour', 'pax', 'state', 'actions');
+  public static $routeIndexTable = 'reserva.table';
+
+  public function loadTable(Request $request) {
+    $isPhotographer = Auth::user()->idPerfil == 3;
+    $this->setUpSearchConfig($request);
+    $reservations = DB::table('reservations')
+      ->leftJoin(DB::raw('users as receptionist'), 'reservations.idReceptionist', '=', 'receptionist.idUser')
+      ->leftJoin(DB::raw('users as manager'), 'reservations.idManager', '=', 'manager.idUser')
+      ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
+      ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
+      ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva')
+      ->where('reservations.state',1)->when($isPhotographer, function($query) {
+        $query->where('reservations.idManager','=', Auth::user()->idUser);
+      })
+      ->select('reservations.idReservation', 'reservations.date', 'reservations.pax', 'reservations.idCenter',
+      'reservations.num_habitacion', 'reservations.state', DB::raw("reservations.customer as client"),
+      DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"), 'reservations.idManager',
+      DB::raw("CONCAT(manager.name,' ', COALESCE(manager.lastname,'')) as manager"),'reservations.idClient', 'reservations.idReceptionist',
+      DB::raw('centers.name as center'), DB::raw('schedules.hour'), DB::raw('schedules.minute')
+      , 'reservations_info_finish.id_reserva');
+    return $this->getSearchDataResult($reservations);
+  }
+
     public function index()
     {
-        // dd("hi")
         if (Auth::user()->idPerfil <= 2 ||Auth::user()->idPerfil == 8) {
             $reservations = Reservations::where('state', 1)
             ->orderby('date')
@@ -71,8 +103,6 @@ class ReservaController extends Controller
             }
 
         }
-        // dd($trabajadores,$reservasNumeroHoy);
-
         return view('system.reservas.index', compact('reservations','horamaxima','trabajadores','reservasNumeroHoy'));
     }
 
@@ -127,13 +157,12 @@ class ReservaController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
         dd($request->all(),$th);
-
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+        return redirect()->back()->with('message_error', 'error');
         }
-        // dd($reservaInfo,$reserva->center->name,$reserva->receptioninfo->linkPagina);
-        Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo,$reserva));
+      if(!env('TESTING')) {
+        Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo, $reserva));
+      }
 
         return redirect()->back()->with('message', 'Fotografo asignado correctamente'); 
     }
@@ -241,67 +270,45 @@ class ReservaController extends Controller
         $ids = $id;
 
         if ($id != null) {
-            $specific = true;
-            $centro = Centers::where('idCenter', $id)->where('state', 1)->first();
-            if (!empty($centro)) {
-                if ($request != null) {
-                    # code...
-                 
+          $specific = true;
+          $centro = Centers::where('idCenter', $id)->where('state', 1)->first();
+          if (!empty($centro)) {
+            if ($request != null) {
                 if ($request->edit != null) {
-                    # code...
-                    $reserva = Reservations::where('idReservation',$request->edit)->first();
-                    if (empty($reserva)) {
-                        # code...
-                        return back();
-                    }
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids','reserva'));
+                  $reserva = Reservations::where('idReservation',$request->edit)->first();
+                  if (empty($reserva)) {
+                    return back();
+                  }
+                  return view('system.reservas.create', compact('centro', 'specific', 'ids','reserva'));
                 }else{
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids'));
-
+                  return view('system.reservas.create', compact('centro', 'specific', 'ids'));
                 }
-                }else{
-                    // dd($request);
-
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids'));
-                }
-            } else {
-                Session::flash('message_error', 'El centro seleccionado no se encuentra activo');
-                return view('system.reservas.create');
+            }else{
+              return view('system.reservas.create', compact('centro', 'specific', 'ids'));
             }
+          } else {
+            Session::flash('message_error', 'El centro seleccionado no se encuentra activo');
+            return view('system.reservas.create');
+          }
         } else {
-            $specific = false;
-            $centros = Centers::where('state', 1)->get();
-            return view('system.reservas.create', compact('centros', 'specific', 'ids'));
+          $specific = false;
+          $centros = Centers::where('state', 1)->get();
+          return view('system.reservas.create', compact('centros', 'specific', 'ids'));
         }
     }
-    public function edit($id ,Request $request  )
+
+    public function edit($center, $id, Request $request  )
     {
         $ids = $id;
-
         if ($id != null) {
             $specific = true;
-            $centro = Centers::where('idCenter', $id)->where('state', 1)->first();
+            $centro = Centers::where('idCenter', $center)->where('state', 1)->first();
             if (!empty($centro)) {
-                if ($request != null) {
-                    # code...
-                 
-                if ($request->edit != null) {
-                    # code...
-                    $reserva = Reservations::where('idReservation',$request->edit)->first();
-                    if (empty($reserva)) {
-                        # code...
-                        return back();
-                    }
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids','reserva'));
-                }else{
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids'));
-
-                }
-                }else{
-                    dd($request);
-
-                    return view('system.reservas.create', compact('centro', 'specific', 'ids'));
-                }
+              $reserva = Reservations::where('idReservation',$id)->first();
+              if (empty($reserva)) {
+                  return back();
+              }
+              return view('system.reservas.create', compact('centro', 'specific', 'ids','reserva'));
             } else {
                 Session::flash('message_error', 'El centro seleccionado no se encuentra activo');
                 return view('system.reservas.create');
@@ -312,127 +319,110 @@ class ReservaController extends Controller
             return view('system.reservas.create', compact('centros', 'specific', 'ids'));
         }
     }
+
     public function store(Request $request)
     {
-        
-        $rules = [
-            'name' => 'required',
-            'lastname' => 'required',
-            'email' => 'required',
-            'cellphone' => 'required',
-            'pax' => 'required',
-            'idSchedule' => 'required',
-            'num_habitacion'=>'required',
-            'date' => 'required',
-            'idCenter' =>'required',
-      
+      $rules = [
+        'customer' => 'required',
+        'email' => 'required',
+        'phone' => 'required',
+        'pax' => 'required',
+        'idSchedule' => 'required',
+        'num_habitacion'=>'required',
+        'date' => 'required',
+        'idCenter' =>'required',
         ];
-      
-        $messages = [
-            'name.required' => "El nombre es requerido",
-            'lastname.required' => "El apellido es requerido",
-            'email.required' => "El correo es requerido",
-            'email.email' => "El correo debe estar en el formato correcto",
-            'cellphone.required' => "El teléfono es requerido",
-            'num_habitacion.required' => "El num_habitacion es requerido",
-            'pax.required' => "El Pax es requerido",
-            'idSchedule.required' => "El perfil es requerido",
-            'idCenter.required' => "El Hotel es requerido",
-            'date.required' => "Error con la fecha seleccionada",
-            
+      $messages = [
+        'customer.required' => "El nombre es requerido",
+        'email.required' => "El correo es requerido",
+        'email.email' => "El correo debe estar en el formato correcto",
+        'phone.required' => "El teléfono es requerido",
+        'num_habitacion.required' => "El num_habitacion es requerido",
+        'pax.required' => "El Pax es requerido",
+        'idSchedule.required' => "El perfil es requerido",
+        'idCenter.required' => "El Hotel es requerido",
+        'date.required' => "Error con la fecha seleccionada",
         ];
-        $this->validate($request, $rules, $messages);
-        
-        $center = Centers::where('idCenter',$request->idCenter)->first();
-        if(empty($center)){
-            return response()->json([
-                'code' => 401,
-                'data' => null,
-                'message' => "Centro no existe",
-            ]);
-        }
-
-        $scheduleCom = Schedules::where('idSchedule',$request->idSchedule)->first();
-        if(empty($scheduleCom)){
-            return response()->json([
-                'code' => 401,
-                'data' => null,
-                'message' => "scheduleCom no existe",
-            ]);
-        }
-        $date = str_replace('/', '-', $request->date);
-        DB::beginTransaction();
-        try {
-        
-            if ($request->idEdit != null) {
-                # code...
-                $reservation =Reservations::where('idReservation',$request->idEdit)->first();
-
-                $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
-
-
-
-            } else {
-                $user = new User();
-                $user->name = $request->name;
-                $user->lastname = $request->lastname;
-                $user->email = $request->email;
-                $user->cellphone = $request->cellphone;
-                $user->password = Hash::make(123);
-                $user->idPerfil = 6;
-                $user->state = 1;
-                $user->save();
-                # code...
-                $reservation = new Reservations();
-                $reservation->idReceptionist = Auth::user()->idUser;
-                $reservation->idClient = $user->idUser;
-            }
-        // dd($reservation);
-
-            
-            $reservation->date = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
-            $reservation->mes = date('m', strtotime($date . " 00:00:00"));
-            $reservation->idSchedule = $request->idSchedule;
-            $reservation->idCenter = $request->idCenter;
-            $reservation->idManager = null;
-            $reservation->pax = $request->pax;
-            $reservation->num_habitacion = $request->num_habitacion;
-            $reservation->state = 1;
-            $reservation->save();
-            DB::commit();
-        } catch (\Throwable $th) {
-            //throw $th;
-        // dd($request->all(),$th);
-
-            DB::rollback();
-            return response()->json([
-                'code' => 401,
-                'data' => null,
-                'message' => "Hubo un problema con el servidor, inténtelo más tarde",
-                'th' => $th
-            ]);
-        }
-
-        $meses = [
-            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-        ];
-
-        $user = User::where('idUser',$reservation->idClient)->where('idPerfil',6)->first();
-        if ($user != null && !empty($user)) {
-            # code...
-        Mail::to($user['email'])->send(new avisarCliente($reservation));
-        }
-        $supervisors = User::where('state',1)->whereIn('idPerfil',[8])->get();
-        foreach ($supervisors as $key => $value) {
-            # code...
-        Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
-
-        }
+      $this->validate($request, $rules, $messages);
+      $data = $request->all();
+      $center = Centers::where('idCenter',$request->idCenter)->first();
+      if(empty($center)){
         return response()->json([
-            'code' => 200,
-            'data' => null,
-            'message' => "Reservación creada correctamente"
+          'code' => 401,
+          'data' => null,
+          'message' => "Centro no existe",
+          ]);
+      }
+
+      $scheduleCom = Schedules::where('idSchedule',$request->idSchedule)->first();
+      if(empty($scheduleCom)){
+        return response()->json([
+          'code' => 401,
+          'data' => null,
+          'message' => "scheduleCom no existe",
+          ]);
+      }
+      $date = str_replace('/', '-', $request->date);
+      $formatDate = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
+      $schedule = Schedules::where('idSchedule',$data['idSchedule'])->first();
+      $rowToAdd = new stdClass();
+      $rowToAdd->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $schedule->hour.":".$schedule->minute."</a>";
+      $rowToAdd->client = $data['customer'];
+      $rowToAdd->recepcionist = Auth::user()->name;
+      $rowToAdd->pax = $data['pax'];
+      if($this->validateLimitReservations($center->idCenter,$data['idSchedule'], $formatDate)) {
+        return response()->json([
+          'code' => 401,
+          'data' => null,
+          'message' => "El horario ya esta saturado, seleccione otro disponible",
         ]);
+      }
+      DB::beginTransaction();
+      try {
+        if ($request->idEdit != null) {
+          $reservation = Reservations::where('idReservation',$request->idEdit)->first();
+          $reservation->fill($data);
+          $reservation->idManager = null;
+        } else {
+          $reservation = new Reservations($data);
+          $reservation->idReceptionist = Auth::user()->idUser;
+        }
+        $reservation->date = $formatDate;
+        $reservation->mes = date('m', strtotime($date . " 00:00:00"));
+        $reservation->state = 1;
+        $reservation->save();
+        DB::commit();
+      } catch (\Throwable $th) {
+        DB::rollback();
+        return response()->json([
+          'code' => 401,
+          'data' => null,
+          'message' => $th->getCode()." - ".$th->getMessage(),
+          'th' => $th
+        ]);
+      }
+
+      if(!env('TESTING')) {
+        Mail::to($reservation->email)->send(new avisarCliente($reservation));
+        $supervisors = User::where('state', 1)->whereIn('idPerfil', [8])->get();
+        foreach ($supervisors as $value) {
+          if (filled($value['email']))
+            Mail::to($value['email'])->send(new avisarSupervisor2($reservation));
+        }
+      }
+
+      return response()->json([
+        'code' => 200,
+        'data' => $rowToAdd,
+        'message' => "Reservación creada correctamente"
+      ]);
+    }
+
+    private function validateLimitReservations($idCenter, $idSchedule, $formatDate): bool
+    {
+      $totalReservations = Reservations::where('idCenter','=',$idCenter)
+        ->where('idSchedule','=', $idSchedule)->where('state',1)->where('date',$formatDate)->count();
+      return $totalReservations > 2;
     }
 
     private function sendSupervisor(User $user)
@@ -502,60 +492,57 @@ class ReservaController extends Controller
         ]);
     }
 
-    public function asignar(Request $request)
+    public function asignar(Request $request): RedirectResponse
     {
         $rules = [
             'idReserva' => 'required',
-            'idFotografo' => 'required', 
-      
+            'idFotografo' => 'required',
         ];
       
         $messages = [
-            'idReserva.required' => "El idReserva es requerido",
-            'idFotografo.required' => "El idFotografo es requerido", 
+            'idReserva.required' => "La reserva es requerida",
+            'idFotografo.required' => "El fotografo es requerida",
         ];
         $this->validate($request, $rules, $messages);
+
         DB::beginTransaction();
-        $idAnterior = null;
-        $managerAnterior = null;
+        $action = 'asignado';
         try {
             $reserva = Reservations::where('idReservation', $request->idReserva)->first();
-            $idAnterior = $reserva->idManager;
-            $managerAnterior = $reserva->idManager;
+            $managerAnterior = $reserva->manager;
             $reserva->idManager = $request->idFotografo;
             $reserva->update();
             DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
-        // dd($request->all(),$th);
-
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+          return redirect()->back()->with('message_error', 'error');
         }
-        $user = User::where('idUser',$request->idFotografo)->where('state',1)->first();
-        if ($idAnterior != $reserva->idManager && $idAnterior != null) {
-            # code...
+
+        if(!env('TESTING')) {
+          if ($managerAnterior != null && $managerAnterior->idUser != $reserva->idManager) {
             Mail::to($managerAnterior['email'])->send(new cancelacion($reserva));
+            $action = 'reasignado';
+          }
+          $manager = User::find($reserva->idManager);
+          if(filled($manager->email))
+            Mail::to($manager->email)->send(new avisarFotografo($reserva));
         }
-        Mail::to($user['email'])->send(new avisarFotografo($reserva));
 
-        return redirect()->back()->with('message', 'Fotografo asignado correctamente');   
+        return redirect()->back()->with('message', 'Fotografo '. $action .' correctamente');
     }
 
     public function changeState(Request $request)
     {
-        # code...
         $rules = [
             'idReserva' => 'required',
-            'state' => 'required', 
-      
+            'state' => 'required',
         ];
       
         $messages = [
             'idReserva.required' => "El idReserva es requerido",
             'state.required' => "El state es requerido", 
         ];
+        $status = "Activo";
         $this->validate($request, $rules, $messages);
         DB::beginTransaction();
         try {
@@ -564,95 +551,67 @@ class ReservaController extends Controller
             $reserva->update();
             DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
-        // dd($request->all(),$th);
-
-            
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+          return redirect()->back()->with('message_error', 'error');
         }
 
+      if(!env('TESTING')) {
         if ($request->state == 2 && $reserva->idManager != null) {
-            # code...
-            Mail::to($reserva->manager['email'])->send(new cancelacion($reserva));
-            
-        }
-        return redirect()->back()->with('message', 'Fotografo asignado correctamente');   
+          Mail::to($reserva->manager['email'])->send(new cancelacion($reserva));
 
+        }
+      }
+
+      switch ($reserva->state) {
+        case 1: $status = "Activa"; break;
+        case 2: $status = "Cancelada"; break;
+        case 3: $status = "Finalizada"; break;
+        case 4: $status = "Reagendada"; break;
+      }
+
+        return redirect()->back()->with('message', 'Reservación '. $status);
     }
+
     public function cliente(Request $request)
     {
-        # code...
-        $idCliente = $request->reserva;
-
-        $reser = Reservations::where('idReservation',$idCliente)->first();
-        
-        return view('system.reservas.clientes',compact('idCliente','reser'));
+      $infoClient = $request;
+      $idReservation = $infoClient->id;
+      $reservation = Reservations::where('idReservation',$idReservation)->first();
+      return view('system.reservas.clientes',compact('idReservation','reservation', 'infoClient'));
     }
+
     public function clientecrear(Request $request)
     {
-        # code...
-           # code...
-           $rules = [
-            'idReserva' => 'required',
-            'email' => 'required', 
-            // 'tel1' => 'required', 
-            // 'tel2' => 'required', 
-            // 'canva' => 'required', 
-            // 'direccion' => 'required', 
-            'autoriza' => 'required', 
-            // 'recibo' => 'required', 
-      
+      $rules = [
+        'idReserva' => 'required',
+        'email' => 'required',
+        'autoriza' => 'required',
         ];
-      
-        $messages = [
-            'idReserva.required' => "El idReserva es requerido",
-            'email.required' => "El email es requerido", 
-            // 'tel1.required' => "El tel1 es requerido", 
-            // 'tel2.required' => "El tel2 es requerido", 
-            // 'canva.required' => "El canva es requerido", 
-            // 'direccion.required' => "El direccion es requerido", 
-            'autoriza.required' => "El autoriza es requerido", 
-            // 'recibo.required' => "El recibo es requerido", 
+
+      $messages = [
+        'idReserva.required' => "El idReserva es requerido",
+        'email.required' => "El email es requerido",
+        'autoriza.required' => "El autoriza es requerido",
         ];
-        $this->validate($request, $rules, $messages);
-        // dd($request->all());
 
-        DB::beginTransaction();
-        try {
-
-            $reserva = Reservations::where('idReservation', $request->idReserva)->first();
-            $reservaInfo = new ReservaInfo();
-            $reservaInfo->id_reserva = $request->idReserva;
-            $reservaInfo->email = $request->email;
-            $reservaInfo->email2 = $request->email2;
-            $reservaInfo->telefono1 = $request->tel1;
-            $reservaInfo->micelaneo = $request->micelaneo;
-            $reservaInfo->telefono2 = $request->tel2;
-            $reservaInfo->canva = $request->canva;
-            // $reservaInfo->recibo = $request->recibo;
-            $reservaInfo->direccion = $request->direccion;
-            $reservaInfo->autoriza_fotografia = $request->autoriza;
-            $reservaInfo->save();
-            DB::commit();
-
+      $this->validate($request, $rules, $messages);
+      DB::beginTransaction();
+      try {
+        $reservaInfo = new ReservaInfo($request->all());
+        $reservaInfo->id_reserva = $request->idReserva;
+        $reservaInfo->autoriza_fotografia = $request->autoriza;
+        $reservaInfo->save();
+        DB::commit();
         } catch (\Throwable $th) {
-            //throw $th;
-        dd($request->all(),$th);
-
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+          return redirect()->back()->with('message_error', 'error');
         }
-        // dd($reservaInfo,$reserva->center->name);
         // Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo,$reserva));
-
-        return redirect()->back()->with('message', 'Fotografo asignado correctamente'); 
+        return redirect()->route('reserva.index');
     }
+
     public function finalizar(Request $request)
     {
-        # code...
         $rules = [
             'idReserva' => 'required',
             'formaCobro' => 'required', 
@@ -673,7 +632,6 @@ class ReservaController extends Controller
             'pwsd.required' => "El montoCobrado es requerido", 
         ];
         $this->validate($request, $rules, $messages);
-        // dd($request->all());
 
         DB::beginTransaction();
         try {
@@ -692,21 +650,16 @@ class ReservaController extends Controller
             DB::commit();
 
         } catch (\Throwable $th) {
-            //throw $th;
-        // dd($request->all(),$th);
-
-        return redirect()->back()->with('message_error', 'error');   
-
-            DB::rollBack();
+          DB::rollBack();
+          return redirect()->back()->with('message_error', 'error');
         }
-        // dd($reservaInfo,$reserva->center->name);
-        Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo,$reserva));
-        $supervisors = User::where('state',1)->whereIn('idPerfil',[8])->get();
+      if(!env('TESTING')) {
+        Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo, $reserva));
+        $supervisors = User::where('state', 1)->whereIn('idPerfil', [8])->get();
         foreach ($supervisors as $key => $value) {
-            # code...
-        Mail::to($value['email'])->send(new AvisarSupervisor($reservaInfo,$reserva));
-
+          Mail::to($value['email'])->send(new AvisarSupervisor($reservaInfo, $reserva));
         }
+      }
         $monto = 0;
         if ($request->montoCobrado < 3500) {
             # code...

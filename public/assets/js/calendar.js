@@ -136,6 +136,8 @@
     outer.addEventListener('click', function() {
       // Only open if the element is not disabled
       if (!this.classList.contains('disabled')) {
+        $('.day-selected').removeClass('day-selected');
+        this.classList.add('day-selected');
         var fecha = (this.querySelectorAll('.day-number')[0].innerText || this.querySelectorAll('.day-number')[0].textContent)+"/"+day._d.getMonth()+"/"+day._d.getFullYear();
         //console.log(fecha)
         // self.openDay(this);

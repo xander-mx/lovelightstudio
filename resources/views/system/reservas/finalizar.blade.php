@@ -171,7 +171,7 @@ Reserva', 'activeButton' => 'reservas'])
                                 <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" name="pwsd" required> 
                               </div>
                               <div class="col-auto">
-                                <button type="submit" class="btn btn-primary mb-3">Enviar!!</button>
+                                <button type="submit" class="btn btn-primary mb-3">Enviar</button>
                               </div>
                         </form>
                     </div>

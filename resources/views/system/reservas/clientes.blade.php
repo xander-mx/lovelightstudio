@@ -32,7 +32,6 @@
     <div class="row">
         <div class="col-12">
             <div class="alert alert-warning alert-dismissible" role="alert">
-                        aria-hidden="true">&times;</span></button>
                 😓 {{ Session::get('message_error') }} 😒
             </div>
         </div>
@@ -51,58 +50,105 @@
                     </div>
                         
                     @else
-                    @if ($reser->receptioninfo == null)
+                    @if ($reservation->receptioninfo == null)
                     <div class="container mt-10">
                         <form action="{{ route('reserva.cliente.post') }}" method="post">
                             @csrf
-                        <div class="card mt-10" style="margin-top: 10px">
-                            {{-- <img src="{{ asset('logo/love-light-studio-logo copia.jpg') }}" class="card-img-top "width="200px" height="200px" alt="" srcset=""> --}}
-                            
-                            <div class="card-body ">
-                            <h5 class="card-title text-center">Formulario de finalizaciòn</h5>
-                                <input type="hidden" name="idReserva" value="{{ $idCliente }}">
-                                {{-- {{ dd($idCliente) }} --}}
-                                    <div class="mb-3">                                        
-                                        <label for="exampleInputEmail1" class="form-label">Email <span class="text-danger">*</span></label>
-                                        <input type="email" class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-                                      </div>
-                                      <div class="mb-3">                                        
-                                        <label for="exampleInputEmail1" class="form-label">Email 2  </label>
-                                        <input type="email" class="form-control" name="email2" id="exampleInputEmail1" aria-describedby="emailHelp" >
-                                      </div>
-                                      <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Telefono </label>
-                                        <input type="text" class="form-control" name="tel1" id="exampleInputEmail1" aria-describedby="emailHelp" value="+52">
-                                      </div>
-                                      <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Telefono 2  </label>
-                                        <input type="text" class="form-control" name="tel2" id="exampleInputEmail1" aria-describedby="emailHelp" value="+52"  >
-                                      </div>
-                                      <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Canva </label>
-                                        <input type="text"  class="form-control" name="canva" id="exampleInputEmail1" aria-describedby="emailHelp"   >
-                                      </div>
-                                      <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Direccion   </label>
-                                        <input type="text"  class="form-control" name="direccion" id="exampleInputEmail1" aria-describedby="emailHelp"   >
-                                      </div>
-                                      <div class="mb-3 text-center">
-                                          <img src="{{ asset('logo/form.PNG') }}" alt="" width="800px"  srcset="">
-                                      </div>
-                                      <div class="mb-3">
-                                        <label for="exampleInputEmail1"  class="form-label">¿Autoriza poder utilizar sus fotografías como publicidad interna? <span class="text-danger">*</span></label>
-                                        <select name="autoriza" id="" class="form-control">
-                                            <option value="si" selected>Si</option>
-                                            <option value="no">No</option>
-                                        </select>
-                                      </div>
-                                      
-                                      <div class="mb-3 text-center">
-                                          <button type="submit" class="btn btn-primary">Enviar</button>
-                                      </div>
+                            <div class="card mt-10" style="margin-top: 10px">
+                                <div class="card-body ">
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <input type="hidden" name="idReserva" value="{{ $idReservation }}">
+                                    <input type="hidden" name="email" value="{{ $infoClient->email ?? '' }}">
+                                    <input type="hidden" name="email2" value="{{ $infoClient->email2 ?? '' }}">
+                                    <input type="hidden" name="telefono1" value="{{ $infoClient->tel1 ?? '' }}">
+                                    <input type="hidden" name="telefono2" value="{{ $infoClient->tel2 ?? '' }}">
+                                    <input type="hidden" name="canva" value="{{ $infoClient->canva ?? '' }}">
+                                    <input type="hidden" name="direccion" value="{{ $infoClient->direccion ?? '' }}">
+                                    <div class="row">
+                                        <div class="col-2"></div>
+                                        <div class="col-8 mb-3 text-justify " >
+                                            <h3 class="card-title text-center">Sesión de Derechos Fotográficos / Copyright Release</h3>
+                                            <br/>
+                                            <div class="card mt-10" style="margin-top: 10px">
+                                                <br/>
+                                                <div class="mb-3 text-center">
+                                                    <img src="{{ asset('logo/love-light-studio-logo.jpg') }}" alt="Love Light Studio" width="50%"  srcset="">
+                                                </div>
+                                                <span style="text-align: center"><strong>Español</strong></span>
+                                                <div class="card-body " style="text-align: justify">
+                                                    <span >Yo <strong>{{ $reservation->customer }} </strong>, por buena y valiosa contraprestación cuya recepción
+                                                        se reconoce por la presente autorizo irrevocablemente a <strong>Love Light Studio.</strong></span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span>Para usar fotografías de mi persona o de mi propiedad la cual le doy a (el / sus y ellas / ella /  sus asignados)
+                                                        licencias, representantes legales y sus cesionarios usar y publicar (con o sin nombre, nombre de la compañia o con un
+                                                    nombre ficticio) fotografías, retratos o imágenes las cuales fueron otorgadas a la compañia.</span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span>En cualquier y de todas las formas de medios y en todas las maneras incluyendo  imágenes compuestas o representaciones
+                                                    distorsionadas.</span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span>Los propósitos de la ilustración  de la publicidad (incluyendo la publicación en formato fisico o digital, en Cd,
+                                                        redes sociales o para sitios web de internet), para cualquier producto o servicio u otros usos legales que puedan
+                                                    ser determinados por el fotógrafo o nombre del estudio</span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span>Renuncio además a todos y cada uno de los derechos de revisar o aprobar cualquier uso de las imágenes, de cualquier
+                                                    copia escrita o producto terminado.</span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span><strong>Soy mayor de edad legal y he leído y entiendo completamente los términos de este comunicado.</strong></span>
+                                                </div>
+
+                                                <span style="text-align: center"><strong>English</strong></span>
+                                                <div class="card-body " style="text-align: justify">
+                                                    <span>I <strong>{{ $reservation->client->name }}</strong>, for good and valuable consideration whose reception is hereby
+                                                        acknowledged, irrevocably authorize <strong>Love Light Studio</strong>.</span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span>To use photographs of my person or property which I give (him / her and they / her / his / her assigned) licenses,
+                                                    legal representatives and assignees use and publish (with or without name, company name or with a fictitious name)
+                                                    photographs, portraits or images which were granted to the company.</span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span>In any and all forms of media and in all ways including composite images or distorted representations.</span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span>The purposes of the illustration of advertising (including publication in physical or digital format, on Cd, social
+                                                        networks or for internet websites),for any product or service or other legal uses that may be determined by the
+                                                    photographer or name of the study.</span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span>I also waive each and every right to review or approve any use of the images, of any written copy or finished product.</span>
+                                                    <br/>
+                                                    <br/>
+                                                    <span><strong>I am of legal age and have read and fully understand the terms of this release.</strong></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-2"></div>
+                                        <div class="mb-3 col-8">
+                                            <label for="autoriza"  class="form-label">¿Autoriza poder utilizar sus fotografías como publicidad interna? /
+                                                Do you authorize the use of your photographs as internal advertising?<span class="text-danger">*</span></label>
+                                            <select name="autoriza" id="autoriza" class="form-control">
+                                                <option value="si" selected>Si / Yes</option>
+                                                <option value="no">No</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-2"></div>
+                                    </div>
+                                    <div class="mb-3 text-center">
+                                        <button type="submit" class="btn btn-primary">Enviar / Submit</button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
                     </div>
                     @else
                         <div class="alert alert-danger">Formulario ya ingresado</div>

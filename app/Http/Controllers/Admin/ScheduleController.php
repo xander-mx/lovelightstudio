@@ -8,45 +8,41 @@ use App\Models\Reservations;
 use App\Models\Schedules;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class ScheduleController extends Controller
 {
     public function ajaxHorarios(Request $request)
     {
-        // dd($request->all());
-        $date = str_replace('/', '-',  $request->day);
-        $dateFinal = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
-        $dateHoy = date('Y-m-d');
-        $dateHoyFinal = date('Y-m-d H:i:s', strtotime($dateHoy . " 00:00:00"));
-        // dd($dateFinal,$dateHoy,$dateHoyFinal);
-        $idCenter = $request->id;
-        $reservasDeldia = Reservations::where('idCenter',$request->idCenter)
-        ->get();
-        $horarioEvadir = [];
-        if($dateFinal == $dateHoyFinal){
-            $hora = Carbon::now()->format('H');
-        }else{
-            $hora = "0";
-        }
-        $horamaxima = ParameterValues::where('idValueParameter',7)->first();
+      $date = str_replace('/', '-',  $request->day);
+      $dateFinal = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
+      $dateHoy = date('Y-m-d');
+      $dateHoyFinal = date('Y-m-d H:i:s', strtotime($dateHoy . " 00:00:00"));
+      $reservasDeldia = Reservations::where('idCenter',$request->idCenter)
+        ->where(DB::raw('DATE(date)'), $dateFinal)->where('state',1)->get();
+      $dataReservations = [];
+      if($dateFinal == $dateHoyFinal){
+        $hora = Carbon::now()->format('H');
+      }else{
+        $hora = "0";
+      }
 
-        // dd($hora);
-        foreach ($reservasDeldia as $key => $value) {
-            # code...
-            $horarioEvadir[] = $value->idSchedule;
-        }
-        // dd($horarioEvadir,$hora,$horamaxima,intval($horamaxima->extra));
-
-        $horarios = Schedules::where('state', 1)
-        // ->where('hour','>',$hora)
-        ->where('hour','<',intval($horamaxima->extra))
-        // ->whereNotIn('idSchedule',$horarioEvadir)
-        ->get();
-
-        return response()->json([
-            'code' => 200,
-            'data' => $horarios,
-            'message' => 'horarios obtenidos correctamente'
-        ]);
+      $horamaxima = ParameterValues::where('idValueParameter',7)->first();
+      foreach ($reservasDeldia as $value) {
+        $data = new stdClass();
+        //$data->schedule = "<a href='Javascript:;' onclick='openModalReserva($value->idSchedule)' class='btn btn-primary active'>". $value->schedule->hour.":".$value->schedule->minute."</a>";
+        $data->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $value->schedule->hour.":".$value->schedule->minute."</a>";
+        $data->client = $value->customer;
+        $data->pax = $value->pax;
+        $dataReservations[] = $data;
+      }
+      $horarios = Schedules::where('state', 1)->where('hour','<',intval($horamaxima->extra))->orderBy('hour','asc')->orderBy('minute', 'asc')->get();
+      return response()->json([
+        'code' => 200,
+        'data' => $horarios,
+        'table' => $dataReservations,
+        'message' => 'horarios obtenidos correctamente'
+      ]);
     }
 }
