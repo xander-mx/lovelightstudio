@@ -7,16 +7,15 @@
     <title>Document</title>
 </head>
 <body>
-     <img src="{{ asset('logo/love-light-studio-logo.jpg') }}" alt="" width="200px">
-     {{-- {{ dd($reservation,date('Y-m-d', strtotime($reservation->date)) ,$reservation->schedule ) }} --}}
-        <H1>¡ Hola {{ $reservation->client->name }} !</H1>
-        <p>¡Tu sesión fotográfica se ha agendado con éxito!</p>
-        <p><strong>Lugar de sesion:</strong> {{ $reservation->center->name }}</p>
-        <p><strong>Fecha de sesion:</strong>{{ date('d/F/Y', strtotime($reservation->date)) }}  {{ $reservation->schedule->hour }}:{{  $reservation->schedule->minute  }}</p>
+    <img src="{{ $message->embed(public_path().'/logo/love-light-studio-logo.jpg') }}" alt="Love Light Studio" width="400px" />
+    <H1>¡Hola {{ $reservation->customer }} !</H1>
+    <h4>¡Tu sesión fotográfica se ha agendado con éxito!</h4>
+    <h4>Lugar de sesión : {{ $reservation->center->name }}</h4>
+    <p><h4>Fecha de sesión : {{ date('d/F/Y', strtotime($reservation->date)) }}  {{ $reservation->schedule->hour }}:{{  $reservation->schedule->minute  }}</h4></p>
 
         @if ($reservation->center->extra != null)
-            <p><strong>Info extra : </strong>{{ $reservation->center->extra }}</p>
+            <p><h4>Ubicación : {{ $reservation->center->extra }}</h4></p>
         @endif
-        <p>¡Gracias por ser parte de Love Light Studio!</p>
+    <p><h3>¡Gracias por ser parte de Love Light Studio!</h3></p>
 </body>
 </html>
