@@ -26,7 +26,7 @@ const createReserva = () => {
         .done(function(response) {
             console.log(response)
             if (response.code === 200) {
-                swal('Muy bien!', 'La reserva se ha realizado correctamente', 'success');
+                Swal.fire({title: 'Muy bien!', text: 'La reserva se ha realizado correctamente', icon:'success'});
                 let table = $('#reservation-table').DataTable();
                 table.row.add(response.data).draw();
                 setTimeout(() => {
@@ -40,14 +40,14 @@ const createReserva = () => {
                         message += "- " + error + "\n";
                     })
                 });
-                swal(response.message, message, 'error')
+                Swal.fire({text: message, icon: 'error'})
             } else {
-                swal('Ops!', response.message, 'error')
+                Swal.fire({title: 'Ops!', text: response.message, icon:'error'})
             }
         })
         .fail(function(xhr) {
             $(".content_loading").fadeOut("slow");
-            swal({
+            Swal.fire({
                 title: 'Ups!',
                 text: xhr.message,
                 type: "warning",
@@ -89,7 +89,7 @@ const selectDay = (day) => {
         })
         .fail(function(xhr) {
             $(".content_loading").fadeOut("slow");
-            swal('Ops!', 'Hubo un error, por favor intentelo más tarde', 'error')
+            Swal.fire({ tilte: 'Ops!', text: 'Hubo un error, por favor intentelo más tarde', icon: 'error'})
         })
 }
 
@@ -120,9 +120,9 @@ const openModalReserva = (id) => {
         RESERVATION_MODAL.modal('show');
     } else {
         if (id == null) {
-            swal('Ops!', 'Por favor seleccione un horario', 'error')
+            Swal.fire({title: 'Ops!', text:'Por favor seleccione un horario', icon:'error'})
         } else {
-            swal('Ops!', 'Por favor seleccione una fecha', 'error')
+            Swal.fire({title: 'Ops!', text: 'Por favor seleccione una fecha',icon: 'error'})
         }
     }
 }

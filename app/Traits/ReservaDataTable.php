@@ -11,7 +11,6 @@ trait ReservaDataTable
 {
   use BaseDataTable;
 
-
   protected function getSearchDataResult(&$query)
   {
     if ( !is_null( $this->searchConfig['search'] ) ) {
