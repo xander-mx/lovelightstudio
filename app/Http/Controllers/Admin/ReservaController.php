@@ -389,6 +389,8 @@ class ReservaController extends Controller
         }
         $reservation->date = $formatDate;
         $reservation->phone = str_replace(' ','',$reservation->phone);
+        $reservation->phone = strlen($reservation->phone) > 13 ? substr($reservation->phone, (strlen($reservation->phone) - 13)) :
+                              $reservation->phone;
         $reservation->mes = date('m', strtotime($date . " 00:00:00"));
         $reservation->state = 1;
         $reservation->save();
