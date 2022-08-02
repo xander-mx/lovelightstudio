@@ -365,9 +365,8 @@ class ReservaController extends Controller
       }
       $date = str_replace('/', '-', $request->date);
       $formatDate = date('Y-m-d H:i:s', strtotime($date . " 00:00:00"));
-      $schedule = Schedules::where('idSchedule',$data['idSchedule'])->first();
       $rowToAdd = new stdClass();
-      $rowToAdd->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $schedule->hour.":".$schedule->minute."</a>";
+      $rowToAdd->schedule = "<a href='Javascript:;' class='btn btn-primary active'>". $scheduleCom->hour.":".$scheduleCom->minute."</a>";
       $rowToAdd->client = $data['customer'];
       $rowToAdd->recepcionist = Auth::user()->name;
       $rowToAdd->pax = $data['pax'];
@@ -503,7 +502,7 @@ class ReservaController extends Controller
             'idReserva' => 'required',
             'idFotografo' => 'required',
         ];
-      
+
         $messages = [
             'idReserva.required' => "La reserva es requerida",
             'idFotografo.required' => "El fotografo es requerida",
