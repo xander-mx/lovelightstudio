@@ -637,7 +637,7 @@ class ReservaController extends Controller
         try {
 
             $reserva = Reservations::where('idReservation', $request->idReserva)->first();
-            $reserva->state =3;//osea falta que el admin o el otro cabron finalice
+            $reserva->state = 3;//osea falta que el admin o el otro cabron finalice
             $reserva->save();
             $reservaInfo = ReservaInfo::where('id',$reserva->receptioninfo->id)->first();
             $reservaInfo->forma_cobro = $request->formaCobro;
@@ -653,6 +653,7 @@ class ReservaController extends Controller
           DB::rollBack();
           return redirect()->back()->with('message_error', 'error');
         }
+
       if(!env('TESTING')) {
         Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo, $reserva));
         $supervisors = User::where('state', 1)->whereIn('idPerfil', [8])->get();
@@ -660,52 +661,24 @@ class ReservaController extends Controller
           Mail::to($value['email'])->send(new AvisarSupervisor($reservaInfo, $reserva));
         }
       }
-        $monto = 0;
-        if ($request->montoCobrado < 3500) {
-            # code...
-              $monto = ($request->montoCobrado)*0.18  ;
-        } else {
-            # code...
-            $monto = ($request->montoCobrado)*0.20  ;
-        }
-        $this->agregarComi(Auth::user()->idUser,"Comision por venta Fotografo",$monto);
-        // monto para reserva
-        $montoreserva = 0;
-        if ($request->montoCobrado <= 500) {
-            # code...
-              $montoreserva = 150;
-        } else {
-            # code...
-            $montoreserva = 300;
-        }
-        $this->agregarComi($reserva->idReceptionist,"Comision por venta Recepcionista",$montoreserva);
-        $supervisor = User::where('idPerfil',8)
-        ->where('state',1)
-        ->get();
-        foreach ($supervisor as $key => $value) {
-            # code...
+      $monto = $request->montoCobrado * 0.21;
+      $this->agregarComi(Auth::user()->idUser,"Comision por venta Fotografo", $monto);
+
+      $montoreserva = $request->montoCobrado <= 500 ? 150 : 300;
+      $this->agregarComi($reserva->idReceptionist,"Comision por venta Recepcionista",$montoreserva);
+
+      $supervisor = User::where('idPerfil',8)->where('state',1)->get();
+      foreach ($supervisor as $key => $value) {
         $this->agregarComi($value->idUser,"Comision por venta supervisor reserva",50);
+      }
 
-        }
-        $supervisor = User::where('idPerfil',2)
-        ->where('state',1)
-        ->get();
-        foreach ($supervisor as $key => $value) {
-            # code...
-        $this->agregarComi($value->idUser,"Comision por venta supervisor foto",$request->montoCobrado*0.015);
-
-        }
-        return redirect()->back()->with('message', 'Reserva finalizada correctamente'); 
+      return redirect()->back()->with('message', 'Reserva finalizada correctamente');
     }
 
     public function agregarComi($idUsuario,$tipoComi,$monto)
     {
-         
-        // dd($request->all());
-
         DB::beginTransaction();
         try {
-
             $comision = new comisiones();
             $comision->id_trabajador = $idUsuario;
             $comision->tipo_comision = $tipoComi;
@@ -715,13 +688,10 @@ class ReservaController extends Controller
             $comision->monto_comision = $monto;
             $comision->save();
             DB::commit();
-
         } catch (\Throwable $th) {
-            //throw $th;
-        return false;   
-            DB::rollBack();
+          DB::rollBack();
+          return false;
         }
-        return true; 
-
+        return true;
     }
 }
