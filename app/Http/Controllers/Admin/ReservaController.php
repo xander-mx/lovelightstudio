@@ -497,7 +497,7 @@ class ReservaController extends Controller
             'idReserva' => 'required',
             'idFotografo' => 'required',
         ];
-      |
+
         $messages = [
             'idReserva.required' => "La reserva es requerida",
             'idFotografo.required' => "El fotografo es requerida",
