@@ -156,7 +156,7 @@ class ActionButton
     }
 
     $button .= " style='margin-bottom: 0;'>";
-    $button .= "<div class='btn-content'><span class='glyphicon ". $this->getIcon() ."'></span></div>";
+    $button .= "<i class=' ". $this->getIcon() ."'></i>";
 
     if($this->getSpinner())
     {
@@ -182,6 +182,22 @@ class ActionButton
     $button .= filled($this->getLabel()) ? $this->getLabel() : "";
 
     $button .= "</a>";
+    return $button;
+  }
+
+  public function getIconButton() {
+    $button = "<button type='button' ";
+    $button .= filled($this->getToolTip()) ? " title='". $this->getToolTip() ."'" : " " ;
+    $button .= filled($this->getClick()) ? "onclick='". $this->getClick() ."'" : " " ;
+    $button .= "class='".$this->getClassButton()."'";
+    foreach ($this->attributes as $attribute)
+    {
+      $button .= $attribute;
+    }
+
+    $button .= ">";
+    $button .= "<i class=' ". $this->getIcon() ."'></i>";
+    $button .= "</button>";
     return $button;
   }
 

@@ -18,6 +18,7 @@ use App\Models\Schedules;
 use App\Models\User;
 use App\Notifications\notifyFotografo;
 use App\Notifications\sendSupervisor;
+use App\Notifications\TwilioSender;
 use App\Traits\ReservaDataTable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -388,6 +389,7 @@ class ReservaController extends Controller
           $reservation->idReceptionist = Auth::user()->idUser;
         }
         $reservation->date = $formatDate;
+        $reservation->phone = str_replace(' ','',$reservation->phone);
         $reservation->mes = date('m', strtotime($date . " 00:00:00"));
         $reservation->state = 1;
         $reservation->save();
@@ -401,9 +403,12 @@ class ReservaController extends Controller
           'th' => $th
         ]);
       }
-      Mail::to($reservation->email)->send(new avisarCliente($reservation));
+
+      //Mail::to($reservation->email)->send(new avisarSupervisor2($reservation));
       if(!env('TESTING')) {
         Mail::to($reservation->email)->send(new avisarCliente($reservation));
+        /*TwilioSender::sms("Hola ". $reservation->customer.", tienes una sesión fotográfica para el dia ". $date ." a las ". $schedule->hour.":".$schedule->minute ."hrs en "
+          .$reservation->center->name, $reservation->phone);*/
         $supervisors = User::where('state', 1)->whereIn('idPerfil', [8])->get();
         foreach ($supervisors as $value) {
           if (filled($value['email']))
