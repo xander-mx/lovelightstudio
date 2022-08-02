@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-     <img src="{{ $message->embed(public_path().'/logo/love-light-studio-logo.jpg') }}" alt="Love Light Studio" width="400px">
+     <img src="{{ $message->embed(public_path().'/logo/love-light-studio-logo.jpg') }}" alt="Love Light Studio" width="200px">
      <H1>¡ Hola {{ $reservation->customer }} !</H1>
      <h4>¡Tu sesión fotográfica se ha agendado con éxito!</h4>
      <h4>Lugar de sesión : {{ $reservation->center->name }}</h4>
