@@ -17,7 +17,7 @@ trait ReservaDataTable
       $addFilter = Auth::user()->idPerfil <= 2 ||Auth::user()->idPerfil == 8;
       $search = strtoupper( $this->searchConfig['search'] );
       $query->where(function($query) use ($search) {
-        $query->where('date', 'like', '%'. $search .'%')
+        $query->where(DB::raw("DATE_FORMAT(date, '%d-%m-%Y')"), 'like', '%'. $search .'%')
           ->orWhere('customer','like','%' . $search . '%')
           ->orWhere('centers.name','like','%' . $search . '%')
           ->orWhere('num_habitacion', 'like', '%'. $search .'%');
