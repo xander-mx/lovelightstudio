@@ -21,16 +21,14 @@ trait ReservaDataTable
      $this->reservationsWheres($query, $search);
      $this->reservationsWheres($query2, $search);
     }
-    $total_rows = $query->count() + $query2->count();
-    $this->searchConfig['recordsFiltered'] = $total_rows;
-    $query2->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )
-    ->orderBy('date')->orderBy('schedules.hour')->orderBy('schedules.minute');
-     $query = $query->orderBy('reservations.date')->orderBy('schedules.hour')
-       ->orderBy('schedules.minute')
-      ->union(
+    $query->orderBy('reservations.date')->orderBy('schedules.hour')->orderBy('schedules.minute');
     $query2->orderBy('reservations.date','desc')->orderBy('schedules.hour')
-      ->orderBy('schedules.minute'));
-    $reservations = $query->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )->get();
+      ->orderBy('schedules.minute');
+    $queryFinal = $query->union($query2);
+
+    $this->searchConfig['recordsFiltered'] = $queryFinal->count();
+
+    $reservations = $queryFinal->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )->get();
     $data = [];
     foreach($reservations as $reservation)
       $data[] = $this->getDataRow($reservation);
