@@ -9,7 +9,7 @@
 
         <div class="row">
             <div class="col">
-                <form action="{{ route('reserva.finalizar') }}" method="post">
+                <form action="{{ route('reserva.finalizar') }}" method="post" id="finalize-form">
                     @csrf
                     <input type="hidden" name="idReserva" id="idReservaFina">
                     <div class="row">
@@ -50,13 +50,10 @@
                     </div>
 
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary mb-3">Enviar</button>
+                        <button id="finalize-btn" type="submit" class="btn btn-primary mb-3">Enviar</button>
                     </div>
-
-
                 </form>
             </div>
         </div>
     @endslot
-
 @endcomponent

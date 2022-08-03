@@ -11,7 +11,7 @@ trait ReservaDataTable
 {
   use BaseDataTable;
 
-  protected function getSearchDataResult(&$query)
+  protected function getSearchDataResult(&$query): array
   {
     if ( !is_null( $this->searchConfig['search'] ) ) {
       $addFilter = Auth::user()->idPerfil <= 2 ||Auth::user()->idPerfil == 8;
@@ -31,14 +31,15 @@ trait ReservaDataTable
     }
     $this->searchConfig['recordsFiltered'] = $query->count();
     $reservations = $query->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )
-      ->orderBy('date', 'desc')->orderBy('schedules.hour', 'asc')->orderBy('schedules.minute', 'asc')->get();
+      ->orderBy('date', 'asc')->orderBy('schedules.hour', 'asc')->orderBy('schedules.minute', 'asc')->get();
     $data = [];
     foreach($reservations as $reservation)
       $data[] = $this->getDataRow($reservation);
     return $this->getSearchResult($data,false);
   }
 
-  private function getDataRow($reservation) {
+  private function getDataRow($reservation): stdClass
+  {
     $info =  new stdClass();
     if(Auth::user()->idPerfil <= 2 ||Auth::user()->idPerfil == 8) {
       $button = new ActionButton();

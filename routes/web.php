@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Admin\ReservaController;
+use App\Http\Controllers\Admin\ReservesSoldController;
 use App\Http\Controllers\Admin\ServicesController;
 use App\Models\Services;
 use App\Models\User;
@@ -72,6 +73,9 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
       Route::post('/finalizar', [ReservaController::class, 'finalizar'])->name('reserva.finalizar');
       Route::get('/finalizar/supervisor', [ReservaController::class, 'reservaFinalizada'])->name('reserva.supervisor.finalizar');
       Route::post('/finalizar/supervisor', [ReservaController::class, 'finalizarSupervisor'])->name('reserva.supervisor.finalizar.post');
+
+      Route::get('/sold/table', [ReservesSoldController::class, 'loadTable'])->name('reserves.sold.table');
+      Route::get('/sold/index', [ReservesSoldController::class, 'index'])->name('reserves.sold.index');
     });
 
     Route::group(['prefix' => 'ajax'], function () {

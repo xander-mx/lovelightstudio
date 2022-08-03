@@ -1,9 +1,9 @@
 @component('templates.modal', ['modalId' => 'photographer-modal', 'title' => 'Asignar Fotografo', 'backdrop' => true,
-           'clickClose' => 'cerrarModal()'])
+           'close' => 'cerrarModal()'])
     @slot('body')
         <div class="row">
-            <div class="col">
-                <table class="table table-responsive">
+            <div class="col" style="height: 600px;overflow: scroll;">
+                <table class="table table-responsive ">
                     <thead>
                     <tr>
                         <th>Nombre fotografo</th>
