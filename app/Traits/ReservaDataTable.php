@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Utils\ActionButton;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use stdClass;
@@ -11,27 +12,25 @@ trait ReservaDataTable
 {
   use BaseDataTable;
 
-  protected function getSearchDataResult(&$query): array
+  protected function getSearchDataResult(): array
   {
-    if ( !is_null( $this->searchConfig['search'] ) ) {
-      $addFilter = Auth::user()->idPerfil <= 2 ||Auth::user()->idPerfil == 8;
-      $search = strtoupper( $this->searchConfig['search'] );
-      $query->where(function($query) use ($search) {
-        $query->where(DB::raw("DATE_FORMAT(date, '%d-%m-%Y')"), 'like', '%'. $search .'%')
-          ->orWhere('customer','like','%' . $search . '%')
-          ->orWhere('centers.name','like','%' . $search . '%')
-          ->orWhere('num_habitacion', 'like', '%'. $search .'%');
-      });
-
-      $query->when($addFilter, function($query) use ($search) {
-        $query->orWhere(DB::raw("CONCAT(receptionist.name, ' ', COALESCE(receptionist.lastname,''))"), 'like', '%'. $search .'%')
-          ->orWhere(DB::raw("CONCAT(manager.name, ' ', COALESCE(manager.lastname,''))"), 'like', '%'. $search .'%');
-      });
-
+    $search = strtoupper( $this->searchConfig['search'] );
+    $query = $this->reservationsSelect('>=');
+    $query2 = $this->reservationsSelect('<');
+    if (!empty($search)) {
+     $this->reservationsWheres($query, $search);
+     $this->reservationsWheres($query2, $search);
     }
-    $this->searchConfig['recordsFiltered'] = $query->count();
-    $reservations = $query->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )
-      ->orderBy('date', 'asc')->orderBy('schedules.hour', 'asc')->orderBy('schedules.minute', 'asc')->get();
+    $total_rows = $query->count() + $query2->count();
+    $this->searchConfig['recordsFiltered'] = $total_rows;
+    $query2->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )
+    ->orderBy('date')->orderBy('schedules.hour')->orderBy('schedules.minute');
+     $query = $query->orderBy('reservations.date')->orderBy('schedules.hour')
+       ->orderBy('schedules.minute')
+      ->union(
+    $query2->orderBy('reservations.date','desc')->orderBy('schedules.hour')
+      ->orderBy('schedules.minute'));
+    $reservations = $query->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )->get();
     $data = [];
     foreach($reservations as $reservation)
       $data[] = $this->getDataRow($reservation);
@@ -105,5 +104,47 @@ trait ReservaDataTable
       $info->state = $labelStatus;
       $info->num_habitacion = (filled($reservation->num_habitacion) ? $reservation->num_habitacion : "S/H");
     }
+  }
+
+  private function reservationsSelect($conditional) {
+    $isPhotographer = Auth::user()->idPerfil == 3;
+    $date = date('Y-m-d');
+    $reservations = $this->reservationsJoins()
+      ->where('reservations.state',1)->where(DB::raw('DATE(date)'),$conditional,$date)->when($isPhotographer, function($query) {
+        $query->where('reservations.idManager','=', Auth::user()->idUser);
+      })
+      ->select('reservations.idReservation', 'reservations.date', 'reservations.pax', 'reservations.idCenter',
+        'reservations.num_habitacion', 'reservations.state', DB::raw("reservations.customer as client"),
+        DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"), 'reservations.idManager',
+        DB::raw("CONCAT(manager.name,' ', COALESCE(manager.lastname,'')) as manager"),'reservations.idClient', 'reservations.idReceptionist',
+        DB::raw('centers.name as center'), DB::raw('schedules.hour'), DB::raw('schedules.minute')
+        , 'reservations_info_finish.id_reserva');
+
+    return $reservations;
+  }
+
+  private function reservationsJoins(): Builder
+  {
+    return DB::table('reservations')
+      ->leftJoin(DB::raw('users as receptionist'), 'reservations.idReceptionist', '=', 'receptionist.idUser')
+      ->leftJoin(DB::raw('users as manager'), 'reservations.idManager', '=', 'manager.idUser')
+      ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
+      ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
+      ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva');
+  }
+
+  private function reservationsWheres(&$query, $search) {
+    $addFilter = Auth::user()->idPerfil <= 2 ||Auth::user()->idPerfil == 8;
+    $query->where(function($query) use ($search) {
+      $query->where(DB::raw("DATE_FORMAT(date, '%d-%m-%Y')"), 'like', '%'. $search .'%')
+        ->orWhere('customer','like','%' . $search . '%')
+        ->orWhere('centers.name','like','%' . $search . '%')
+        ->orWhere('num_habitacion', 'like', '%'. $search .'%');
+    });
+
+    $query->when($addFilter, function($query) use ($search) {
+      $query->orWhere(DB::raw("CONCAT(receptionist.name, ' ', COALESCE(receptionist.lastname,''))"), 'like', '%'. $search .'%')
+        ->orWhere(DB::raw("CONCAT(manager.name, ' ', COALESCE(manager.lastname,''))"), 'like', '%'. $search .'%');
+    });
   }
 }

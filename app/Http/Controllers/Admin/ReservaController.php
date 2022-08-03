@@ -47,20 +47,8 @@ class ReservaController extends Controller
 
   public function loadTable(Request $request): array
   {
-    $isPhotographer = Auth::user()->idPerfil == 3;
-    $date = date('Y-m-d');
     $this->setUpSearchConfig($request);
-    $reservations = $this->reservationsJoins()
-      ->where('reservations.state',1)->where(DB::raw('DATE(date)'),'>=',$date)->when($isPhotographer, function($query) {
-        $query->where('reservations.idManager','=', Auth::user()->idUser);
-      })
-      ->select('reservations.idReservation', 'reservations.date', 'reservations.pax', 'reservations.idCenter',
-      'reservations.num_habitacion', 'reservations.state', DB::raw("reservations.customer as client"),
-      DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"), 'reservations.idManager',
-      DB::raw("CONCAT(manager.name,' ', COALESCE(manager.lastname,'')) as manager"),'reservations.idClient', 'reservations.idReceptionist',
-      DB::raw('centers.name as center'), DB::raw('schedules.hour'), DB::raw('schedules.minute')
-      , 'reservations_info_finish.id_reserva');
-    return $this->getSearchDataResult($reservations);
+    return $this->getSearchDataResult();
   }
 
     public function index()
@@ -693,13 +681,4 @@ class ReservaController extends Controller
         return true;
     }
 
-    private function reservationsJoins(): Builder
-    {
-      return DB::table('reservations')
-        ->leftJoin(DB::raw('users as receptionist'), 'reservations.idReceptionist', '=', 'receptionist.idUser')
-        ->leftJoin(DB::raw('users as manager'), 'reservations.idManager', '=', 'manager.idUser')
-        ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
-        ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
-        ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva');
-    }
 }
