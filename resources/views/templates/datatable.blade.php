@@ -3,6 +3,7 @@
     $responsive = $responsive ?? true;
     $showSearch = $showSearch ?? 'true';
     $serverSide = $serverSide ?? 'false';
+    $scrollX = $scrollX ?? true;
 @endphp
 
 <div class="row">
@@ -10,7 +11,7 @@
         <h2>{{ $title }}</h2>
     </div>
     <div class="col-12">
-        <table id="{{ $tableId }}" class="table table-responsive">
+        <table id="{{ $tableId }}" class="table table-responsive " >
             <thead>
             @foreach($headers as $header)
                 <th>{{ $header }}</th>
@@ -28,6 +29,7 @@
             "responsive" : '{{$responsive}}',
             "bFilter": '{{$showSearch}}',
             "bSort": true,
+            "scrollX": '{{ $scrollX }}',
             "serverSide": {{$serverSide}},
             "processing": true,
             "aaSorting": [[0,"desc"]],
