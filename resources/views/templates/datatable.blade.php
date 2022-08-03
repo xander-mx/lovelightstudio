@@ -3,6 +3,7 @@
     $responsive = $responsive ?? true;
     $showSearch = $showSearch ?? 'true';
     $serverSide = $serverSide ?? 'false';
+    $scrollX = $scrollX ?? false;
 @endphp
 
 <div class="row">
@@ -28,6 +29,7 @@
             "responsive" : '{{$responsive}}',
             "bFilter": '{{$showSearch}}',
             "bSort": true,
+            "scrollX": '{{ $scrollX }}',
             "serverSide": {{$serverSide}},
             "processing": true,
             "aaSorting": [[0,"desc"]],

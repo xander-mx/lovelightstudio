@@ -44,6 +44,7 @@
                               'tableId' => 'sold-table',
                               'title' => 'Listado de Sesiones Vendidas',
                               'serverSide' => 'true',
+                              'scrollX' => true,
                               'headers' => ReservesSoldController::$headers,
                               'fields' => ReservesSoldController::$fields,
                               'urlTable' => route(ReservesSoldController::$routeIndex),
