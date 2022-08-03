@@ -15,8 +15,8 @@ trait ReservaDataTable
   protected function getSearchDataResult(): array
   {
     $search = strtoupper( $this->searchConfig['search'] );
-    $query = $this->reservationsSelect('>=');
-    $query2 = $this->reservationsSelect('<');
+    $query = $this->reservationsSelect('>=',1);
+    $query2 = $this->reservationsSelect('<',2);
     if (!empty($search)) {
      $this->reservationsWheres($query, $search);
      $this->reservationsWheres($query2, $search);
@@ -24,7 +24,8 @@ trait ReservaDataTable
     $query->orderBy('reservations.date')->orderBy('schedules.hour')->orderBy('schedules.minute');
     $query2->orderBy('reservations.date','desc')->orderBy('schedules.hour')
       ->orderBy('schedules.minute');
-    $queryFinal = $query->union($query2);
+    $queryFinal = $query->union($query2)->orderBy('order')->orderBy('date', 'desc')->orderBy('hour')
+      ->orderBy('minute');
 
     $this->searchConfig['recordsFiltered'] = $queryFinal->count();
 
@@ -104,14 +105,14 @@ trait ReservaDataTable
     }
   }
 
-  private function reservationsSelect($conditional) {
+  private function reservationsSelect($conditional, $secondColumnDate) {
     $isPhotographer = Auth::user()->idPerfil == 3;
     $date = date('Y-m-d');
     $reservations = $this->reservationsJoins()
       ->where('reservations.state',1)->where(DB::raw('DATE(date)'),$conditional,$date)->when($isPhotographer, function($query) {
         $query->where('reservations.idManager','=', Auth::user()->idUser);
       })
-      ->select('reservations.idReservation', 'reservations.date', 'reservations.pax', 'reservations.idCenter',
+      ->select('reservations.idReservation', 'reservations.date',DB::raw($secondColumnDate." as 'order'") , 'reservations.pax', 'reservations.idCenter',
         'reservations.num_habitacion', 'reservations.state', DB::raw("reservations.customer as client"),
         DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"), 'reservations.idManager',
         DB::raw("CONCAT(manager.name,' ', COALESCE(manager.lastname,'')) as manager"),'reservations.idClient', 'reservations.idReceptionist',
