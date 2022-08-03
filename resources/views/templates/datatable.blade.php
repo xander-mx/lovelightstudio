@@ -3,7 +3,7 @@
     $responsive = $responsive ?? true;
     $showSearch = $showSearch ?? 'true';
     $serverSide = $serverSide ?? 'false';
-    $scrollX = $scrollX ?? true;
+    $scrollX = $scrollX ?? false;
 @endphp
 
 <div class="row">
@@ -11,7 +11,7 @@
         <h2>{{ $title }}</h2>
     </div>
     <div class="col-12">
-        <table id="{{ $tableId }}" class="table table-responsive " >
+        <table id="{{ $tableId }}" class="table table-responsive">
             <thead>
             @foreach($headers as $header)
                 <th>{{ $header }}</th>
