@@ -12,24 +12,18 @@ trait ReservaDataTable
 {
   use BaseDataTable;
 
-  protected function getSearchDataResult(): array
+  protected function getSearchDataResult($query): array
   {
     $search = strtoupper( $this->searchConfig['search'] );
-    $query = $this->reservationsSelect('>=',1);
-    $query2 = $this->reservationsSelect('<',2);
+
     if (!empty($search)) {
      $this->reservationsWheres($query, $search);
-     $this->reservationsWheres($query2, $search);
     }
-    $query->orderBy('reservations.date')->orderBy('schedules.hour')->orderBy('schedules.minute');
-    $query2->orderBy('reservations.date','desc')->orderBy('schedules.hour')
-      ->orderBy('schedules.minute');
-    $queryFinal = $query->union($query2)->orderBy('order')->orderBy('date', 'desc')->orderBy('hour')
-      ->orderBy('minute');
 
-    $this->searchConfig['recordsFiltered'] = $queryFinal->count();
+    $this->searchConfig['recordsFiltered'] = $query->count();
+    $reservations = $query->orderBy('reservations.date')->orderBy('schedules.hour')->orderBy('schedules.minute')
+      ->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )->get();
 
-    $reservations = $queryFinal->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )->get();
     $data = [];
     foreach($reservations as $reservation)
       $data[] = $this->getDataRow($reservation);
@@ -103,33 +97,6 @@ trait ReservaDataTable
       $info->state = $labelStatus;
       $info->num_habitacion = (filled($reservation->num_habitacion) ? $reservation->num_habitacion : "S/H");
     }
-  }
-
-  private function reservationsSelect($conditional, $secondColumnDate) {
-    $isPhotographer = Auth::user()->idPerfil == 3;
-    $date = date('Y-m-d');
-    $reservations = $this->reservationsJoins()
-      ->where('reservations.state',1)->where(DB::raw('DATE(date)'),$conditional,$date)->when($isPhotographer, function($query) {
-        $query->where('reservations.idManager','=', Auth::user()->idUser);
-      })
-      ->select('reservations.idReservation', 'reservations.date',DB::raw($secondColumnDate." as 'order'") , 'reservations.pax', 'reservations.idCenter',
-        'reservations.num_habitacion', 'reservations.state', DB::raw("reservations.customer as client"),
-        DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"), 'reservations.idManager',
-        DB::raw("CONCAT(manager.name,' ', COALESCE(manager.lastname,'')) as manager"),'reservations.idClient', 'reservations.idReceptionist',
-        DB::raw('centers.name as center'), DB::raw('schedules.hour'), DB::raw('schedules.minute')
-        , 'reservations_info_finish.id_reserva');
-
-    return $reservations;
-  }
-
-  private function reservationsJoins(): Builder
-  {
-    return DB::table('reservations')
-      ->leftJoin(DB::raw('users as receptionist'), 'reservations.idReceptionist', '=', 'receptionist.idUser')
-      ->leftJoin(DB::raw('users as manager'), 'reservations.idManager', '=', 'manager.idUser')
-      ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
-      ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
-      ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva');
   }
 
   private function reservationsWheres(&$query, $search) {
