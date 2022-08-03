@@ -44,7 +44,7 @@
                               'tableId' => 'sold-table',
                               'title' => 'Listado de Sesiones Vendidas',
                               'serverSide' => 'true',
-                              'responsive' => false,
+                              'scrollX' => true,
                               'headers' => ReservesSoldController::$headers,
                               'fields' => ReservesSoldController::$fields,
                               'urlTable' => route(ReservesSoldController::$routeIndex),
@@ -55,7 +55,7 @@
                         @if (Auth::user()->idPerfil > 2 && Auth::user()->idPerfil != 8)
                                 @include('templates.datatable', [
                                   'tableId' => 'sold-table',
-                                  'title' => 'Listado de Sesiones Vendidas',
+                                  'title' => 'Listado de Reservas Vendidas',
                                   'serverSide' => 'true',
                                   'headers' => ReservesSoldController::$headersPhotographer,
                                   'fields' => ReservesSoldController::$fieldsPhotographer,
