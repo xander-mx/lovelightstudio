@@ -20,6 +20,7 @@ use App\Notifications\notifyFotografo;
 use App\Notifications\sendSupervisor;
 use App\Notifications\TwilioSender;
 use App\Traits\ReservaDataTable;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,26 +35,23 @@ class ReservaController extends Controller
 {
 
   use ReservaDataTable;
-  public static $headers = array('Horario', 'Cliente', 'Pax');
-  public static $indexHeaders = array('Fecha', 'Hora', 'Hotel', 'Nombre', 'Recepcionista', 'Encargado', 'Pax', 'Acciones');
-  public static $indexHeadersPhotographer = array('Fecha', 'Hora', 'Hotel', 'Nombre', 'Habitación', 'Pax', 'Estado', 'Acciones');
-  public static $indexHeadersClient = array('Nombre', 'Hotel', 'Habitación', 'Fecha', 'Hora', 'Pax', 'Estado', 'Acciones');
-  public static $fields = array('schedule', 'client', 'pax');
-  public static $indexFields = array('date', 'hour', 'center', 'client', 'receptionist', 'manager', 'pax', 'actions');
-  public static $indexFieldsPhotographer = array('date', 'hour', 'center', 'client', 'num_habitacion', 'pax', 'state', 'actions');
-  public static $indexFieldsClient = array('client', 'center', 'num_habitacion', 'date', 'hour', 'pax', 'state', 'actions');
-  public static $routeIndexTable = 'reserva.table';
+  public static array $headers = array('Horario', 'Cliente', 'Pax');
+  public static array $indexHeaders = array('Fecha', 'Hora', 'Hotel', 'Nombre', 'Recepcionista', 'Encargado', 'Pax', 'Acciones');
+  public static array $indexHeadersPhotographer = array('Fecha', 'Hora', 'Hotel', 'Nombre', 'Habitación', 'Pax', 'Estado', 'Acciones');
+  public static array $indexHeadersClient = array('Nombre', 'Hotel', 'Habitación', 'Fecha', 'Hora', 'Pax', 'Estado', 'Acciones');
+  public static array $fields = array('schedule', 'client', 'pax');
+  public static array $indexFields = array('date', 'hour', 'center', 'client', 'receptionist', 'manager', 'pax', 'actions');
+  public static array $indexFieldsPhotographer = array('date', 'hour', 'center', 'client', 'num_habitacion', 'pax', 'state', 'actions');
+  public static array $indexFieldsClient = array('client', 'center', 'num_habitacion', 'date', 'hour', 'pax', 'state', 'actions');
+  public static string $routeIndexTable = 'reserva.table';
 
-  public function loadTable(Request $request) {
+  public function loadTable(Request $request): array
+  {
     $isPhotographer = Auth::user()->idPerfil == 3;
+    $date = date('Y-m-d');
     $this->setUpSearchConfig($request);
-    $reservations = DB::table('reservations')
-      ->leftJoin(DB::raw('users as receptionist'), 'reservations.idReceptionist', '=', 'receptionist.idUser')
-      ->leftJoin(DB::raw('users as manager'), 'reservations.idManager', '=', 'manager.idUser')
-      ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
-      ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
-      ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva')
-      ->where('reservations.state',1)->when($isPhotographer, function($query) {
+    $reservations = $this->reservationsJoins()
+      ->where('reservations.state',1)->where(DB::raw('DATE(date)'),'>=',$date)->when($isPhotographer, function($query) {
         $query->where('reservations.idManager','=', Auth::user()->idUser);
       })
       ->select('reservations.idReservation', 'reservations.date', 'reservations.pax', 'reservations.idCenter',
@@ -156,28 +154,26 @@ class ReservaController extends Controller
             DB::commit();
 
         } catch (\Throwable $th) {
-            //throw $th;
-        dd($request->all(),$th);
           DB::rollBack();
-        return redirect()->back()->with('message_error', 'error');
+          dd($request->all(),$th);
+          return redirect()->back()->with('message_error', 'error');
         }
+
       if(!env('TESTING')) {
         Mail::to($reservaInfo['email'])->send(new CorreoFinalizar($reservaInfo, $reserva));
       }
 
         return redirect()->back()->with('message', 'Fotografo asignado correctamente'); 
     }
-    
 
     public function historialEliminada(Request $request)
     {
-         
-            $reservations = Reservations::fecha($request->fecha)->mes($request->mes)
-            ->where("state",'!=',1)
-            ->where("state",'!=',3)
-            ->orderby('date')
-            ->get();
-        return view('system.reservas.historial2', compact('reservations' ));
+          $reservations = Reservations::fecha($request->fecha)->mes($request->mes)
+          ->where("state",'!=',1)
+          ->where("state",'!=',3)
+          ->orderby('date')
+          ->get();
+      return view('system.reservas.historial2', compact('reservations' ));
     }
 
     public function historial(Request $request)
@@ -233,12 +229,10 @@ class ReservaController extends Controller
                 ->get());
             }
         }
-           
-           
-        // dd($trabajadores,$reservasNumeroHoy);
         
         return view('system.reservas.historial', compact('reservations','horamaxima','trabajadores','reservasNumeroHoy'));
     }
+
     public function ChangeHora(Request $request)
     {
         # code...
@@ -641,7 +635,6 @@ class ReservaController extends Controller
 
         DB::beginTransaction();
         try {
-
             $reserva = Reservations::where('idReservation', $request->idReserva)->first();
             $reserva->state = 3;//osea falta que el admin o el otro cabron finalice
             $reserva->save();
@@ -654,7 +647,6 @@ class ReservaController extends Controller
             $reservaInfo->recibo = $request->recibo;
             $reservaInfo->save();
             DB::commit();
-
         } catch (\Throwable $th) {
           DB::rollBack();
           return redirect()->back()->with('message_error', 'error');
@@ -699,5 +691,15 @@ class ReservaController extends Controller
           return false;
         }
         return true;
+    }
+
+    private function reservationsJoins(): Builder
+    {
+      return DB::table('reservations')
+        ->leftJoin(DB::raw('users as receptionist'), 'reservations.idReceptionist', '=', 'receptionist.idUser')
+        ->leftJoin(DB::raw('users as manager'), 'reservations.idManager', '=', 'manager.idUser')
+        ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
+        ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
+        ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva');
     }
 }

@@ -110,6 +110,7 @@ Reserva', 'activeButton' => 'reservas'])
         let foto =JSON.parse( '{!! $trabajadores !!}');
         let routeEditReservation = '{{ route('reserva.edit', [':center',':id']) }}';
         let routeClientForm = '{{route('reserva.info')}}';
+        let routeFinalizeReserve = '{{ route('reserva.finalizar') }}';
     </script>
     {!! Html::script('assets/js/reservationsIndex.js') !!}
 @endpush

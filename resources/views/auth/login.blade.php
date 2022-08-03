@@ -1,7 +1,7 @@
 @extends('layouts/app', ['activePage' => 'login', 'title' => 'Lovelight'])
 
 @section('content')
-    <div class="full-page section-image" data-color="black" data-image="{{ asset('light-bootstrap/img/full-screen-image-2.jpg') }}">
+    <div class="full-page section-image" data-color="black" data-image="{{ asset('assets/img/full-screen-image-2.jpg') }}">
         <div class="content pt-5">
             <div class="container mt-5">
                 <div class="col-md-4 col-sm-6 ml-auto mr-auto">

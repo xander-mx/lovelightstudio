@@ -1,4 +1,4 @@
-@component('templates.modal', ['modalId' => 'actions-modal', 'title' => 'Acciones', 'clickClose' => 'closeAction()',
+@component('templates.modal', ['modalId' => 'actions-modal', 'title' => 'Acciones',
            'close' => true, 'backdrop' => true])
     @slot('body')
         <div class="modal-body">
