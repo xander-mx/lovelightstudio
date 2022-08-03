@@ -47,6 +47,18 @@
                 if(search.length !== 0 && search.length < 3)
                     return false;
             },
+            "columnDefs": [
+                @if(isset($columnDefs))
+                    @foreach($columnDefs as $def)
+                        { className: '{{ $def["className"] }}', "targets": [{{ $def['target'] }}] },
+                    @endforeach
+                @endif
+                    @if(isset($columnProp))
+                        @foreach($columnProp as $def)
+                            { '{{ $def["prop"] }}': '{{ $def["propValue"] }}', "targets": [{{ $def['target'] }}] },
+                        @endforeach
+                @endif
+            ],
             "columns": [
                     @foreach($fields as $field)
                 {"data" : "{{ $field }}" }@if(!$loop->last),@endif

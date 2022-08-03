@@ -42,8 +42,8 @@ Tip 2: you can also add an image using data-image tag
                     <p>{{ __("reservas activas") }}</p>
                 </a>
             </li>
-            <li class="nav-item @if($activePage == 'reserva.historial') active @endif">
-                <a class="nav-link" href="{{route('reserva.historial')}}">
+            <li class="nav-item @if($activePage == 'reserves.sold.index') active @endif">
+                <a class="nav-link" href="{{route('reserves.sold.index')}}">
                     <i class="nc-icon nc-notes"></i>
                     <p>{{ __("vendidas") }}</p>
                 </a>
@@ -66,7 +66,7 @@ Tip 2: you can also add an image using data-image tag
             @endif
             @if (Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 10)
             <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#weddings-menu" @if($activeButton =='reservas') aria-expanded="true" @endif>
+                <a class="nav-link" data-toggle="collapse" href="#weddings-menu" @if($activeButton =='weddings') aria-expanded="true" @endif>
                     <i class="bi bi-gem"></i>
                     <p>
                         {{ __('Bodas') }}

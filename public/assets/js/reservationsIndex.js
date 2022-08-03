@@ -4,6 +4,9 @@ const FINALIZE_MODAL = $('#myModalFinalizar');
 const CLIENT_MODAL = $('#client-modal');
 const CLIENT_FORM = $('#client-form');
 const CLIENT_BUTTON = $('#clientBtn');
+const FINALIZE_BTN = $('#finalize-btn');
+
+FINALIZE_BTN.click(() => FINALIZE_BTN.prop( "disabled", false ));
 
 const openAction = (id,center =1) => {
     let url = routeEditReservation.replace(':center', center);
@@ -11,14 +14,6 @@ const openAction = (id,center =1) => {
     document.getElementById("linssk").href = url;
     document.getElementById('reservaCan_2').value= id;
     ACTIONS_MODAL.modal('show');
-}
-
-const closeAction = () => {
-    ACTIONS_MODAL.modal('hide');
-}
-
-const cerrarModal = () => {
-    PHOTOGRAPHER_MODAL.modal('hide');
 }
 
 const openModal = (id) => {
@@ -30,6 +25,7 @@ const openModal = (id) => {
 
 const openModalFinalizar = (id) => {
     document.getElementById('idReservaFina').value = id;
+    FINALIZE_BTN.prop( "disabled", false );
     FINALIZE_MODAL.modal('show');
 }
 
@@ -43,6 +39,5 @@ const openModalClient = (id) => {
     //CLIENT_FORM.attr('action', url);
     CLIENT_MODAL.modal('show');
 }
-
 
 //# sourceURL=reservationIndex.js
