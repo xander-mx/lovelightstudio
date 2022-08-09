@@ -49,7 +49,7 @@ trait ServiceDataTable
       'name' => $service->name,
       'description' => $service->description,
       'price' => '$ '.number_format($service->price,2),
-      'dlls' => '$ '.number_format($service->price_dlls,2),
+      'hours' => $service->hours,
       'actions' => $editButton->getIconButton()."    ". $deleteButton->getIconButton()
     ];
   }

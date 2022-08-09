@@ -25,16 +25,20 @@
         <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
         <!--     Fonts and icons     -->
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-
-        <!-- CSS Files -->
         <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+        <!-- CSS Files -->
         <link href="{{ asset('assets/css/light-bootstrap-dashboard.css?v=2.0.0') }} " rel="stylesheet" />
         <!-- CSS Just for demo purpose, don't include it in your project -->
         <link href="{{ asset('assets/css/demo.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/css/rome.css') }}" rel="stylesheet" />
         <link href="{{ asset('assets/css/loading.css') }}" rel="stylesheet" />
         <link href="{{ asset('assets/css/bootstrap-icons.css') }}" rel="stylesheet" />
+        <link rel="stylesheet" href="{{asset('assets/fonts/icomoon/style.css')}}" />
+
         @stack('styles')
         @yield('stylebb')
     </head>
@@ -71,12 +75,15 @@
 
         <!--   Core JS Files   -->
     <script src="{{ asset('assets/js/core/jquery.3.6.0.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('assets/js/core/popper.min.js') }}" type="text/javascript"></script>
+    <!--<script src=" asset('assets/js/core/popper.min.js') }}" type="text/javascript"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}" type="text/javascript"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
     <script src="{{ asset('assets/js/plugins/jquery.sharrre.js') }}"></script>
-
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="{{ asset('assets/js/rome.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('assets/js/owl.carousel.min.js') }}" type="text/javascript"></script>
     <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
     <script src="{{ asset('assets/js/plugins/bootstrap-switch.js') }}"></script>
     <!--  Google Maps Plugin    -->

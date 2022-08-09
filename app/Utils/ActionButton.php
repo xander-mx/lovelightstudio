@@ -201,4 +201,26 @@ class ActionButton
     return $button;
   }
 
+  public static function getDefaultEditButton(): ActionButton
+  {
+    return self::getDefaultButton("bi-pencil-square", "btn-warning", "Editar");
+  }
+
+  public static function getDefaultDeleteButton(): ActionButton
+  {
+    return self::getDefaultButton("bi-trash", "btn-danger", "Eliminar");
+  }
+
+  public static function getDefaultButton(string $icon, string $class, string $tooltip): ActionButton
+  {
+    $button = new ActionButton();
+    $button->setIcon(" bi ". $icon);
+    $button->removeClassButton('glyphicon');
+    $button->removeClassButton('btn-info');
+    $button->removeClassButton('btn-xs');
+    $button->addClassButton($class);
+    $button->setToolTip($tooltip);
+    return $button;
+  }
+
 }
