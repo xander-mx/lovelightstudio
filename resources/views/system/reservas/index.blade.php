@@ -86,12 +86,12 @@ Reserva', 'activeButton' => 'reservas'])
                                     @default
                                 @endswitch
                         @endif
+                        </div>
                     </div>
-                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     @if (Auth::user()->idPerfil == 3)
         @include('system.reservas.modals.finalize-modal')

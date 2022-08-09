@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\EventsController;
 use App\Http\Controllers\Admin\ReservaController;
 use App\Http\Controllers\Admin\ReservesSoldController;
 use App\Http\Controllers\Admin\ServicesController;
@@ -88,6 +89,12 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
       Route::get('/services/information/{id}', [ServicesController::class, 'getInformation'])->name('weddings.services.information');
       Route::delete('/services/delete/{id}', [ServicesController::class, 'delete'])->name('weddings.services.delete');
       Route::post('/services/save', [ServicesController::class, 'save'])->name('weddings.services.save');
+
+      Route::get('/events/index', [EventsController::class, 'index'])->name('weddings.events.index');
+      Route::get('/events/table', [EventsController::class, 'loadTable'])->name('weddings.events.table');
+      Route::get('/events/edit/{id}', [EventsController::class, 'getInformation'])->name('weddings.events.information');
+      Route::post('/events/save', [EventsController::class, 'save'])->name('weddings.events.save');
+      Route::delete('/events/delete/{id}', [EventsController::class, 'delete'])->name('weddings.events.delete');
     });
 
     Route::get('/notification', function () {

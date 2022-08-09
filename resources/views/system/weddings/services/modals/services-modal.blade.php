@@ -1,5 +1,5 @@
-@component('templates.modal', ['modalId' => 'services-modal', 'title' => 'Nuevo Paquete',
-                        'close' => true, 'backdrop' => true])
+@component('templates.modal', ['modalId' => 'services-modal', 'title' => 'Nuevo Paquete', 'close' => true,
+                               'backdrop' => true])
     @slot('body')
         <form id="services-form">
             <input type="hidden" name="id" id="id" />
@@ -22,16 +22,23 @@
             <div class="row">
                 <div class="form-group col-sm-12 col-md-6 col-lg-6">
                     <label for="name">Costo</label>
-                    <input type="number" name="price" id="price" class="form-control"
-                           value="@isset($service){{ $service->price }}@endisset">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-currency-dollar"></i>
+                        </span>
+                        <input type="number" name="price" id="price" class="form-control" />
+                    </div>
                 </div>
                 <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                    <label for="name">Costo Dolares</label>
-                    <input type="number" name="price_dlls" id="price_dlls" class="form-control"
-                           value="@isset($service){{ $service->price_dlls }}@endisset">
+                    <label for="name">Horas</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-clock"></i>
+                        </span>
+                        <input type="number" name="hours" id="hours" class="form-control" />
+                    </div>
                 </div>
             </div>
-
         </form>
     @endslot
     @slot('footer')

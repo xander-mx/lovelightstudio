@@ -44,14 +44,14 @@ Tip 2: you can also add an image using data-image tag
             </li>
             <li class="nav-item @if($activePage == 'reserves.sold.index') active @endif">
                 <a class="nav-link" href="{{route('reserves.sold.index')}}">
-                    <i class="nc-icon nc-notes"></i>
+                    <i class="bi bi-cart-check"></i>
                     <p>{{ __("vendidas") }}</p>
                 </a>
             </li>
             @if (Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 2 ||Auth::user()->idPerfil == 8 )
                 <li class="nav-item @if($activePage == 'reserva.historial.eliminada') active @endif">
                     <a class="nav-link" href="{{route('reserva.historial.eliminada')}}">
-                        <i class="nc-icon nc-notes"></i>
+                        <i class="bi bi-cart-x"></i>
                         <p>{{ __("canceladas") }}</p>
                     </a>
                 </li>
@@ -79,6 +79,12 @@ Tip 2: you can also add an image using data-image tag
                             <a class="nav-link" href="{{route('weddings.services.index')}}">
                                 <i class="bi bi-journal-album"></i>
                                 <p>{{ __("Paquetes") }}</p>
+                            </a>
+                        </li>
+                        <li class="nav-item @if($activePage == 'weddings.events.index') active @endif">
+                            <a class="nav-link" href="{{route('weddings.events.index')}}">
+                                <i class="bi bi-camera-reels"></i>
+                                <p>{{ __("Eventos") }}</p>
                             </a>
                         </li>
                     </ul>
