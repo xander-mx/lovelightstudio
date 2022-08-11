@@ -38,13 +38,13 @@ trait EventDataTable
     $deleteButton->setClick("deleteEvent(this)");
 
     return [
+      'event_date' => date('d-m-Y', strtotime($event->event_date)),
       'customer' => $event->customer,
       'center' => $event->center,
       'service' => $event->service,
-      'photographer' => $event->photographer,
+      'email' => $event->email,
       'phone' => $event->phone,
       'price' => '$ '.number_format($event->price,2),
-      'event_date' => date('d-m-Y', strtotime($event->event_date)),
       'actions' => $editButton->getIconButton()."    ". $deleteButton->getIconButton()
     ];
   }

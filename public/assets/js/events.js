@@ -7,6 +7,8 @@ const SERVICE_FIELD = EVENTS_FORM.find("[name = 'service']")
 const CENTER_FIELD = EVENTS_FORM.find("[name = 'center']")
 const PRICE_FIELD = EVENTS_FORM.find("[name = 'price']")
 const PERSONALIZE_DIV = document.querySelector('#divPersonalize')
+const HOTEL_FIELD = EVENTS_FORM.find("[name = 'hotel']")
+const PERSONALIZE_FIELD = EVENTS_FORM.find("[name = 'personalize']")
 
 const getDataServices = (id) => {
     if(id !== "16") {
@@ -38,9 +40,15 @@ const getDataServices = (id) => {
 
 EVENTS_BTN.click(() => showAnyModal(EVENTS_MODAL, 'Nuevo Evento'))
 SERVICE_FIELD.change((event) => {
-    PERSONALIZE_DIV.hidden = event.target.value !== "16"
+    PERSONALIZE_FIELD.attr("readonly", event.target.value !== "16")
     PRICE_FIELD.attr("readonly", event.target.value !== "16")
+    if(event.target.value !== "16") PERSONALIZE_FIELD.val('')
     getDataServices(event.target.value);
+})
+
+CENTER_FIELD.change((event) => {
+    HOTEL_FIELD.attr("readonly", Number(event.target.value) !== externalHotel)
+    if(Number(event.target.value) !== externalHotel) HOTEL_FIELD.val('')
 })
 
 EVENTS_MODAL.on('shown.bs.modal', function () {
@@ -60,6 +68,7 @@ EVENTS_MODAL.on('hidden.bs.modal', function () {
     EVENTS_FORM.find("[name = 'id']").val('')
     EVENTS_FORM.find("[name = 'customer']").val('')
     EVENTS_FORM.find("[name = 'phone']").val('')
+    EVENTS_FORM.find("[name = 'email']").val('')
     EVENTS_FORM.find("[name = 'price']").val('')
     EVENTS_FORM.find("[name = 'discount']").val('')
     EVENTS_FORM.find("[name = 'personalize']").val('')
@@ -134,6 +143,7 @@ const editEvent = (btn) => {
                 EVENTS_FORM.find("[name='price']").val(response.data.price.toString());
             }
             EVENTS_FORM.find("[name='phone']").val(response.data.phone);
+            EVENTS_FORM.find("[name='email']").val(response.data.email);
             EVENTS_FORM.find("[name='personalize']").val(response.data.personalize);
             EVENTS_FORM.find("[name = 'discount']").val(response.data.discount)
             EVENTS_FORM.find("[name = 'eventDate']").val(moment(new Date(response.data.event_date)).format('YYYY-MM-DD'))

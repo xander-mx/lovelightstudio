@@ -66,7 +66,8 @@ de Eventos', 'activeButton' => 'weddings'])
                                     'serverSide' => 'true',
                                     'headers' => EventsController::$headers,
                                     'fields' => EventsController::$fields,
-                                    'urlTable' => route(EventsController::$routeIndexTable)
+                                    'urlTable' => route(EventsController::$routeIndexTable),
+                                    'columnProp' => [['prop' => 'width', 'propValue' => 250,'target' => '2,3']]
                                 ])
                             </div>
                         </div>
@@ -83,6 +84,7 @@ de Eventos', 'activeButton' => 'weddings'])
         let routeSaveEvent = '{{ route('weddings.events.save') }}';
         let routeGetEvent = '{{ route('weddings.events.information',[':id']) }}';
         let routeDeleteEvent = '{{ route('weddings.events.delete', [':id']) }}';
+        let externalHotel = {{$external}};
     </script>
     {!! Html::script('assets/js/events.js') !!}
 @endpush
