@@ -53,7 +53,6 @@ const deleteCustomEntity = (btn, route, entity, datatable) => {
         confirmButtonText: '<i class="fa fa-thumbs-up"></i>  Si, eliminar',
         cancelButtonText: '<i class="fa fa-thumbs-down"></i> No, cancelar'
     }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
             $.ajax({
                 url: routeDeleteReplace,
@@ -85,5 +84,11 @@ const deleteCustomEntity = (btn, route, entity, datatable) => {
         } else if (result.isDenied) {
             Swal.fire('Se cancelo la eliminación', '', 'info')
         }
+    })
+}
+
+const clearAnyForm = (FORM, fields) => {
+    fields.forEach(field => {
+        FORM.find("[name = '"+field+"']").val('')
     })
 }

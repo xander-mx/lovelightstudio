@@ -14,8 +14,7 @@ trait EventDataTable
       $search = strtoupper( $this->searchConfig['search'] );
       $query->where('customer', 'like', '%'. $search .'%')
         ->orWhere('service', 'like', '%'. $search .'%')
-        ->orWhere('center', 'like', '%'. $search .'%')
-        ->orWhere('photographer', 'like', '%'. $search .'%');
+        ->orWhere('center', 'like', '%'. $search .'%');
     }
 
     $this->searchConfig['recordsFiltered'] = $query->count();
@@ -38,13 +37,13 @@ trait EventDataTable
     $deleteButton->setClick("deleteEvent(this)");
 
     return [
+      'event_date' => date('d-m-Y', strtotime($event->event_date)),
       'customer' => $event->customer,
       'center' => $event->center,
       'service' => $event->service,
-      'photographer' => $event->photographer,
+      'email' => $event->email,
       'phone' => $event->phone,
       'price' => '$ '.number_format($event->price,2),
-      'event_date' => date('d-m-Y', strtotime($event->event_date)),
       'actions' => $editButton->getIconButton()."    ". $deleteButton->getIconButton()
     ];
   }
