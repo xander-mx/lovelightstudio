@@ -87,6 +87,12 @@ Tip 2: you can also add an image using data-image tag
                                 <p>{{ __("Eventos") }}</p>
                             </a>
                         </li>
+                        <li class="nav-item @if($activePage == 'weddings.payments.index') active @endif">
+                            <a class="nav-link" href="{{route('weddings.payments.index')}}">
+                                <i class="bi bi-cash-coin"></i>
+                                <p>{{ __("Pagos") }}</p>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

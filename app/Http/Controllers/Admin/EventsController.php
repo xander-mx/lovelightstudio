@@ -31,7 +31,7 @@ class EventsController extends Controller
     $centers = Centers::all();
     $services = Services::all();
     $external = env('EXTERNAL_HOTEL');
-;    return view('system.weddings.events.index', compact('centers', 'services', 'external'));
+    return view('system.weddings.events.index', compact('centers', 'services', 'external'));
   }
 
   public function save(Request $request): JsonResponse
@@ -62,7 +62,8 @@ class EventsController extends Controller
       if($service->id != 16) {
         $event->price = $service->price;
       }
-      $event->event_date =date('Y-m-d H:i:s', strtotime($data['eventDate'] . " 00:00:00"));
+      if(!filled($data['id'])) $event->balance = $event->price;
+      $event->event_date = date('Y-m-d H:i:s', strtotime($data['eventDate'] . " 00:00:00"));
       $event->phone = str_replace(' ','',$data['phone']);
       $event->id_center = $center->idCenter;
       $event->center = $center->name;
@@ -91,12 +92,23 @@ class EventsController extends Controller
     return response()->json(['data' => $event, 'code' => 200]);
   }
 
-  public function delete($id) {
+  public function delete(int $id): JsonResponse
+  {
     try {
       Events::destroy($id);
     } catch  (\Throwable $th) {
       return response()->json(['message' => 'Error '. $th->getMessage(), 'code' => 401]);
     }
     return response()->json(['message' => 'Se elimino con exito!!!', 'code' => 200]);
+  }
+
+  public function autocomplete(string $search): array
+  {
+    $result = [];
+    $events = Events::where('balance','>',0)->where('customer','like', '%'. $search . '%')->skip(0)->take(10)->get();
+    foreach ($events as $event) {
+      $result[] = ['label' => $event->customer, 'value' => $event->customer, 'event' => $event->id];
+    }
+    return $result;
   }
 }

@@ -14,8 +14,7 @@ trait EventDataTable
       $search = strtoupper( $this->searchConfig['search'] );
       $query->where('customer', 'like', '%'. $search .'%')
         ->orWhere('service', 'like', '%'. $search .'%')
-        ->orWhere('center', 'like', '%'. $search .'%')
-        ->orWhere('photographer', 'like', '%'. $search .'%');
+        ->orWhere('center', 'like', '%'. $search .'%');
     }
 
     $this->searchConfig['recordsFiltered'] = $query->count();

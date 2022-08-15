@@ -6,7 +6,6 @@ const EVENTS_TABLE = $('#events-table')
 const SERVICE_FIELD = EVENTS_FORM.find("[name = 'service']")
 const CENTER_FIELD = EVENTS_FORM.find("[name = 'center']")
 const PRICE_FIELD = EVENTS_FORM.find("[name = 'price']")
-const PERSONALIZE_DIV = document.querySelector('#divPersonalize')
 const HOTEL_FIELD = EVENTS_FORM.find("[name = 'hotel']")
 const PERSONALIZE_FIELD = EVENTS_FORM.find("[name = 'personalize']")
 
@@ -65,13 +64,7 @@ EVENTS_MODAL.on('shown.bs.modal', function () {
 })
 
 EVENTS_MODAL.on('hidden.bs.modal', function () {
-    EVENTS_FORM.find("[name = 'id']").val('')
-    EVENTS_FORM.find("[name = 'customer']").val('')
-    EVENTS_FORM.find("[name = 'phone']").val('')
-    EVENTS_FORM.find("[name = 'email']").val('')
-    EVENTS_FORM.find("[name = 'price']").val('')
-    EVENTS_FORM.find("[name = 'discount']").val('')
-    EVENTS_FORM.find("[name = 'personalize']").val('')
+    clearAnyForm(EVENTS_FORM, ['id', 'customer', 'phone', 'email', 'price', 'discount', 'personalize'])
 })
 
 const saveEvent = () => {

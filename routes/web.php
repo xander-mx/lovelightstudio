@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Admin\EventsController;
+use App\Http\Controllers\Admin\PaymentsController;
 use App\Http\Controllers\Admin\ReservaController;
 use App\Http\Controllers\Admin\ReservesSoldController;
 use App\Http\Controllers\Admin\ServicesController;
@@ -93,8 +94,15 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
       Route::get('/events/index', [EventsController::class, 'index'])->name('weddings.events.index');
       Route::get('/events/table', [EventsController::class, 'loadTable'])->name('weddings.events.table');
       Route::get('/events/edit/{id}', [EventsController::class, 'getInformation'])->name('weddings.events.information');
+      Route::get('/events/autocomplete/{search}', [EventsController::class, 'autocomplete'])->name('weddings.events.autocomplete');
       Route::post('/events/save', [EventsController::class, 'save'])->name('weddings.events.save');
       Route::delete('/events/delete/{id}', [EventsController::class, 'delete'])->name('weddings.events.delete');
+
+      Route::get('/payments/table', [PaymentsController::class, 'loadTable'])->name('weddings.payments.table');
+      Route::get('/payments/index', [PaymentsController::class, 'index'])->name('weddings.payments.index');
+      Route::get('/payments/edit/{id}', [PaymentsController::class, 'getInformation'])->name('weddings.payments.information');
+      Route::post('/payments/save', [PaymentsController::class, 'save'])->name('weddings.payments.save');
+      Route::delete('/payments/delete/{id}', [PaymentsController::class, 'delete'])->name('weddings.payments.delete');
     });
 
     Route::get('/notification', function () {
