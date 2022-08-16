@@ -142,8 +142,8 @@ PAYMENTS_MODAL.on('hidden.bs.modal', function () {
     clearAnyForm(PAYMENTS_FORM, ['id', 'id_event', 'amount', 'voucher', 'event'])
     AMOUNT_FIELD.attr("readonly", true)
     VOUCHER_FIELD.attr("readonly", true)
-    PAYMENT_TYPE_FIELD.attr("disabled", false)
-    PAYMENTS_FORM.find("[name = 'paymentDate']").attr("readonly", false)
+    PAYMENT_TYPE_FIELD.attr("disabled", true)
+    PAYMENTS_FORM.find("[name = 'paymentDate']").attr("readonly", true)
 })
 
 PAYMENTS_MODAL.on('shown.bs.modal', function () {

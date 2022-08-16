@@ -10,14 +10,13 @@ use App\Traits\EventDataTable;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Env;
 use Illuminate\Support\Facades\DB;
 
 class EventsController extends Controller
 {
   use EventDataTable;
-  public static array $headers = array('Fecha','Cliente', 'Hotel', 'Paquete', 'Email', 'Teléfono', 'Costo', 'Acciones');
-  public static array $fields = array('event_date', 'customer', 'center', 'service', 'email', 'phone', 'price', 'actions');
+  public static array $headers = array('Fecha','Cliente', 'Hotel', 'Paquete', 'Email', 'Teléfono', 'Costo', 'Saldo', 'Acciones');
+  public static array $fields = array('event_date', 'customer', 'center', 'service', 'email', 'phone', 'price', 'balance', 'actions');
   public static string $routeIndexTable = 'weddings.events.table';
 
   public function loadTable(Request $request): array

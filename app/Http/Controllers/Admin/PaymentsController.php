@@ -52,10 +52,17 @@ class PaymentsController extends Controller
 
     DB::beginTransaction();
     try {
+      $event = Events::find($data['id_event']);
+      if($data['amount'] > $event->balance) {
+        return response()->json([
+          'code' => 401,
+          'data' => null,
+          'message' => 'El monto del pago es mayor al saldo del evento'
+        ]);
+      }
       $payment = filled($data['id']) ? Payments::find($data['id'])->fill($data) : new Payments($data);
       $payment->created_at = filled($payment->created_at) ? $payment->created_at : time();
       $payment->payment_date = date('Y-m-d H:i:s', strtotime($data['paymentDate'] . " 00:00:00"));
-      $event = Events::find($data['id_event']);
       $event->balance -=  $data['amount'];
       $payment->save();
       $event->save();

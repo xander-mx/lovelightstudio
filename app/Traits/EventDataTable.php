@@ -44,6 +44,7 @@ trait EventDataTable
       'email' => $event->email,
       'phone' => $event->phone,
       'price' => '$ '.number_format($event->price,2),
+      'balance' => '$ '.number_format($event->balance,2),
       'actions' => $editButton->getIconButton()."    ". $deleteButton->getIconButton()
     ];
   }
