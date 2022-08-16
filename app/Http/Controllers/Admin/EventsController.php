@@ -31,7 +31,8 @@ class EventsController extends Controller
     $centers = Centers::all();
     $services = Services::all();
     $external = env('EXTERNAL_HOTEL');
-    return view('system.weddings.events.index', compact('centers', 'services', 'external'));
+    $service_personalize = env('SERVICE_PERSONALIZE');
+    return view('system.weddings.events.index', compact('centers', 'services', 'external','service_personalize'));
   }
 
   public function save(Request $request): JsonResponse
@@ -49,7 +50,7 @@ class EventsController extends Controller
       'center.required' => 'El hotel es requerido!!!',
       'service.required' => 'El paquete es requerido!!!'
     ];
-
+    $service_personalize = env('SERVICE_PERSONALIZE');
     $this->validate($request, $rules, $messages);
     $data = $request->all();
 
@@ -59,7 +60,7 @@ class EventsController extends Controller
       $event->created_at = filled($event->created_at) ? $event->created_at : time();
       $center = Centers::find($data['center']);
       $service = Services::find($data['service']);
-      if($service->id != 16) {
+      if($service->id != $service_personalize) {
         $event->price = $service->price;
       }
       if(!filled($data['id'])) $event->balance = $event->price;

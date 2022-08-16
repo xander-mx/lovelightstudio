@@ -10,7 +10,7 @@ const HOTEL_FIELD = EVENTS_FORM.find("[name = 'hotel']")
 const PERSONALIZE_FIELD = EVENTS_FORM.find("[name = 'personalize']")
 
 const getDataServices = (id) => {
-    if(id !== "16") {
+    if(Number(id) !== service_personalize) {
         let routeGetInformationreplace = routeGetDataService.replace(':id', id);
         $.ajax({
             url: routeGetInformationreplace,
@@ -39,9 +39,9 @@ const getDataServices = (id) => {
 
 EVENTS_BTN.click(() => showAnyModal(EVENTS_MODAL, 'Nuevo Evento'))
 SERVICE_FIELD.change((event) => {
-    PERSONALIZE_FIELD.attr("readonly", event.target.value !== "16")
-    PRICE_FIELD.attr("readonly", event.target.value !== "16")
-    if(event.target.value !== "16") PERSONALIZE_FIELD.val('')
+    PERSONALIZE_FIELD.attr("readonly", Number(event.target.value) !== service_personalize)
+    PRICE_FIELD.attr("readonly", Number(event.target.value) !== service_personalize)
+    if(Number(event.target.value) !== service_personalize) PERSONALIZE_FIELD.val('')
     getDataServices(event.target.value);
 })
 
@@ -132,7 +132,7 @@ const editEvent = (btn) => {
             console.log(moment(new Date(response.data.event_date)).format('YYYY-MM-DD'))
             CENTER_FIELD.val(response.data.id_center).change();
             SERVICE_FIELD.val(response.data.id_service).change();
-            if(response.data.id_service === 16) {
+            if(response.data.id_service === service_personalize) {
                 EVENTS_FORM.find("[name='price']").val(response.data.price.toString());
             }
             EVENTS_FORM.find("[name='phone']").val(response.data.phone);
