@@ -85,6 +85,7 @@ de Eventos', 'activeButton' => 'weddings'])
         let routeGetEvent = '{{ route('weddings.events.information',[':id']) }}';
         let routeDeleteEvent = '{{ route('weddings.events.delete', [':id']) }}';
         let externalHotel = {{$external}};
+        let service_personalize = {{ $service_personalize }};
     </script>
     {!! Html::script('assets/js/events.js') !!}
 @endpush
