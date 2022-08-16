@@ -67,7 +67,8 @@ EVENTS_MODAL.on('shown.bs.modal', function () {
             container: "rd-container datepicker-rome"
         },
         initialValue: moment().format('YYYY-MM-DD'),
-        dateValidator: rome.val.afterEq(eventDate)
+        dateValidator: rome.val.afterEq(eventDate),
+        autoHideOnBlur: false
     })
     SERVICE_FIELD.trigger("change")
     CENTER_FIELD.trigger("change")
