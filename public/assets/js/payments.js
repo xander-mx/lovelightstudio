@@ -6,7 +6,6 @@ const VOUCHER_FIELD = PAYMENTS_FORM.find("[name = 'voucher']")
 const AMOUNT_FIELD = PAYMENTS_FORM.find("[name = 'amount']")
 const PAYMENTS_SAVE_BTN = $('#createPaymentBtn')
 const PAYMENTS_TABLE = $('#payments-table')
-let PAYMENT_DATE;
 
 PAYMENTS_ADD_BTN.click(() => showAnyModal(PAYMENTS_MODAL, 'Nuevo Pago'))
 PAYMENTS_SAVE_BTN.click(() => savePayment())
@@ -142,18 +141,19 @@ PAYMENTS_MODAL.on('hidden.bs.modal', function () {
     clearAnyForm(PAYMENTS_FORM, ['id', 'id_event', 'amount', 'voucher', 'event'])
     AMOUNT_FIELD.attr("readonly", true)
     VOUCHER_FIELD.attr("readonly", true)
-    PAYMENT_TYPE_FIELD.attr("disabled", false)
-    PAYMENTS_FORM.find("[name = 'paymentDate']").attr("readonly", false)
+    PAYMENT_TYPE_FIELD.attr("disabled", true)
+    PAYMENTS_FORM.find("[name = 'paymentDate']").attr("readonly", true)
 })
 
 PAYMENTS_MODAL.on('shown.bs.modal', function () {
-    PAYMENT_DATE = rome(paymentDate, {
+    rome(paymentDate, {
         time: false,
         styles: {
             container: "rd-container datepicker-rome "
         },
         initialValue: moment().format('YYYY-MM-DD'),
-        dateValidator: rome.val.afterEq(moment().format('YYYY-MM-DD'))
+        dateValidator: rome.val.afterEq(moment().format('YYYY-MM-DD')),
+        autoHideOnBlur: false
     })
 })
 
@@ -161,8 +161,4 @@ const deletePayment = (btn) => {
     deleteCustomEntity(btn, routePaymentDelete, 'el pago', PAYMENTS_TABLE)
 }
 
-$(".rd-back").on('click', function() {
-    PAYMENT_DATE.back()
-    PAYMENT_DATE.hide()
-})
 //# sourceURL=payments.js

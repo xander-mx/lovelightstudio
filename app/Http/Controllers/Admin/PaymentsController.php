@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Enums\EventStatus;
 use App\Models\Enums\PaymentType;
 use App\Models\Events;
 use App\Models\Payments;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 class PaymentsController extends Controller
 {
   use PaymentsDataTable;
+
+  const LIQUIDADO = 'LIQUIDADO';
   public static array $headers = array('Fecha de Pago','Cliente', 'Monto', 'Voucher', 'Forma de Pago', 'Acciones');
   public static array $fields = array('payment_date', 'customer', 'amount', 'voucher', 'payment_type', 'actions');
   public static string $routeIndexTable = 'weddings.payments.table';
@@ -52,11 +55,19 @@ class PaymentsController extends Controller
 
     DB::beginTransaction();
     try {
+      $event = Events::find($data['id_event']);
+      if($data['amount'] > $event->balance) {
+        return response()->json([
+          'code' => 401,
+          'data' => null,
+          'message' => 'El monto del pago es mayor al saldo del evento'
+        ]);
+      }
       $payment = filled($data['id']) ? Payments::find($data['id'])->fill($data) : new Payments($data);
       $payment->created_at = filled($payment->created_at) ? $payment->created_at : time();
       $payment->payment_date = date('Y-m-d H:i:s', strtotime($data['paymentDate'] . " 00:00:00"));
-      $event = Events::find($data['id_event']);
       $event->balance -=  $data['amount'];
+      if($event->balance == 0) $event->status = EventStatus::memberByKey(self::LIQUIDADO);
       $payment->save();
       $event->save();
       DB::commit();

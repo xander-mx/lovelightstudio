@@ -8,8 +8,8 @@ trait EventDataTable
 {
   use BaseDataTable;
 
-  protected function getSearchDataResult(&$query) {
-
+  protected function getSearchDataResult(&$query): array
+  {
     if ( !is_null( $this->searchConfig['search'] ) ) {
       $search = strtoupper( $this->searchConfig['search'] );
       $query->where('customer', 'like', '%'. $search .'%')
@@ -35,6 +35,8 @@ trait EventDataTable
     $deleteButton = ActionButton::getDefaultDeleteButton();
     $deleteButton->addAttribute('data-id', $event->id);
     $deleteButton->setClick("deleteEvent(this)");
+    $finalButtons = (!$event->status == 'LIQUIDADO') ? $editButton->getIconButton()."    ". $deleteButton->getIconButton()
+      : '';
 
     return [
       'event_date' => date('d-m-Y', strtotime($event->event_date)),
@@ -44,7 +46,8 @@ trait EventDataTable
       'email' => $event->email,
       'phone' => $event->phone,
       'price' => '$ '.number_format($event->price,2),
-      'actions' => $editButton->getIconButton()."    ". $deleteButton->getIconButton()
+      'balance' => '$ '.number_format($event->balance,2),
+      'actions' => $finalButtons
     ];
   }
 

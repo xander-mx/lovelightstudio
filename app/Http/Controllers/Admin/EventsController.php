@@ -4,26 +4,26 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Centers;
+use App\Models\Enums\EventStatus;
 use App\Models\Events;
 use App\Models\Services;
 use App\Traits\EventDataTable;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Env;
 use Illuminate\Support\Facades\DB;
 
 class EventsController extends Controller
 {
   use EventDataTable;
-  public static array $headers = array('Fecha','Cliente', 'Hotel', 'Paquete', 'Email', 'Teléfono', 'Costo', 'Acciones');
-  public static array $fields = array('event_date', 'customer', 'center', 'service', 'email', 'phone', 'price', 'actions');
+  public static array $headers = array('Fecha','Cliente', 'Hotel', 'Paquete', 'Email', 'Teléfono', 'Costo', 'Saldo', 'Acciones');
+  public static array $fields = array('event_date', 'customer', 'center', 'service', 'email', 'phone', 'price', 'balance', 'actions');
   public static string $routeIndexTable = 'weddings.events.table';
 
   public function loadTable(Request $request): array
   {
     $this->setUpSearchConfig($request);
-    $events = DB::table('events');
+    $events = DB::table('events')->where('status', $this->searchConfig['status'] );
     return $this->getSearchDataResult($events);
   }
 
@@ -32,7 +32,8 @@ class EventsController extends Controller
     $services = Services::all();
     $external = env('EXTERNAL_HOTEL');
     $service_personalize = env('SERVICE_PERSONALIZE');
-    return view('system.weddings.events.index', compact('centers', 'services', 'external','service_personalize'));
+    $status = EventStatus::members();
+    return view('system.weddings.events.index', compact('centers', 'services', 'external','service_personalize', 'status'));
   }
 
   public function save(Request $request): JsonResponse

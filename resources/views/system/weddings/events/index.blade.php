@@ -51,9 +51,26 @@ de Eventos', 'activeButton' => 'weddings'])
                     <div class="row">
                         <div class="card col-md-12">
                             <div class="card-body">
-                                <button type="button" class="btn btn-primary float-right" id="events-add">
-                                    <i class="bi bi-plus"></i>Nuevo Evento
-                                </button>
+                                <div style="display: inline-block" class="form-group col-sm-12 col-md-6 col-lg-6 float-left">
+                                    <label for="status">Estatus</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-filter-circle"></i>
+                                        </span>
+                                        <select name="status" id="status" class="form-control">
+                                            @foreach($status as $s)
+                                                <option value="{{ $s }}" @if($s == 'PENDIENTE') selected @endif>{{ $s->message() }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="display: inline-block" class="form-group col-sm-12 col-md-6 col-lg-6 float-left">
+                                    <br/>
+                                    <button type="button" style="display: inline-block" class="btn btn-primary float-right" id="events-add">
+                                        <i class="bi bi-plus"></i>Nuevo Evento
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -67,7 +84,8 @@ de Eventos', 'activeButton' => 'weddings'])
                                     'headers' => EventsController::$headers,
                                     'fields' => EventsController::$fields,
                                     'urlTable' => route(EventsController::$routeIndexTable),
-                                    'columnProp' => [['prop' => 'width', 'propValue' => 250,'target' => '2,3']]
+                                    'columnProp' => [['prop' => 'width', 'propValue' => 250,'target' => '2,3']],
+                                    'dataFunction' => 'getStatus_fn'
                                 ])
                             </div>
                         </div>
