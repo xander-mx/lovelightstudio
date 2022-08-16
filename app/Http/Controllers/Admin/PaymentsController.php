@@ -18,6 +18,7 @@ class PaymentsController extends Controller
   use PaymentsDataTable;
 
   const LIQUIDADO = 'LIQUIDADO';
+  const PENDIENTE = 'PENDIENTE';
   public static array $headers = array('Fecha de Pago','Cliente', 'Monto', 'Voucher', 'Forma de Pago', 'Acciones');
   public static array $fields = array('payment_date', 'customer', 'amount', 'voucher', 'payment_type', 'actions');
   public static string $routeIndexTable = 'weddings.payments.table';
@@ -98,6 +99,7 @@ class PaymentsController extends Controller
       $payment = Payments::find($id)->get();
       $event = Events::find($payment[0]->id_event);
       $event->balance += $payment[0]->amount;
+      $event->status = EventStatus::memberByKey(self::PENDIENTE);
       Payments::destroy($id);
       $event->save();
     } catch  (\Throwable $th) {

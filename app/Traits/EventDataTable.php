@@ -35,7 +35,7 @@ trait EventDataTable
     $deleteButton = ActionButton::getDefaultDeleteButton();
     $deleteButton->addAttribute('data-id', $event->id);
     $deleteButton->setClick("deleteEvent(this)");
-    $finalButtons = (!$event->status == 'LIQUIDADO') ? $editButton->getIconButton()."    ". $deleteButton->getIconButton()
+    $finalButtons = ($event->status != 'LIQUIDADO') ? $editButton->getIconButton()."    ". $deleteButton->getIconButton()
       : '';
 
     return [
