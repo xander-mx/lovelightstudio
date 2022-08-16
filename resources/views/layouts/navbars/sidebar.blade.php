@@ -9,8 +9,10 @@ Tip 2: you can also add an image using data-image tag
     background: #ffc0cb;
 ">
         <div class="logo">
+
             <a href="https://lovelight.com.mx/" class="simple-text">
-                {{ __("Love Light Studio") }}
+                <img src="{{ asset('logo/love-light-studio-logo.jpg') }}" style="align-content: center"
+                     alt="Love Light Studio" width="230px">
             </a>
         </div>
         <ul class="nav">
