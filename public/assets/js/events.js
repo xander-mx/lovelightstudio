@@ -8,6 +8,7 @@ const CENTER_FIELD = EVENTS_FORM.find("[name = 'center']")
 const PRICE_FIELD = EVENTS_FORM.find("[name = 'price']")
 const HOTEL_FIELD = EVENTS_FORM.find("[name = 'hotel']")
 const PERSONALIZE_FIELD = EVENTS_FORM.find("[name = 'personalize']")
+const STATUS_FILTER = $('#status')
 
 const getDataServices = (id) => {
     if(Number(id) !== service_personalize) {
@@ -37,6 +38,11 @@ const getDataServices = (id) => {
     }
 }
 
+const getStatus_fn = (d) => {
+    d.status = STATUS_FILTER.val()
+    return d
+}
+
 EVENTS_BTN.click(() => showAnyModal(EVENTS_MODAL, 'Nuevo Evento'))
 SERVICE_FIELD.change((event) => {
     PERSONALIZE_FIELD.attr("readonly", Number(event.target.value) !== service_personalize)
@@ -48,6 +54,10 @@ SERVICE_FIELD.change((event) => {
 CENTER_FIELD.change((event) => {
     HOTEL_FIELD.attr("readonly", Number(event.target.value) !== externalHotel)
     if(Number(event.target.value) !== externalHotel) HOTEL_FIELD.val('')
+})
+
+STATUS_FILTER.change(() => {
+    EVENTS_TABLE.DataTable().ajax.reload()
 })
 
 EVENTS_MODAL.on('shown.bs.modal', function () {

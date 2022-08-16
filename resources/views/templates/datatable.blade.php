@@ -23,8 +23,13 @@
     </div>
 </div>
 
-@push('js')
+@section('script')
     <script type="text/javascript">
+        @if(isset($dataFunction))
+        $('#{{ $tableId }}').on('preXhr.dt', function ( e, settings, data ) {
+
+        });
+        @endif
         $('#{{ $tableId }}').DataTable({
             "responsive" : '{{$responsive}}',
             "bFilter": '{{$showSearch}}',
@@ -36,7 +41,12 @@
             "bSortClasses": true,
             "bProcessing": true,
             @isset($urlTable)
-            "ajax": '{{ $urlTable }}',
+            "ajax": {
+                "url": '{{ $urlTable }}',
+                @isset($dataFunction)
+                "data": {!! $dataFunction !!}
+                @endisset
+            },
             @endisset
             "rowCallback" : function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 console.log('rowCallBack {{$tableId}}');
@@ -99,4 +109,4 @@
             }
         });
     </script>
-@endpush
+@endsection

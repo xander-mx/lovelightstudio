@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Enums\EventStatus;
 use App\Models\Enums\PaymentType;
 use App\Models\Events;
 use App\Models\Payments;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 class PaymentsController extends Controller
 {
   use PaymentsDataTable;
+
+  const LIQUIDADO = 'LIQUIDADO';
   public static array $headers = array('Fecha de Pago','Cliente', 'Monto', 'Voucher', 'Forma de Pago', 'Acciones');
   public static array $fields = array('payment_date', 'customer', 'amount', 'voucher', 'payment_type', 'actions');
   public static string $routeIndexTable = 'weddings.payments.table';
@@ -64,6 +67,7 @@ class PaymentsController extends Controller
       $payment->created_at = filled($payment->created_at) ? $payment->created_at : time();
       $payment->payment_date = date('Y-m-d H:i:s', strtotime($data['paymentDate'] . " 00:00:00"));
       $event->balance -=  $data['amount'];
+      if($event->balance == 0) $event->status = EventStatus::memberByKey(self::LIQUIDADO);
       $payment->save();
       $event->save();
       DB::commit();

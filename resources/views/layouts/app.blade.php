@@ -70,8 +70,8 @@
 
     </body>
     <script type="text/javascript">
-      var Protocol_ = window.location.protocol;
-      var UrlHost_ = Protocol_+"//"+"{{$_SERVER["HTTP_HOST"]}}";
+      let Protocol_ = window.location.protocol;
+      let UrlHost_ = Protocol_+"//"+"{{$_SERVER["HTTP_HOST"]}}";
     </script>
 
         <!--   Core JS Files   -->
