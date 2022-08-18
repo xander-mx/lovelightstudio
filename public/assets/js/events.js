@@ -1,8 +1,13 @@
 const EVENTS_BTN = $('#events-add')
-const EVENTS_MODAL =$('#events-modal')
+const EVENTS_MODAL = $('#events-modal')
+const ADD_PAYMENT_MODAL =$('#add-payment-modal')
+const INFO_PAYMENT_MODAL =$('#info-payment-modal')
+const ADD_PAYMENT_FORM = $('#events-payments-form')
+const ADD_PAYMENT_BTN = $('#addPaymentEventBtn')
 const EVENTS_FORM = $('#events-form')
 const EVENTS_BTN_SAVE = $('#createEventBtn')
 const EVENTS_TABLE = $('#events-table')
+const INFO_PAYMENTS_TABLE =$('#info-payments-table')
 const SERVICE_FIELD = EVENTS_FORM.find("[name = 'service']")
 const CENTER_FIELD = EVENTS_FORM.find("[name = 'center']")
 const PRICE_FIELD = EVENTS_FORM.find("[name = 'price']")
@@ -43,6 +48,12 @@ const getStatus_fn = (d) => {
     return d
 }
 
+const getEvent_fn = (d) => {
+    d.event = $('#id_event_payment').val()
+    return d
+}
+
+ADD_PAYMENT_BTN.click(() => saveAddPayment())
 EVENTS_BTN.click(() => showAnyModal(EVENTS_MODAL, 'Nuevo Evento'))
 SERVICE_FIELD.change((event) => {
     PERSONALIZE_FIELD.attr("readonly", Number(event.target.value) !== service_personalize)
@@ -72,6 +83,23 @@ EVENTS_MODAL.on('shown.bs.modal', function () {
     })
     SERVICE_FIELD.trigger("change")
     CENTER_FIELD.trigger("change")
+})
+
+ADD_PAYMENT_MODAL.on('shown.bs.modal', function () {
+    rome(paymentDate, {
+        time: false,
+        styles: {
+            container: "rd-container datepicker-rome"
+        },
+        initialValue: moment().format('YYYY-MM-DD'),
+        dateValidator: rome.val.afterEq(eventDate),
+        autoHideOnBlur: false
+    })
+})
+
+INFO_PAYMENT_MODAL.on('shown.bs.modal', function() {
+    INFO_PAYMENTS_TABLE.DataTable().ajax.url(routeInfoPaymentsRender)
+    INFO_PAYMENTS_TABLE.DataTable().ajax.reload()
 })
 
 EVENTS_MODAL.on('hidden.bs.modal', function () {
@@ -124,7 +152,7 @@ const saveEvent = () => {
 }
 
 const editEvent = (btn) => {
-    let id = $(btn).data("id");
+    let id = $(btn).data("id")
     let routeGetInformationreplace = routeGetEvent.replace(':id', id);
 
     $.ajax({
@@ -170,5 +198,68 @@ const editEvent = (btn) => {
 const deleteEvent = (btn) => {
     deleteCustomEntity(btn, routeDeleteEvent, 'el evento', EVENTS_TABLE)
 }
+
+const addPayment = (btn) => {
+    let id = $(btn).data("id")
+    showAnyModal(ADD_PAYMENT_MODAL, 'Agregar Pago')
+    ADD_PAYMENT_FORM.find("[ name = 'id_event']").val(id)
+}
+
+const saveAddPayment = () => {
+    let formData = new FormData(document.getElementById("events-payments-form"));
+    ADD_PAYMENT_BTN.prop( "disabled", true );
+
+    $.ajax ({
+        url: routeAddPaymentSave,
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        cache: false,
+        contentType: false,
+        processData: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        beforeSend: function() {
+            $(".content_loading").fadeIn("slow");
+        }
+    })
+        .done(function(response) {
+            if (response.code === 200) {
+                Swal.fire({title: 'Muy bien!', text:'El pago se creó correctamente', icon:'success'})
+                EVENTS_TABLE.DataTable().ajax.reload();
+            }else if (response.code === 400) {
+                showAjaxErrors(response)
+            }else {
+                Swal.fire({title: 'Ops!', text:response.message, icon:'error'})
+            }
+        })
+        .fail(function(jqXHR, textStatus, errorThrown)  {
+            Swal.fire({
+                title: 'Ups!',
+                text: jqXHR.responseJSON.message,
+                type: "warning",
+                animation: false,
+                showConfirmButton: true
+            })
+        })
+        .always(function() {
+            $(".content_loading").fadeOut("slow");
+            ADD_PAYMENT_BTN.prop( "disabled", false );
+            ADD_PAYMENT_MODAL.modal('toggle');
+        })
+}
+
+const infoPayment = (btn) => {
+    let id = $(btn).data("id")
+    let customer = $(btn).data("customer")
+    routeInfoPaymentsRender = routeInfoPayments.replace(':id',id)
+    showAnyModal(INFO_PAYMENT_MODAL, customer)
+}
+
+ADD_PAYMENT_MODAL.on('hidden.bs.modal', function () {
+    clearAnyForm(ADD_PAYMENT_FORM, ['id_event', 'amount', 'voucher', 'event'])
+})
+
 
 //# sourceURL=events.js

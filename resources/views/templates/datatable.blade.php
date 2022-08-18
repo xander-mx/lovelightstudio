@@ -1,9 +1,10 @@
 
 @php
-    $responsive = $responsive ?? true;
+    $responsive = $responsive ?? 'true';
     $showSearch = $showSearch ?? 'true';
     $serverSide = $serverSide ?? 'false';
-    $scrollX = $scrollX ?? false;
+    $scrollX = $scrollX ?? 'false';
+    $autoWidth = $autoWidth ?? 'true';
 @endphp
 
 <div class="row">
@@ -23,7 +24,7 @@
     </div>
 </div>
 
-@section('script')
+@push('lastJs')
     <script type="text/javascript">
         @if(isset($dataFunction))
         $('#{{ $tableId }}').on('preXhr.dt', function ( e, settings, data ) {
@@ -31,10 +32,12 @@
         });
         @endif
         $('#{{ $tableId }}').DataTable({
-            "responsive" : '{{$responsive}}',
-            "bFilter": '{{$showSearch}}',
+            "responsive" : {{$responsive}},
+            "bFilter": {{$showSearch}},
+            "autoWidth": {{ $autoWidth }},
+            "bInfo": {{$showSearch}},
             "bSort": true,
-            "scrollX": '{{ $scrollX }}',
+            "scrollX": {{ $scrollX }},
             "serverSide": {{$serverSide}},
             "processing": true,
             "aaSorting": [[0,"desc"]],
@@ -109,4 +112,4 @@
             }
         });
     </script>
-@endsection
+@endpush

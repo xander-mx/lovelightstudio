@@ -34,7 +34,7 @@ class ActionButton
   public function __construct()
   {
     $this->addClassButton('btn btn-info btn-xs ');
-    $this->setIcon('glyphicon ');
+    $this->setIcon('bi ');
     $this->setSpinner(false);
   }
 
@@ -214,8 +214,7 @@ class ActionButton
   public static function getDefaultButton(string $icon, string $class, string $tooltip): ActionButton
   {
     $button = new ActionButton();
-    $button->setIcon(" bi ". $icon);
-    $button->removeClassButton('glyphicon');
+    $button->setIcon($icon);
     $button->removeClassButton('btn-info');
     $button->removeClassButton('btn-xs');
     $button->addClassButton($class);
