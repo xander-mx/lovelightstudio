@@ -69,7 +69,6 @@ de Pagos', 'activeButton' => 'weddings'])
                                     'headers' => PaymentsController::$headers,
                                     'fields' => PaymentsController::$fields,
                                     'urlTable' => route(PaymentsController::$routeIndexTable)
-                                    /*'columnProp' => [['prop' => 'width', 'propValue' => 250,'target' => '2,3']]*/
                                 ])
                             </div>
                         </div>

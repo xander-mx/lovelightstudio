@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Centers;
 use App\Models\Enums\EventStatus;
+use App\Models\Enums\PaymentType;
 use App\Models\Events;
 use App\Models\Services;
 use App\Traits\EventDataTable;
@@ -18,7 +19,10 @@ class EventsController extends Controller
   use EventDataTable;
   public static array $headers = array('Fecha','Cliente', 'Hotel', 'Paquete', 'Email', 'Teléfono', 'Costo', 'Saldo', 'Acciones');
   public static array $fields = array('event_date', 'customer', 'center', 'service', 'email', 'phone', 'price', 'balance', 'actions');
+  public static array $headersPayments = array('Fecha de Pago', 'Monto', 'Voucher', 'Forma de Pago');
+  public static array $fieldsPayments = array('payment_date', 'amount', 'voucher', 'payment_type');
   public static string $routeIndexTable = 'weddings.events.table';
+  public static string $routeIndexTablePayments = 'weddings.events.payments.table';
 
   public function loadTable(Request $request): array
   {
@@ -27,13 +31,23 @@ class EventsController extends Controller
     return $this->getSearchDataResult($events);
   }
 
+  public function loadPaymentsTable(Request $request, int $id): array
+  {
+    $arr = [];
+    $this->setUpSearchConfig($request);
+    $event = Events::find($id);
+    if(!isset($event) || sizeof($event->payments) == 0) return $this->getSearchResult($arr);
+    return $this->getSearchDataResultPayments($event->payments);
+  }
+
   public function index() {
     $centers = Centers::all();
     $services = Services::all();
     $external = env('EXTERNAL_HOTEL');
     $service_personalize = env('SERVICE_PERSONALIZE');
     $status = EventStatus::members();
-    return view('system.weddings.events.index', compact('centers', 'services', 'external','service_personalize', 'status'));
+    $paymentTypes = PaymentType::members();
+    return view('system.weddings.events.index', compact('centers', 'services', 'external','service_personalize', 'status', 'paymentTypes'));
   }
 
   public function save(Request $request): JsonResponse
@@ -65,6 +79,7 @@ class EventsController extends Controller
         $event->price = $service->price;
       }
       if(!filled($data['id'])) $event->balance = $event->price;
+      if(filled($data['discount']) && $data['discount'] > 0) $event->balance -= $event->discount;
       $event->event_date = date('Y-m-d H:i:s', strtotime($data['eventDate'] . " 00:00:00"));
       $event->phone = str_replace(' ','',$data['phone']);
       $event->id_center = $center->idCenter;

@@ -161,6 +161,7 @@
         });
       });
     </script>
+    @stack('lastJs')
               @yield('script')
 
 </html>
