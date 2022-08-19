@@ -55,7 +55,7 @@ class PaymentsController extends Controller
     $data = $request->all();
 
     $event = Events::find($data['id_event']);
-    if($data['amount'] > $event->balance) {
+    if($data['amount'] > $event->balance && !(isset($data['id']) && filled($data['id']))) {
       return response()->json([
         'code' => 401,
         'data' => null,
@@ -64,7 +64,14 @@ class PaymentsController extends Controller
     }
     DB::beginTransaction();
     try {
-      $payment = isset($data['id']) && filled($data['id']) ? Payments::find($data['id'])->fill($data) : new Payments($data);
+      if(isset($data['id']) && filled($data['id'])) {
+        $payment = Payments::find($data['id']);
+        $oldAmount = $payment->amount;
+        $payment->fill($data);
+        $event->balance += $oldAmount;
+      } else {
+        $payment = new Payments($data);
+      }
       $payment->created_at = filled($payment->created_at) ? $payment->created_at : time();
       $payment->payment_date = date('Y-m-d H:i:s', strtotime($data['paymentDate'] . " 00:00:00"));
       $event->balance -=  $data['amount'];
