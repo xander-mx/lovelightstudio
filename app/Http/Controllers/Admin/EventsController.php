@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class EventsController extends Controller
 {
@@ -113,10 +114,47 @@ class EventsController extends Controller
   {
     try {
       Events::destroy($id);
-    } catch  (\Throwable $th) {
+    } catch  (Throwable $th) {
       return response()->json(['message' => 'Error '. $th->getMessage(), 'code' => 401]);
     }
     return response()->json(['message' => 'Se elimino con exito!!!', 'code' => 200]);
+  }
+
+  public function saveLinks(Request $request): JsonResponse
+  {
+    $rules = [
+      'id' => 'required',
+      'photos' => 'required',
+      'code' => 'required'
+    ];
+
+    $messages = [
+      'photos.required' => 'El link de fotos es obligatorio!!!',
+      'id.required' => 'El evento es requerido!!!',
+      'code.required' => 'El código es obligatorio!!!'
+    ];
+    try {
+      $this->validate($request, $rules, $messages);
+      $data = $request->all();
+      $event = Events::find($data['id']);
+      if($event == null) {
+        return response()->json(['message' => 'No existe el evento!!!', 'code' => 401]);
+      }
+      $event->photos = $data['photos'];
+      $event->code = $data['code'];
+      $event->video = filled($data['video']) ? $data['video'] : null;
+      $event->save();
+    } catch  (Throwable $th) {
+      $error = '';
+      if(sizeOf($th->validator->messages()) > 0) {
+        foreach ($th->validator->messages()->all() as $message)
+          $error .= $message. ' ';
+      }  else {
+        $error = $th->getMessage();
+      }
+      return response()->json(['message' => $error, 'code' => 401]);
+    }
+    return response()->json(['message' => 'Links enviados!!!', 'code' => 200]);
   }
 
   public function autocomplete(string $search): array

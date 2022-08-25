@@ -96,6 +96,7 @@ de Eventos', 'activeButton' => 'weddings'])
     @include('system.weddings.events.modals.events-modal')
     @include('system.weddings.events.modals.add-payment-modal')
     @include('system.weddings.events.modals.info-payments-modal')
+    @include('system.weddings.events.modals.links-modal')
 @endsection
 
 @push('js')
@@ -108,6 +109,7 @@ de Eventos', 'activeButton' => 'weddings'])
         let externalHotel = {{$external}};
         let service_personalize = {{ $service_personalize }};
         let routeInfoPayments = '{{ route('weddings.events.payments.table',[':id']) }}';
+        let routeLinksEvent = '{{ route('weddings.events.links',[':id']) }}';
         let routeInfoPaymentsRender;
     </script>
     {!! Html::script('assets/js/events.js') !!}

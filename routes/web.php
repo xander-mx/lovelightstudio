@@ -97,6 +97,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
       Route::get('/events/edit/{id}', [EventsController::class, 'getInformation'])->name('weddings.events.information');
       Route::get('/events/autocomplete/{search}', [EventsController::class, 'autocomplete'])->name('weddings.events.autocomplete');
       Route::post('/events/save', [EventsController::class, 'save'])->name('weddings.events.save');
+      Route::post('/events/links/{id}', [EventsController::class, 'saveLinks'])->name('weddings.events.links');
       Route::delete('/events/delete/{id}', [EventsController::class, 'delete'])->name('weddings.events.delete');
 
       Route::get('/payments/table', [PaymentsController::class, 'loadTable'])->name('weddings.payments.table');

@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Enums\PaymentType;
 use App\Utils\ActionButton;
+use Illuminate\Notifications\Action;
 
 trait EventDataTable
 {
@@ -29,13 +30,13 @@ trait EventDataTable
 
   private function getDataRow($event): array
   {
-    $showPaymentsButton = ActionButton::getDefaultButton('bi bi-file-earmark-text', 'btn-dark'
+    $showPaymentsButton = ActionButton::getDefaultButton(' bi-file-earmark-text', 'btn-dark'
       , 'Mostrar Pagos');
     $showPaymentsButton->addAttribute('data-id', $event->id);
     $showPaymentsButton->addAttribute('data-customer', $event->customer);
     $showPaymentsButton->setClick("infoPayment(this)");
 
-    $paymentButton = ActionButton::getDefaultButton('bi bi-cash', 'btn-info', 'Agregar Pago');
+    $paymentButton = ActionButton::getDefaultButton(' bi-cash', 'btn-info', 'Agregar Pago');
     $paymentButton->addAttribute('data-id', $event->id);
     $paymentButton->setClick("addPayment(this)");
 
@@ -43,11 +44,15 @@ trait EventDataTable
     $editButton->addAttribute('data-id', $event->id);
     $editButton->setClick("editEvent(this)");
 
+    $emailButton = ActionButton::getDefaultButton(' bi-envelope-paper-heart', 'btn-info', 'Enviar fotos');
+    $emailButton->addAttribute('data-id', $event->id);
+    $emailButton->setClick("captureLinks(this)");
+
     $deleteButton = ActionButton::getDefaultDeleteButton();
     $deleteButton->addAttribute('data-id', $event->id);
     $deleteButton->setClick("deleteEvent(this)");
     $finalButtons = ($event->status != 'LIQUIDADO') ? $editButton->getIconButton()."    ".$deleteButton->getIconButton()
-      . "    ". $paymentButton->getIconButton() : '';
+      . "    ". $paymentButton->getIconButton() : $emailButton->getIconButton();
     $finalButtons .= "    ". $showPaymentsButton->getIconButton();
 
     return [
