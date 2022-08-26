@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EmailingTo;
 use App\Models\Centers;
 use App\Models\Enums\EventStatus;
 use App\Models\Enums\PaymentType;
@@ -13,6 +14,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 class EventsController extends Controller
@@ -134,6 +136,7 @@ class EventsController extends Controller
       'code.required' => 'El código es obligatorio!!!'
     ];
     try {
+      DB::beginTransaction();
       $this->validate($request, $rules, $messages);
       $data = $request->all();
       $event = Events::find($data['id']);
@@ -144,7 +147,11 @@ class EventsController extends Controller
       $event->code = $data['code'];
       $event->video = filled($data['video']) ? $data['video'] : null;
       $event->save();
+      Mail::to($event->email)->send(new EmailingTo($event, 'mail.photos','Fotos Boda',
+        env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+      DB::commit();
     } catch  (Throwable $th) {
+      DB::rollBack();
       $error = '';
       if(sizeOf($th->validator->messages()) > 0) {
         foreach ($th->validator->messages()->all() as $message)
