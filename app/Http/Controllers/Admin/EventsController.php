@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EmailingTo;
 use App\Models\Centers;
 use App\Models\Enums\EventStatus;
 use App\Models\Enums\PaymentType;
@@ -13,6 +14,8 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class EventsController extends Controller
 {
@@ -113,10 +116,63 @@ class EventsController extends Controller
   {
     try {
       Events::destroy($id);
-    } catch  (\Throwable $th) {
+    } catch  (Throwable $th) {
       return response()->json(['message' => 'Error '. $th->getMessage(), 'code' => 401]);
     }
     return response()->json(['message' => 'Se elimino con exito!!!', 'code' => 200]);
+  }
+
+  public function saveLinks(Request $request): JsonResponse
+  {
+    $rules = [
+      'id' => 'required',
+      'photos' => 'required',
+      'code' => 'required'
+    ];
+
+    $messages = [
+      'photos.required' => 'El link de fotos es obligatorio!!!',
+      'id.required' => 'El evento es requerido!!!',
+      'code.required' => 'El código es obligatorio!!!'
+    ];
+    try {
+      DB::beginTransaction();
+      $this->validate($request, $rules, $messages);
+      $data = $request->all();
+      $event = Events::find($data['id']);
+      if($event == null) {
+        return response()->json(['message' => 'No existe el evento!!!', 'code' => 401]);
+      }
+      $event->photos = $data['photos'];
+      $event->code = $data['code'];
+      $event->video = filled($data['video']) ? $data['video'] : null;
+      $event->canvas = filled($data['canvas']) ? $data['canvas'] : 1;
+      $event->photobooks = filled($data['photobooks']) ? $data['photobooks'] : 1;
+      $event->save();
+      //if(!env('TESTING')) {
+        Mail::to($event->email)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
+          env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+      //}
+      DB::commit();
+    } catch (Throwable $th) {
+      DB::rollBack();
+      $error = '';
+      if(sizeOf($th->validator->messages()) > 0) {
+        foreach ($th->validator->messages()->all() as $message)
+          $error .= $message. ' ';
+      }  else {
+        $error = $th->getMessage();
+      }
+      return response()->json(['message' => $error, 'code' => 401]);
+    }
+    return response()->json(['message' => 'Links enviados!!!', 'code' => 200]);
+  }
+
+  public function canvas(Request $request, int $id, String $code)
+  {
+    $event = Events::find($id);
+    throw_if(!$event || $event->code != $code, 'no existe');
+    return view('system.weddings.events.canvas', compact('event'));
   }
 
   public function autocomplete(string $search): array

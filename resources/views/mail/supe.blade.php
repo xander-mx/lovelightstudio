@@ -16,6 +16,5 @@
 <h4> Pax : {{ $reserva->pax }}</h4>
 <h4> Teléfono : {{ $reserva->phone }}</h4>
 <h4> Whatsapp : <a href="https://api.whatsapp.com/send?phone={{ str_replace('+','',$reserva->phone) }}">{{ $reserva->phone }}</a></h4>
->>>>>>> 1a51eaa06e5241944f835ef3950b794e905fe6a4
 </body>
 </html>

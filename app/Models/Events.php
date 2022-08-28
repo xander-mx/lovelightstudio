@@ -15,4 +15,10 @@ class Events extends Model
   {
     return $this->hasMany(Payments::class, 'id_event');
   }
+
+  public function gifts(): HasMany
+  {
+    return $this->hasMany(Gifts::class, 'id_event');
+
+  }
 }
