@@ -45,6 +45,26 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                    <label for="canvas">Cantidad Canvas</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-bag-heart"></i>
+                        </span>
+                        <input name="canvas" id="canvas" type="number" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                    <label for="photobooks">Cantidad Libros</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-book"></i>
+                        </span>
+                        <input name="photobooks" id="photobooks" type="number" class="form-control" />
+                    </div>
+                </div>
+            </div>
         </form>
     @endslot
 

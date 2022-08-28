@@ -288,6 +288,8 @@ const captureLinks = (btn) => {
                 LINKS_FORM.find("[name='photos']").val(response.data.photos);
                 LINKS_FORM.find("[name='video']").val(response.data.video);
                 LINKS_FORM.find("[name='code']").val(response.data.code);
+                LINKS_FORM.find("[name='canvas']").val(response.data.canvas);
+                LINKS_FORM.find("[name='photobooks']").val(response.data.photobooks);
             }
             showAnyModal(LINKS_MODAL,'Links Evento')
         })

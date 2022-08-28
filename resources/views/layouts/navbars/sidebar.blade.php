@@ -9,7 +9,7 @@ Tip 2: you can also add an image using data-image tag
     background: #ffc0cb;
 ">
         <div class="logo" style="background-color: white; border: #0c0c0c; border-style: solid; border-top-style: hidden;
-         border-width: thin; border-color: lightgrey">
+         border-width: thin; border-color: lightgrey;" >
             <a href="https://lovelight.com.mx/" class="simple-text">
                 <img src="{{ asset('logo/love-light-studio-logo.jpg') }}" style="align-content: center"
                      alt="Love Light Studio" width="230px">

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Admin\EventsController;
+use App\Http\Controllers\Admin\GiftsController;
 use App\Http\Controllers\Admin\PaymentsController;
 use App\Http\Controllers\Admin\ReservaController;
 use App\Http\Controllers\Admin\ReservesSoldController;
@@ -35,6 +36,8 @@ Route::get('/', function () {
 
 Route::get('/reserva/cliente/information', [ReservaController::class, 'cliente'])->name('reserva.info');
 Route::post('/reserva/cliente', [ReservaController::class, 'clientecrear'])->name('reserva.cliente.post');
+Route::get('/events/{id}/canvas/{code}', [EventsController::class, 'canvas'])->name('weddings.events.canvas');
+Route::post('/gifts/save', [GiftsController::class, 'save'])->name('weddings.gifts.save');
 
 Auth::routes(['excepts' => 'register']);
 

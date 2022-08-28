@@ -146,11 +146,15 @@ class EventsController extends Controller
       $event->photos = $data['photos'];
       $event->code = $data['code'];
       $event->video = filled($data['video']) ? $data['video'] : null;
+      $event->canvas = filled($data['canvas']) ? $data['canvas'] : 1;
+      $event->photobooks = filled($data['photobooks']) ? $data['photobooks'] : 1;
       $event->save();
-      Mail::to($event->email)->send(new EmailingTo($event, 'mail.photos','Fotos Boda',
-        env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+      //if(!env('TESTING')) {
+        Mail::to($event->email)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
+          env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+      //}
       DB::commit();
-    } catch  (Throwable $th) {
+    } catch (Throwable $th) {
       DB::rollBack();
       $error = '';
       if(sizeOf($th->validator->messages()) > 0) {
@@ -162,6 +166,13 @@ class EventsController extends Controller
       return response()->json(['message' => $error, 'code' => 401]);
     }
     return response()->json(['message' => 'Links enviados!!!', 'code' => 200]);
+  }
+
+  public function canvas(Request $request, int $id, String $code)
+  {
+    $event = Events::find($id);
+    throw_if(!$event || $event->code != $code, 'no existe');
+    return view('system.weddings.events.canvas', compact('event'));
   }
 
   public function autocomplete(string $search): array

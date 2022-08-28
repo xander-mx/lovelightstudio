@@ -18,6 +18,8 @@
 <h4><a href="{{ $event->photos }}">Click para ver fotos de la boda</a></h4>
 <h4>Video:</h4>
 <h4><a href="{{ $event->video }}">Click para ver el video de la Boda</a></h4>
+<h4>Canvas y Libros:</h4>
+<h4><a href="{{ URL::signedRoute('weddings.events.canvas',['id' => $event->id, 'code' => $event->code]) }}">Click para elegir fotos para canvas y libros</a></h4>
 <h4>Código:</h4> <h2><strong>{{$event->code}}</strong></h2>
 </body>
 </html>
