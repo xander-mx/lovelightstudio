@@ -35,7 +35,7 @@ class GiftsController extends Controller
     } catch (\Throwable $th) {
       DB::rollBack();
       $error = '';
-      if(sizeOf($th->validator->messages()) > 0) {
+      if(isset($th->validator) && sizeOf($th->validator->messages()) > 0) {
         foreach ($th->validator->messages()->all() as $message)
           $error .= $message. ' ';
       }  else {
