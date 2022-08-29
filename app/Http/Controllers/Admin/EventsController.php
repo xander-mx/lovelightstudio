@@ -149,10 +149,13 @@ class EventsController extends Controller
       $event->canvas = filled($data['canvas']) ? $data['canvas'] : 1;
       $event->photobooks = filled($data['photobooks']) ? $data['photobooks'] : 1;
       $event->save();
-      //if(!env('TESTING')) {
+      if(!env('TESTING')) {
         Mail::to($event->email)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
           env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
-      //}
+        if(isset($data['email']))
+          Mail::to($data['email'])->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
+            env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+      }
       DB::commit();
     } catch (Throwable $th) {
       DB::rollBack();

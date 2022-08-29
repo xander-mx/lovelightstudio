@@ -309,7 +309,7 @@ const captureLinks = (btn) => {
 
 const saveLinks = () => {
     let formData = new FormData(document.getElementById("links-form"));
-    let routeLinksEventSave = routeLinksEvent.replace(formData.get('id'), ':id')
+    let routeLinksEventSave = routeLinksEvent.replace( ':id', formData.get('id'))
     $.ajax ({
         url: routeLinksEventSave,
         type: 'POST',
@@ -338,7 +338,7 @@ const saveLinks = () => {
         .fail(function(jqXHR, textStatus, errorThrown)  {
             Swal.fire({
                 title: 'Ups!',
-                text: jqXHR.responseJSON.message,
+                text: jqXHR.statusText,
                 type: "warning",
                 animation: false,
                 showConfirmButton: true
