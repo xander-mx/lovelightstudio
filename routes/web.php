@@ -102,12 +102,15 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
       Route::post('/events/save', [EventsController::class, 'save'])->name('weddings.events.save');
       Route::post('/events/links/{id}', [EventsController::class, 'saveLinks'])->name('weddings.events.links');
       Route::delete('/events/delete/{id}', [EventsController::class, 'delete'])->name('weddings.events.delete');
+      Route::put('/events/finalize/{id}', [EventsController::class, 'finalize'])->name('weddings.events.finalize');
 
       Route::get('/payments/table', [PaymentsController::class, 'loadTable'])->name('weddings.payments.table');
       Route::get('/payments/index', [PaymentsController::class, 'index'])->name('weddings.payments.index');
       Route::get('/payments/edit/{id}', [PaymentsController::class, 'getInformation'])->name('weddings.payments.information');
       Route::post('/payments/save', [PaymentsController::class, 'save'])->name('weddings.payments.save');
       Route::delete('/payments/delete/{id}', [PaymentsController::class, 'delete'])->name('weddings.payments.delete');
+
+      Route::get('/gifts/{id}', [GiftsController::class, 'getGiftsInfo'])->name('weddings.gifts.obtain');
     });
 
     Route::get('/notification', function () {

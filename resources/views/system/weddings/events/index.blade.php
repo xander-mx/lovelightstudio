@@ -97,6 +97,7 @@ de Eventos', 'activeButton' => 'weddings'])
     @include('system.weddings.events.modals.add-payment-modal')
     @include('system.weddings.events.modals.info-payments-modal')
     @include('system.weddings.events.modals.links-modal')
+    @include('system.weddings.events.modals.gifts-modal')
 @endsection
 
 @push('js')
@@ -110,6 +111,8 @@ de Eventos', 'activeButton' => 'weddings'])
         let service_personalize = {{ $service_personalize }};
         let routeInfoPayments = '{{ route('weddings.events.payments.table',[':id']) }}';
         let routeLinksEvent = '{{ route('weddings.events.links',[':id']) }}';
+        let routeFinalizeEvent = '{{ route('weddings.events.finalize', [':id']) }}';
+        let routeGiftsObtain = ' {{ route('weddings.gifts.obtain', [':id']) }}';
         let routeInfoPaymentsRender;
     </script>
     {!! Html::script('assets/js/events.js') !!}

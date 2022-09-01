@@ -19,6 +19,7 @@ final class EventStatus extends AbstractMultiton
     new EventStatus('PENDIENTE', 'Pendiente');
     new EventStatus('LIQUIDADO', 'Liquidado');
     new EventStatus('CANCELADO', 'Cancelado');
+    new EventStatus('FINALIZADO','Finalizado');
   }
 
   public function message(): string
