@@ -2,6 +2,7 @@ const EVENTS_BTN = $('#events-add')
 const EVENTS_MODAL = $('#events-modal')
 const ADD_PAYMENT_MODAL =$('#add-payment-modal')
 const INFO_PAYMENT_MODAL =$('#info-payment-modal')
+const GIFTS_MODAL = $('#gifts-modal')
 const LINKS_MODAL = $('#links-modal')
 const ADD_PAYMENT_FORM = $('#events-payments-form')
 const LINKS_FORM = $('#links-form')
@@ -11,6 +12,7 @@ const EVENTS_FORM = $('#events-form')
 const EVENTS_BTN_SAVE = $('#createEventBtn')
 const EVENTS_TABLE = $('#events-table')
 const INFO_PAYMENTS_TABLE =$('#info-payments-table')
+const CANVAS_DIV = $('#canvas-div')
 const SERVICE_FIELD = EVENTS_FORM.find("[name = 'service']")
 const CENTER_FIELD = EVENTS_FORM.find("[name = 'center']")
 const PRICE_FIELD = EVENTS_FORM.find("[name = 'price']")
@@ -350,5 +352,92 @@ const saveLinks = () => {
             LINKS_MODAL.modal('toggle');
         })
 }
+
+const finalizeEvent = (btn) => {
+    let id = $(btn).data("id")
+    let routeFinalizeEventComplete = routeFinalizeEvent.replace(':id', id)
+
+    Swal.fire({
+        title: 'Finalizar',
+        text: '¿Esta seguro de cerrar el evento?',
+        icon: 'warning',
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '<i class="fa fa-thumbs-up"></i>  Si, cerrar',
+        cancelButtonText: '<i class="fa fa-thumbs-down"></i> No, cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: routeFinalizeEventComplete,
+                type: 'PUT',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+                    $(".content_loading").fadeIn("slow");
+                }
+            })
+                .done(function(response) {
+                    EVENTS_TABLE.DataTable().ajax.reload();
+                    Swal.fire({title: 'Muy bien!', text:'Se cerro el evento', icon:'success'})
+                })
+                .fail(function(jqXHR, textStatus, errorThrown)  {
+                    Swal.fire({
+                        title: 'Ups!',
+                        text: jqXHR.responseJSON.message,
+                        type: "warning",
+                        animation: false,
+                        showConfirmButton: true
+                    })
+                })
+                .always(function() {
+                    $(".content_loading").fadeOut("slow");
+                })
+        } else if (result.isDenied) {
+            Swal.fire('Se cancelo ', '', 'info')
+        }
+    })
+}
+
+const obtainGifts = (btn) => {
+    let id = $(btn).data("id")
+    let routeGiftsObtainComplete = routeGiftsObtain.replace(':id', id)
+
+    $.ajax({
+        url: routeGiftsObtainComplete,
+        type: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        beforeSend: function() {
+            $(".content_loading").fadeIn("slow");
+        }
+    })
+        .done(function(response) {
+            let gifts = response.data
+            gifts.forEach( g => {
+                CANVAS_DIV.append(g)
+            })
+            showAnyModal(GIFTS_MODAL, 'Canvas y Photobooks')
+        })
+        .fail(function(jqXHR, textStatus, errorThrown)  {
+            Swal.fire({
+                title: 'Ups!',
+                text: jqXHR.responseJSON.message,
+                type: "warning",
+                animation: false,
+                showConfirmButton: true
+            })
+        })
+        .always(function() {
+            $(".content_loading").fadeOut("slow");
+        })
+}
+
+GIFTS_MODAL.on('hidden.bs.modal', function() {
+    CANVAS_DIV.html('')
+})
 
 //# sourceURL=events.js

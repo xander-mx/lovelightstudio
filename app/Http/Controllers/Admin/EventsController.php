@@ -20,6 +20,9 @@ use Throwable;
 class EventsController extends Controller
 {
   use EventDataTable;
+
+  const LIQUIDADO = 'LIQUIDADO';
+  const FINALIZADO = 'FINALIZADO';
   public static array $headers = array('Fecha','Cliente', 'Hotel', 'Paquete', 'Email', 'Teléfono', 'Costo', 'Saldo', 'Acciones');
   public static array $fields = array('event_date', 'customer', 'center', 'service', 'email', 'phone', 'price', 'balance', 'actions');
   public static array $headersPayments = array('Fecha de Pago', 'Monto', 'Voucher', 'Forma de Pago');
@@ -169,6 +172,22 @@ class EventsController extends Controller
       return response()->json(['message' => $error, 'code' => 401]);
     }
     return response()->json(['message' => 'Links enviados!!!', 'code' => 200]);
+  }
+
+  public function finalize(int $id): JsonResponse
+  {
+    try {
+      DB::beginTransaction();
+      $event = Events::find($id);
+      throw_if($event->status != self::LIQUIDADO || $event->balance > 0, "No es posible cerrar el evento!!!");
+      $event->status = self::FINALIZADO;
+      $event->save();
+      DB::commit();
+    } catch  (Throwable $th) {
+      DB::rollBack();
+      return response()->json(['message' => 'Error '. $th->getMessage(), 'code' => 401]);
+    }
+    return response()->json(['message' => 'Evento cerrado con exito!!!', 'code' => 200]);
   }
 
   public function canvas(Request $request, int $id, String $code)

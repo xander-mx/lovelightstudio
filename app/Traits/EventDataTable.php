@@ -30,30 +30,14 @@ trait EventDataTable
 
   private function getDataRow($event): array
   {
-    $showPaymentsButton = ActionButton::getDefaultButton(' bi-file-earmark-text', 'btn-dark'
+    $showPaymentsButton = ActionButton::getDefaultButton(' bi-file-earmark-text', 'btn-light'
       , 'Mostrar Pagos');
     $showPaymentsButton->addAttribute('data-id', $event->id);
     $showPaymentsButton->addAttribute('data-customer', $event->customer);
     $showPaymentsButton->setClick("infoPayment(this)");
 
-    $paymentButton = ActionButton::getDefaultButton(' bi-cash', 'btn-info', 'Agregar Pago');
-    $paymentButton->addAttribute('data-id', $event->id);
-    $paymentButton->setClick("addPayment(this)");
-
-    $editButton = ActionButton::getDefaultEditButton();
-    $editButton->addAttribute('data-id', $event->id);
-    $editButton->setClick("editEvent(this)");
-
-    $emailButton = ActionButton::getDefaultButton(' bi-envelope-paper-heart', 'btn-info', 'Enviar fotos');
-    $emailButton->addAttribute('data-id', $event->id);
-    $emailButton->setClick("captureLinks(this)");
-
-    $deleteButton = ActionButton::getDefaultDeleteButton();
-    $deleteButton->addAttribute('data-id', $event->id);
-    $deleteButton->setClick("deleteEvent(this)");
-    $finalButtons = ($event->status != 'LIQUIDADO') ? $editButton->getIconButton()."    ".$deleteButton->getIconButton()
-      . "    ". $paymentButton->getIconButton() : $emailButton->getIconButton();
-    $finalButtons .= "    ". $showPaymentsButton->getIconButton();
+    $finalButtons = (($event->status != 'LIQUIDADO') ?  $this->generateButtonsNotSoldOut($event->id)
+      : $this->generateButtonsToSoldOut($event->id))."    ". $showPaymentsButton->getIconButton();
 
     return [
       'event_date' => date('d-m-Y', strtotime($event->event_date)),
@@ -84,4 +68,36 @@ trait EventDataTable
     return $this->getSearchResult($data);
   }
 
+  private function generateButtonsToSoldOut(int $id): string
+  {
+    $emailButton = ActionButton::getDefaultButton(' bi-envelope-paper-heart', 'btn-info', 'Enviar fotos');
+    $emailButton->addAttribute('data-id', $id);
+    $emailButton->setClick("captureLinks(this)");
+
+    $finalizeButton = ActionButton::getDefaultButton('bi-check-square', 'btn-success', 'Cerrar Evento');
+    $finalizeButton->addAttribute('data-id', $id);
+    $finalizeButton->setClick("finalizeEvent(this)");
+
+    $giftsButton = ActionButton::getDefaultButton('bi-gift', 'btn-pink', 'Regalos');
+    $giftsButton->addAttribute('data-id', $id);
+    $giftsButton->setClick("obtainGifts(this)");
+
+    return $emailButton->getIconButton()."    ".$finalizeButton->getIconButton()."    ".$giftsButton->getIconButton();
+  }
+
+  private function generateButtonsNotSoldOut(int $id): string
+  {
+    $paymentButton = ActionButton::getDefaultButton(' bi-cash', 'btn-info', 'Agregar Pago');
+    $paymentButton->addAttribute('data-id', $id);
+    $paymentButton->setClick("addPayment(this)");
+
+    $editButton = ActionButton::getDefaultEditButton();
+    $editButton->addAttribute('data-id', $id);
+    $editButton->setClick("editEvent(this)");
+
+    $deleteButton = ActionButton::getDefaultDeleteButton();
+    $deleteButton->addAttribute('data-id', $id);
+    $deleteButton->setClick("deleteEvent(this)");
+    return $editButton->getIconButton()."    ".$deleteButton->getIconButton(). "    ". $paymentButton->getIconButton();
+  }
 }
