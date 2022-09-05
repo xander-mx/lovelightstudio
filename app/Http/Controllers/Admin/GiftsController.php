@@ -77,7 +77,7 @@ class GiftsController extends Controller
         }
         $gifts[] = $input;
       }
-      if(sizeof($gifts) == 0) {
+      if(sizeof($gifts) == 1) {
         for($x = 0; $x < 2; $x++) {
           $gifts[] = $this->generateInputCanva("giftcanva".$x, ($x > 0 ? "Photobook" : "Canva"),
             ($x > 0 ? "bi-journal-bookmark" : "bi-images"), '');
