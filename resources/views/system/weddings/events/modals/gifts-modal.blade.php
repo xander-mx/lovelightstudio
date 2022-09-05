@@ -2,7 +2,6 @@
                                'backdrop' => true, 'modalSize' => 'modal-lg'])
     @slot('body')
         <div id="canvas-div" class="row">
-
         </div>
     @endslot
 

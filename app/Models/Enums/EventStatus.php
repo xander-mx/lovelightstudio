@@ -16,8 +16,8 @@ final class EventStatus extends AbstractMultiton
 
   protected static function initializeMembers()
   {
-    new EventStatus('PENDIENTE', 'Pendiente');
-    new EventStatus('LIQUIDADO', 'Liquidado');
+    new EventStatus('EN_PROCESO', 'En proceso');
+    new EventStatus('LIQUIDADO', 'Vendidas');
     new EventStatus('CANCELADO', 'Cancelado');
     new EventStatus('FINALIZADO','Finalizado');
   }

@@ -36,14 +36,10 @@
                     <div class="col-2"></div>
                     <div class="mb-3 col-8 text-justify">
                         <div class="mb-3 text-center">
-                            <span style="text-align: center"><strong>Español</strong></span>
-                            <br/>
                             <span style="text-align: center"><h1>¡GRACIAS!</h1></span>
                             <div class="card-body " style="text-align: center">
                                     <span>Por su preferencia, sus regalos estan en proceso.</span>
                             </div>
-                            <br/>
-                            <span style="text-align: center"><strong>English</strong></span>
                             <br/>
                             <span style="text-align: center"><h1>THANK YOU!</h1></span>
                             <div class="card-body " style="text-align: center">

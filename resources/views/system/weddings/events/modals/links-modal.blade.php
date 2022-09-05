@@ -26,16 +26,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                    <label for="code">Código</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="bi bi-key"></i>
-                        </span>
-                        <input name="code" id="code" type="text" class="form-control" />
-                    </div>
-                </div>
-                <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                <div class="form-group col-12">
                     <label for="email">Email extra</label>
                     <div class="input-group">
                         <span class="input-group-text">
@@ -70,6 +61,7 @@
 
     @slot('footer')
         <button type="button" class="btn btn-danger" onclick="closeAnyModal($('#links-modal'))">Cancelar</button>
-        <button type="button" id="captureLinksBtn" onclick="saveLinks()" class="btn btn-primary">Aceptar</button>
+        <button type="button" id="captureLinksBtn" onclick="saveLinks(false)" class="btn btn-primary">Aceptar</button>
+        <button type="button" id="captureVideoBtn" onclick="saveLinks(true)" class="btn btn-primary" >Aceptar</button>
     @endslot
 @endcomponent

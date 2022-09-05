@@ -22,6 +22,7 @@
         <form action="{{ route('weddings.gifts.save') }}" method="post">
             @csrf
             <input type="hidden" name="id" id="id" value="{{ $event->id }}">
+            <input type="hidden" name="code" id="code" value="{{ $event->code }}">
             <div class="card mt-10" style="margin-top: 10px">
                 <div class="card-body ">
                     <br/>
@@ -40,7 +41,6 @@
                         <div class="col-2"></div>
                         <div class="mb-3 col-8 text-justify">
                             <div class="mb-3 text-center">
-                                <span style="text-align: center"><strong>Español</strong></span>
                                 <br/>
                                 <span style="text-align: center"><h1>¡GRACIAS!,  {{ $event->customer }}</h1></span>
                                 <div class="card-body " style="text-align: justify">
@@ -48,8 +48,7 @@
                                         tu servicio es necesario escoger las fotos para tus canvas y libros.
                                         A continuación ingresa el número de fotos para uno</span>
                                 </div>
-                                <br/>
-                                <span style="text-align: center"><strong>English</strong></span>
+
                                 <br/>
                                 <span style="text-align: center"><h1>THANK YOU!, {{ $event->customer }}</h1></span>
                                 <div class="card-body " style="text-align: justify">

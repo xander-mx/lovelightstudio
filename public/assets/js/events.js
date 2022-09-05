@@ -2,17 +2,12 @@ const EVENTS_BTN = $('#events-add')
 const EVENTS_MODAL = $('#events-modal')
 const ADD_PAYMENT_MODAL =$('#add-payment-modal')
 const INFO_PAYMENT_MODAL =$('#info-payment-modal')
-const GIFTS_MODAL = $('#gifts-modal')
-const LINKS_MODAL = $('#links-modal')
 const ADD_PAYMENT_FORM = $('#events-payments-form')
-const LINKS_FORM = $('#links-form')
 const ADD_PAYMENT_BTN = $('#addPaymentEventBtn')
-const SAVE_LINKS_BTN = $('#captureLinksBtn')
 const EVENTS_FORM = $('#events-form')
 const EVENTS_BTN_SAVE = $('#createEventBtn')
 const EVENTS_TABLE = $('#events-table')
 const INFO_PAYMENTS_TABLE =$('#info-payments-table')
-const CANVAS_DIV = $('#canvas-div')
 const SERVICE_FIELD = EVENTS_FORM.find("[name = 'service']")
 const CENTER_FIELD = EVENTS_FORM.find("[name = 'center']")
 const PRICE_FIELD = EVENTS_FORM.find("[name = 'price']")
@@ -72,9 +67,10 @@ CENTER_FIELD.change((event) => {
     if(Number(event.target.value) !== externalHotel) HOTEL_FIELD.val('')
 })
 
-STATUS_FILTER.change(() => {
+const changeStatusFilter = (status) => {
+    STATUS_FILTER.val(status)
     EVENTS_TABLE.DataTable().ajax.reload()
-})
+}
 
 EVENTS_MODAL.on('shown.bs.modal', function () {
     rome(eventDate, {
@@ -266,93 +262,6 @@ ADD_PAYMENT_MODAL.on('hidden.bs.modal', function () {
     clearAnyForm(ADD_PAYMENT_FORM, ['id_event', 'amount', 'voucher', 'event'])
 })
 
-LINKS_MODAL.on('hidden.bs.modal', function () {
-    clearAnyForm(LINKS_FORM, ['id', 'photos', 'video', 'code', 'email'])
-})
-
-const captureLinks = (btn) => {
-    let id = $(btn).data("id")
-    LINKS_FORM.find("[name='id']").val(id)
-    let routeGetInformationreplace = routeGetEvent.replace(':id', id);
-
-    $.ajax({
-        url: routeGetInformationreplace,
-        type: 'GET',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        beforeSend: function() {
-            $(".content_loading").fadeIn("slow");
-        }
-    })
-        .done(function(response) {
-            if(response.code === 200) {
-                LINKS_FORM.find("[name='photos']").val(response.data.photos);
-                LINKS_FORM.find("[name='video']").val(response.data.video);
-                LINKS_FORM.find("[name='code']").val(response.data.code);
-                LINKS_FORM.find("[name='canvas']").val(response.data.canvas);
-                LINKS_FORM.find("[name='photobooks']").val(response.data.photobooks);
-            }
-            showAnyModal(LINKS_MODAL,'Links Evento')
-        })
-        .fail(function(jqXHR, textStatus, errorThrown)  {
-            Swal.fire({
-                title: 'Ups!',
-                text: jqXHR.responseJSON.message,
-                type: "warning",
-                animation: false,
-                showConfirmButton: true
-            })
-        })
-        .always(function() {
-            $(".content_loading").fadeOut("slow");
-        })
-}
-
-const saveLinks = () => {
-    let formData = new FormData(document.getElementById("links-form"));
-    let routeLinksEventSave = routeLinksEvent.replace( ':id', formData.get('id'))
-    $.ajax ({
-        url: routeLinksEventSave,
-        type: 'POST',
-        data: formData,
-        dataType: 'json',
-        cache: false,
-        contentType: false,
-        processData: false,
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        beforeSend: function() {
-            SAVE_LINKS_BTN.prop( "disabled", true );
-            $(".content_loading").fadeIn("slow");
-        }
-    })
-        .done(function(response) {
-            if (response.code === 200) {
-                Swal.fire({title: 'Muy bien!', text:'Se enviarón links', icon:'success'})
-            }else if (response.code === 400) {
-                showAjaxErrors(response)
-            }else {
-                Swal.fire({title: 'Ops!', text:response.message, icon:'error'})
-            }
-        })
-        .fail(function(jqXHR, textStatus, errorThrown)  {
-            Swal.fire({
-                title: 'Ups!',
-                text: jqXHR.statusText,
-                type: "warning",
-                animation: false,
-                showConfirmButton: true
-            })
-        })
-        .always(function() {
-            $(".content_loading").fadeOut("slow");
-            SAVE_LINKS_BTN.prop( "disabled", false );
-            LINKS_MODAL.modal('toggle');
-        })
-}
-
 const finalizeEvent = (btn) => {
     let id = $(btn).data("id")
     let routeFinalizeEventComplete = routeFinalizeEvent.replace(':id', id)
@@ -400,44 +309,5 @@ const finalizeEvent = (btn) => {
         }
     })
 }
-
-const obtainGifts = (btn) => {
-    let id = $(btn).data("id")
-    let routeGiftsObtainComplete = routeGiftsObtain.replace(':id', id)
-
-    $.ajax({
-        url: routeGiftsObtainComplete,
-        type: 'GET',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        beforeSend: function() {
-            $(".content_loading").fadeIn("slow");
-        }
-    })
-        .done(function(response) {
-            let gifts = response.data
-            gifts.forEach( g => {
-                CANVAS_DIV.append(g)
-            })
-            showAnyModal(GIFTS_MODAL, 'Canvas y Photobooks')
-        })
-        .fail(function(jqXHR, textStatus, errorThrown)  {
-            Swal.fire({
-                title: 'Ups!',
-                text: jqXHR.responseJSON.message,
-                type: "warning",
-                animation: false,
-                showConfirmButton: true
-            })
-        })
-        .always(function() {
-            $(".content_loading").fadeOut("slow");
-        })
-}
-
-GIFTS_MODAL.on('hidden.bs.modal', function() {
-    CANVAS_DIV.html('')
-})
 
 //# sourceURL=events.js

@@ -46,31 +46,26 @@ de Eventos', 'activeButton' => 'weddings'])
                             </div>
                         </div>
                     </div>
-    @endif
+                @endif
 
                     <div class="row">
                         <div class="card col-md-12">
+                            <div class="float-left row pt-3 pl-5">
+                                <label for="status">Estatus</label>
+                            </div>
                             <div class="card-body">
+                                <input type="text" name="status" id="status" value="EN_PROCESO" hidden>
                                 <div style="display: inline-block" class="form-group col-sm-12 col-md-6 col-lg-6 float-left">
-                                    <label for="status">Estatus</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="bi bi-filter-circle"></i>
-                                        </span>
-                                        <select name="status" id="status" class="form-control">
-                                            @foreach($status as $s)
-                                                <option value="{{ $s }}" @if($s == 'PENDIENTE') selected @endif>{{ $s->message() }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    @foreach($statusBtns as $btn)
+                                        <button type="button" class="btn {{$btn['class']}}"
+                                        onclick="{{$btn['fn']}}">{{$btn['label']}}</button>
+                                    @endforeach
                                 </div>
-                                <div style="display: inline-block" class="form-group col-sm-12 col-md-6 col-lg-6 float-left">
-                                    <br/>
+                                <div style="display: inline-block" class="form-group col-sm-12 col-md-6 col-lg-6 ">
                                     <button type="button" style="display: inline-block" class="btn btn-primary float-right" id="events-add">
                                         <i class="bi bi-plus"></i>Nuevo Evento
                                     </button>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -111,9 +106,11 @@ de Eventos', 'activeButton' => 'weddings'])
         let service_personalize = {{ $service_personalize }};
         let routeInfoPayments = '{{ route('weddings.events.payments.table',[':id']) }}';
         let routeLinksEvent = '{{ route('weddings.events.links',[':id']) }}';
+        let routeVideoEvent = '{{ route('weddings.events.video',[':id']) }}';
         let routeFinalizeEvent = '{{ route('weddings.events.finalize', [':id']) }}';
         let routeGiftsObtain = ' {{ route('weddings.gifts.obtain', [':id']) }}';
         let routeInfoPaymentsRender;
     </script>
     {!! Html::script('assets/js/events.js') !!}
+    {!! Html::script('assets/js/gifts.js') !!}
 @endpush
