@@ -17,9 +17,20 @@ class GiftsController extends Controller
 
   public function save(Request $request) {
     try{
+      $rules = [
+        'id' => 'required',
+        'address' => 'required'
+      ];
+      $messages = [
+        'id' => 'El evento es requerido!!!',
+        'address' => 'El domiclio es requerido!!!'
+      ];
       DB::beginTransaction();
+      $this->validate($request, $rules, $messages);
       $data = $request->all();
-      Events::find($data['id'])->update(['address' => $data['address']]);
+      throw_if(Events::where('id', $data['id'])->where('code', $data['code'])->count() < 1,
+        'No existe evento!!');
+      Events::where('id', $data['id'])->where('code', $data['code'])->update(['address' => $data['address']]);
       $exists = Gifts::where('id_event', $data['id'])->get();
       if(sizeof($exists) == 0) {
         foreach ($data as $key => $field) {
@@ -54,36 +65,36 @@ class GiftsController extends Controller
       $canva = 1;
       $book = 1;
       $event = Events::find($id);
+        $gifts[] = $this->generateInputCanva("canvaaddress", "Domicilio", "bi bi-house-heart",
+        $event->address ?? '') ;
       foreach ($event->gifts as $gift) {
-        $input = "<div class='form-group col-12'>";
         if($gift->type == self::CANVA) {
-          $input .= "<label for='giftcanva".$canva."'>Canva ".$canva."</label>";
-          $input .= "<div class='input-group'><span class='input-group-text'><i class='bi bi-images'></i></span>";
-          $input .= "<input name='giftcanva".$canva."' id='giftcanva".$canva."'";
-
+          $input = $this->generateInputCanva("giftcanva".$canva, "Canva ".$canva, 'bi bi-images', $gift->photos);
           $canva++;
         } else {
-          $input .= "<label for='giftphotobook".$book."'>Photobook ".$book."</label>";
-          $input .= "<div class='input-group'><span class='input-group-text'><i class='bi bi-journal-bookmark'></i></span>";
-          $input .= "<input name='giftphotobook".$book." id='giftphotobook".$book."'";
+          $input = $this->generateInputCanva("giftphotobook".$book, "Photobook ".$book, 'bi bi-journal-bookmark', $gift->photos);
           $book++;
         }
-        $input .= " type='text' class='form-control' value='".$gift->photos."' disabled /></div></div>";
         $gifts[] = $input;
       }
       if(sizeof($gifts) == 0) {
         for($x = 0; $x < 2; $x++) {
-          $label = ($x > 0 ? "Photobook" : "Canva");
-          $icon = ($x > 0 ? "bi-journal-bookmark" : "bi-images");
-          $emptyInput = "<div class='form-group col-12'><label for='giftcanva'>".$label."</label>";
-          $emptyInput .= "<div class='input-group'><span class='input-group-text'><i class='bi ".$icon."'></i></span>";
-          $emptyInput .= "<input name='giftcanva".$x."' id='giftcanva".$x."' type='text' class='form-control' disabled /></div></div>";
-          $gifts[] = $emptyInput;
+          $gifts[] = $this->generateInputCanva("giftcanva".$x, ($x > 0 ? "Photobook" : "Canva"),
+            ($x > 0 ? "bi-journal-bookmark" : "bi-images"), '');
         }
       }
       return response()->json(['data' => $gifts, 'code' => 200]);
     }catch (\Throwable $th) {
       return response()->json(['message' => $th->getMessage(), 'code' => 401]);
     }
+  }
+
+  private function generateInputCanva(String $id, String $text, String $icon, String $value) {
+    $input = "<div class='form-group col-12'>";
+    $input .= "<label for='".$id."'>".$text."</label>";
+    $input .= "<div class='input-group'><span class='input-group-text'><i class='".$icon."'></i></span>";
+    $input .= "<input name='".$id."' id='".$id."'";
+    $input .= " type='text' class='form-control' value='".$value."' disabled /></div></div>";
+    return $input;
   }
 }

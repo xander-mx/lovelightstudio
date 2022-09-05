@@ -5,6 +5,7 @@
     $serverSide = $serverSide ?? 'false';
     $scrollX = $scrollX ?? 'false';
     $autoWidth = $autoWidth ?? 'true';
+    $retrieve = $retrieve ?? 'true';
 @endphp
 
 <div class="row">
@@ -33,6 +34,7 @@
         @endif
         $('#{{ $tableId }}').DataTable({
             "responsive" : {{$responsive}},
+            "retrieve": {{$retrieve}},
             "bFilter": {{$showSearch}},
             "autoWidth": {{ $autoWidth }},
             "bInfo": {{$showSearch}},

@@ -929,3 +929,34 @@
     background-image: none;
     border-color: #f8d7da
 }
+
+.btn-esmerald {
+    color: #fff;
+    background-color: #4dc0b5;
+    border-color: #17a2b8;
+}
+
+.btn-esmerald:hover {
+    color: #fff;
+    background-color: #b1dfbb;
+    border-color: #17a2b8;
+}
+
+.btn-esmerald.focus,
+.btn-esmerald:focus {
+    box-shadow: 0 0 0 3px rgba(52, 58, 64, .5)
+}
+
+.btn-esmerald.disabled,
+.btn-esmerald:disabled {
+    background-color: #343a40;
+    border-color: #343a40
+}
+
+.btn-esmerald.active,
+.btn-esmerald:active,
+.show>.btn-esmerald.dropdown-toggle {
+    background-color: #4dc0b5;
+    background-image: none;
+    border-color: #17a2b8;
+}

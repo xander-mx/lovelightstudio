@@ -52,8 +52,13 @@ class EventsController extends Controller
     $external = env('EXTERNAL_HOTEL');
     $service_personalize = env('SERVICE_PERSONALIZE');
     $status = EventStatus::members();
+    $statusBtns = [['label' => 'Vendidos', 'class' => 'btn-warning', 'fn' => "changeStatusFilter('LIQUIDADO')"],
+      ['label' => 'Cancelados', 'class' => 'btn-danger', 'fn' => "changeStatusFilter('CANCELADO')"]
+      , ['label' => 'En Proceso', 'class' => 'btn-success', 'fn' => "changeStatusFilter('EN_PROCESO')"]
+      , ['label' => 'Finalizados', 'class' => 'btn-info', 'fn' => "changeStatusFilter('FINALIZADO')"]];
     $paymentTypes = PaymentType::members();
-    return view('system.weddings.events.index', compact('centers', 'services', 'external','service_personalize', 'status', 'paymentTypes'));
+    return view('system.weddings.events.index', compact('centers', 'services', 'external',
+      'service_personalize', 'status', 'paymentTypes', 'statusBtns'));
   }
 
   public function save(Request $request): JsonResponse
@@ -125,18 +130,56 @@ class EventsController extends Controller
     return response()->json(['message' => 'Se elimino con exito!!!', 'code' => 200]);
   }
 
+  public function saveVideo(Request $request): JsonResponse
+  {
+    $rules = [
+      'id' => 'required',
+      'video' => 'required'
+    ];
+    $messages = [
+      'id' => 'El evento es requerido!!!',
+      'video' => 'Link de video requerido!!!'
+    ];
+
+    try {
+      DB::beginTransaction();
+      $this->validate($request, $rules, $messages);
+      $data = $request->all();
+      $event = Events::find($data['id']);
+      $event->video = $data['video'];
+      $event->code = filled($event->code) ? $event->code : rand(1000,10000);
+      $event->save();
+      DB::commit();
+      if(!env('TESTING')) {
+        $emails[] = $event->email;
+        if($data['email'])
+          $emails[] = $data['email'];
+        Mail::to($emails)->send(new EmailingTo($event, 'mail.videos', 'Links Boda',
+          env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+      }
+    } catch (Throwable $th) {
+      DB::rollBack();
+      $error = '';
+      if(sizeOf($th->validator->messages()) > 0) {
+        foreach ($th->validator->messages()->all() as $message)
+          $error .= $message. ' ';
+      }  else {
+        $error = $th->getMessage();
+      }
+      return response()->json(['message' => $error, 'code' => 401]);
+    }
+    return response()->json(['message' => 'Video enviado!!!', 'code' => 200]);
+  }
+
   public function saveLinks(Request $request): JsonResponse
   {
     $rules = [
       'id' => 'required',
-      'photos' => 'required',
-      'code' => 'required'
+      'photos' => 'required'
     ];
-
     $messages = [
       'photos.required' => 'El link de fotos es obligatorio!!!',
       'id.required' => 'El evento es requerido!!!',
-      'code.required' => 'El código es obligatorio!!!'
     ];
     try {
       DB::beginTransaction();
@@ -147,17 +190,16 @@ class EventsController extends Controller
         return response()->json(['message' => 'No existe el evento!!!', 'code' => 401]);
       }
       $event->photos = $data['photos'];
-      $event->code = $data['code'];
-      $event->video = filled($data['video']) ? $data['video'] : null;
       $event->canvas = filled($data['canvas']) ? $data['canvas'] : 1;
       $event->photobooks = filled($data['photobooks']) ? $data['photobooks'] : 1;
+      $event->code = filled($event->code) ? $event->code : rand(1000,10000);
       $event->save();
       if(!env('TESTING')) {
-        Mail::to($event->email)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
+        $emails[] = $event->email;
+        if($data['email'])
+          $emails[] = $data['email'];
+        Mail::to($emails)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
           env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
-        if(isset($data['email']))
-          Mail::to($data['email'])->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
-            env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
       }
       DB::commit();
     } catch (Throwable $th) {

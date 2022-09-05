@@ -101,6 +101,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
       Route::get('/events/autocomplete/{search}', [EventsController::class, 'autocomplete'])->name('weddings.events.autocomplete');
       Route::post('/events/save', [EventsController::class, 'save'])->name('weddings.events.save');
       Route::post('/events/links/{id}', [EventsController::class, 'saveLinks'])->name('weddings.events.links');
+      Route::post('/events/video/{id}', [EventsController::class, 'saveVideo'])->name('weddings.events.video');
       Route::delete('/events/delete/{id}', [EventsController::class, 'delete'])->name('weddings.events.delete');
       Route::put('/events/finalize/{id}', [EventsController::class, 'finalize'])->name('weddings.events.finalize');
 

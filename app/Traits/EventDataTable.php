@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use App\Models\Enums\PaymentType;
 use App\Utils\ActionButton;
-use Illuminate\Notifications\Action;
 
 trait EventDataTable
 {
@@ -30,14 +29,16 @@ trait EventDataTable
 
   private function getDataRow($event): array
   {
-    $showPaymentsButton = ActionButton::getDefaultButton(' bi-file-earmark-text', 'btn-light'
-      , 'Mostrar Pagos');
-    $showPaymentsButton->addAttribute('data-id', $event->id);
-    $showPaymentsButton->addAttribute('data-customer', $event->customer);
-    $showPaymentsButton->setClick("infoPayment(this)");
-
-    $finalButtons = (($event->status != 'LIQUIDADO') ?  $this->generateButtonsNotSoldOut($event->id)
-      : $this->generateButtonsToSoldOut($event->id))."    ". $showPaymentsButton->getIconButton();
+    switch($event->status) {
+      case 'LIQUIDADO':
+        $finalButtons = $this->generateButtonsToSoldOut($event->id)."    ".$this->generateButtonsFinalize($event);
+        break;
+      case 'FINALIZADO':
+        $finalButtons = $this->generateButtonsFinalize($event);
+        break;
+      default:
+        $finalButtons = $this->generateButtonsNotSoldOut($event);
+    }
 
     return [
       'event_date' => date('d-m-Y', strtotime($event->event_date)),
@@ -72,7 +73,11 @@ trait EventDataTable
   {
     $emailButton = ActionButton::getDefaultButton(' bi-envelope-paper-heart', 'btn-info', 'Enviar fotos');
     $emailButton->addAttribute('data-id', $id);
-    $emailButton->setClick("captureLinks(this)");
+    $emailButton->setClick("captureLinks(this, false)");
+
+    $videoButton = ActionButton::getDefaultButton(' bi-camera-video', 'btn-esmerald', 'Enviar Video');
+    $videoButton->addAttribute('data-id', $id);
+    $videoButton->setClick("captureLinks(this, true)");
 
     $finalizeButton = ActionButton::getDefaultButton('bi-check-square', 'btn-success', 'Cerrar Evento');
     $finalizeButton->addAttribute('data-id', $id);
@@ -82,22 +87,43 @@ trait EventDataTable
     $giftsButton->addAttribute('data-id', $id);
     $giftsButton->setClick("obtainGifts(this)");
 
-    return $emailButton->getIconButton()."    ".$finalizeButton->getIconButton()."    ".$giftsButton->getIconButton();
+    return $emailButton->getIconButton()."    ".$videoButton->getIconButton()."    ".$finalizeButton->getIconButton();
   }
 
-  private function generateButtonsNotSoldOut(int $id): string
+  private function generateButtonsNotSoldOut($event): string
   {
     $paymentButton = ActionButton::getDefaultButton(' bi-cash', 'btn-info', 'Agregar Pago');
-    $paymentButton->addAttribute('data-id', $id);
+    $paymentButton->addAttribute('data-id', $event->id);
     $paymentButton->setClick("addPayment(this)");
 
     $editButton = ActionButton::getDefaultEditButton();
-    $editButton->addAttribute('data-id', $id);
+    $editButton->addAttribute('data-id', $event->id);
     $editButton->setClick("editEvent(this)");
 
     $deleteButton = ActionButton::getDefaultDeleteButton();
-    $deleteButton->addAttribute('data-id', $id);
+    $deleteButton->addAttribute('data-id', $event->id);
     $deleteButton->setClick("deleteEvent(this)");
-    return $editButton->getIconButton()."    ".$deleteButton->getIconButton(). "    ". $paymentButton->getIconButton();
+
+    return $editButton->getIconButton()."    ".$deleteButton->getIconButton(). "    ". $paymentButton->getIconButton()
+      . "    ". $this->generateShowPaymentButton($event);
   }
+
+  private function generateButtonsFinalize($event): string
+  {
+    $giftsButton = ActionButton::getDefaultButton('bi-gift', 'btn-pink', 'Regalos');
+    $giftsButton->addAttribute('data-id', $event->id);
+    $giftsButton->setClick("obtainGifts(this)");
+
+    return $giftsButton->getIconButton()."    ".$this->generateShowPaymentButton($event);
+  }
+
+  private function generateShowPaymentButton ($event): string
+  {
+    $showPaymentsButton = ActionButton::getDefaultButton(' bi-file-earmark-text', 'btn-light'
+      , 'Mostrar Pagos');
+    $showPaymentsButton->addAttribute('data-id', $event->id);
+    $showPaymentsButton->addAttribute('data-customer', $event->customer);
+    $showPaymentsButton->setClick("infoPayment(this)");
+    return $showPaymentsButton->getIconButton();
+}
 }

@@ -120,7 +120,9 @@ reserva', 'activeButton' => 'reservas'])
                                         </div>
 
                                         @include('templates.datatable', [ 'tableId' => 'reservation-table',
-                                          'title' => 'Reservaciones', 'headers' => ReservaController::$headers,
+                                          'title' => 'Reservaciones',
+                                          'serverSide' => 'false',
+                                          'headers' => ReservaController::$headers,
                                           'fields' => ReservaController::$fields])
                                     </div>
                                 </div>

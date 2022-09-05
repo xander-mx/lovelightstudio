@@ -153,7 +153,7 @@ PAYMENTS_MODAL.on('shown.bs.modal', function () {
         },
         initialValue: moment().format('YYYY-MM-DD'),
         dateValidator: rome.val.afterEq(moment().format('YYYY-MM-DD')),
-        autoHideOnBlur: false
+            autoHideOnBlur: false
     })
 })
 
