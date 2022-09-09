@@ -97,6 +97,7 @@ class EventsController extends Controller
       $event->center = $center->name;
       $event->service = $service->name;
       $event->id_service = $service->id;
+
       $event->save();
       DB::commit();
     } catch (Exception $ex) {

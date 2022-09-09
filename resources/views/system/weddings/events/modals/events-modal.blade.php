@@ -89,7 +89,7 @@
                         <span class="input-group-text">
                             <i class="bi bi-currency-dollar"></i>
                         </span>
-                        <input type="text" name="price" class="form-control" id="price" readonly required />
+                        <input type="text" name="price" class="form-control" id="price" onkeydown="numberOrdecimal(event)" readonly required />
                     </div>
                 </div>
                 <div class="form-group col-sm-12 col-md-6 col-lg-6">

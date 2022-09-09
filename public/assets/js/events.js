@@ -38,8 +38,12 @@ const getDataServices = (id) => {
                 })
             })
     } else {
-        if(EVENTS_FORM.find("[name = 'id']").val() === '')
+        if(EVENTS_FORM.find("[name = 'id']").val() === '') {
             PRICE_FIELD.val("")
+        } else {
+            PRICE_FIELD.val(PRICE_FIELD.val().replace('$', ''))
+            PRICE_FIELD.val(PRICE_FIELD.val().replace(',', ''))
+        }
     }
 }
 
@@ -109,7 +113,11 @@ EVENTS_MODAL.on('hidden.bs.modal', function () {
 
 const saveEvent = () => {
     let formData = new FormData(document.getElementById("events-form"));
-    EVENTS_BTN_SAVE.prop( "disabled", true );
+    if(Number(formData.get('service')) === service_personalize) {
+        let reg = new RegExp(/^(\d)*(\.)?([0-9])*?$/)
+        if(!reg.test(formData.get("price"))) return;
+    }
+    EVENTS_BTN_SAVE.prop( "disabled", true )
 
     $.ajax ({
         url: routeSaveEvent,
