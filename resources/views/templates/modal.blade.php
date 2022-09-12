@@ -2,10 +2,11 @@
 @php
   $backdrop = $backdrop ?? false;
   $close = $close ?? false;
+  $modalSize = $modalSize ?? ''
 @endphp
 
-<div class="modal fade" id="{{ $modalId }}" @if($backdrop) data-backdrop="static" @endif data-keyboard="false" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade " id="{{ $modalId }}" @if($backdrop) data-backdrop="static" @endif data-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog {{ $modalSize }}">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel"> {{ $title ?? '' }}</h5>

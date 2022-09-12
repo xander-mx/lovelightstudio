@@ -15,19 +15,13 @@ trait BaseDataTable
     'columns'         => null,
     'order'           => null,
     'search'          => null,
-    'fechaInicial'    => null,
-    'fechaFinal'      => null,
     'orderBy'         => null,
     'orderByColumn'   => null,
     'orderByDir'      => null,
-    'filteredByDate'  => false,
     'filtered'        => false,
     'recordsTotal'    => 0,
     'recordsFiltered' => 0,
-    'almacenes' => null,
-    'filteredByAlmacen'  => false,
-    'proceso' => null,
-    'filteredByProceso'  => false,
+    'status'
   ];
 
   protected function setUpSearchConfig(&$request)
@@ -38,12 +32,10 @@ trait BaseDataTable
     $this->searchConfig['columns']              = $request->get('columns');
     $this->searchConfig['order']                = $request->get('order');
     $this->searchConfig['search']               = $request->get('search')['value'];
-    $this->searchConfig['fechaInicial']         = $request->get('fechaInicial');
-    $this->searchConfig['fechaFinal']           = $request->get('fechaFinal');
     $this->searchConfig['orderBy']              = $this->searchConfig['columns'][ $this->searchConfig['order'][0]['column'] ];
     $this->searchConfig['orderByColumn']        = $this->searchConfig['orderBy']['data'];
     $this->searchConfig['orderByDir']           = $this->searchConfig['order'][0]['dir'];
-    $this->searchConfig['filteredByDate']       = false;
+    $this->searchConfig['status']               = $request->get('status');
     $this->searchConfig['filtered']             = false;
   }
 

@@ -1,9 +1,11 @@
 
 @php
-    $responsive = $responsive ?? true;
+    $responsive = $responsive ?? 'true';
     $showSearch = $showSearch ?? 'true';
     $serverSide = $serverSide ?? 'false';
-    $scrollX = $scrollX ?? false;
+    $scrollX = $scrollX ?? 'false';
+    $autoWidth = $autoWidth ?? 'true';
+    $retrieve = $retrieve ?? 'true';
 @endphp
 
 <div class="row">
@@ -23,20 +25,33 @@
     </div>
 </div>
 
-@push('js')
+@push('lastJs')
     <script type="text/javascript">
+        @if(isset($dataFunction))
+        $('#{{ $tableId }}').on('preXhr.dt', function ( e, settings, data ) {
+
+        });
+        @endif
         $('#{{ $tableId }}').DataTable({
-            "responsive" : '{{$responsive}}',
-            "bFilter": '{{$showSearch}}',
+            "responsive" : {{$responsive}},
+            "retrieve": {{$retrieve}},
+            "bFilter": {{$showSearch}},
+            "autoWidth": {{ $autoWidth }},
+            "bInfo": {{$showSearch}},
             "bSort": true,
-            "scrollX": '{{ $scrollX }}',
+            "scrollX": {{ $scrollX }},
             "serverSide": {{$serverSide}},
             "processing": true,
             "aaSorting": [[0,"desc"]],
             "bSortClasses": true,
             "bProcessing": true,
             @isset($urlTable)
-            "ajax": '{{ $urlTable }}',
+            "ajax": {
+                "url": '{{ $urlTable }}',
+                @isset($dataFunction)
+                "data": {!! $dataFunction !!}
+                @endisset
+            },
             @endisset
             "rowCallback" : function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 console.log('rowCallBack {{$tableId}}');

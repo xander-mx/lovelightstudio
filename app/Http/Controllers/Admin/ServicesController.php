@@ -13,9 +13,9 @@ class ServicesController extends Controller
 {
   use ServiceDataTable;
 
-  public static $headers = array('Paquete', 'Descripción', 'Precio MX', 'Precio Dlls', 'Acciones');
-  public static $fields = array('name', 'description', 'price', 'dlls', 'actions');
-  public static $routeIndexTable = 'weddings.services.table';
+  public static array $headers = array('Paquete', 'Descripción', 'Precio MX', 'Horas', 'Acciones');
+  public static array $fields = array('name', 'description', 'price', 'hours', 'actions');
+  public static string $routeIndexTable = 'weddings.services.table';
 
   public function loadTable(Request $request) {
     $this->setUpSearchConfig($request);
@@ -62,7 +62,8 @@ class ServicesController extends Controller
     return response()->json(['message' => 'Se creo el paquete', 'code' => 200]);
   }
 
-  public function getInformation($id) {
+  public function getInformation($id): JsonResponse
+  {
     $service = Services::find($id);
     if($service == null) {
       return response()->json(['message' => 'No existe el paquete!!!', 'code' => 401]);

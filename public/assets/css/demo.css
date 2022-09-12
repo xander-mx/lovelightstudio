@@ -836,3 +836,127 @@
 {
     color:#fff;
 }
+
+.datepicker-rome {
+    z-index: 1151 !important;
+}
+
+.rd-back, .rd-next {
+    z-index: 1151 !important;
+}
+
+.input-group-text {
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-align: center !important;
+    align-items: center !important;
+    padding: 0.375rem 0.75rem !important;
+    margin-bottom: 0 !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: #495057 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    background-color: #e9ecef !important;
+    border: 1px solid #ced4da !important;
+    border-bottom-left-radius: 0.25rem !important;
+    border-top-left-radius: 0.25rem !important;
+}
+
+.modal-dialog {
+    margin-top: 0 !important;
+}
+
+.btn-dark {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #343a40
+}
+
+.btn-dark:hover {
+    color: #fff;
+    background-color: #23272b;
+    border-color: #1d2124
+}
+
+.btn-dark.focus,
+.btn-dark:focus {
+    box-shadow: 0 0 0 3px rgba(52, 58, 64, .5)
+}
+
+.btn-dark.disabled,
+.btn-dark:disabled {
+    background-color: #343a40;
+    border-color: #343a40
+}
+
+.btn-dark.active,
+.btn-dark:active,
+.show>.btn-dark.dropdown-toggle {
+    background-color: #23272b;
+    background-image: none;
+    border-color: #1d2124
+}
+
+.btn-pink {
+    color: #fff;
+    background-color: #f1b0b7;
+    border-color: #f1b0b7
+}
+
+.btn-pink:hover {
+    color: #fff;
+    background-color: #f5c6cb;
+    border-color: #f8d7da;
+}
+
+.btn-pink.focus,
+.btn-pink:focus {
+    box-shadow: 0 0 0 3px rgba(52, 58, 64, .5)
+}
+
+.btn-pink.disabled,
+.btn-pink:disabled {
+    background-color: #343a40;
+    border-color: #343a40
+}
+
+.btn-pink.active,
+.btn-pink:active,
+.show>.btn-pink.dropdown-toggle {
+    background-color: #f5c6cb;
+    background-image: none;
+    border-color: #f8d7da
+}
+
+.btn-esmerald {
+    color: #fff;
+    background-color: #4dc0b5;
+    border-color: #17a2b8;
+}
+
+.btn-esmerald:hover {
+    color: #fff;
+    background-color: #b1dfbb;
+    border-color: #17a2b8;
+}
+
+.btn-esmerald.focus,
+.btn-esmerald:focus {
+    box-shadow: 0 0 0 3px rgba(52, 58, 64, .5)
+}
+
+.btn-esmerald.disabled,
+.btn-esmerald:disabled {
+    background-color: #343a40;
+    border-color: #343a40
+}
+
+.btn-esmerald.active,
+.btn-esmerald:active,
+.show>.btn-esmerald.dropdown-toggle {
+    background-color: #4dc0b5;
+    background-image: none;
+    border-color: #17a2b8;
+}

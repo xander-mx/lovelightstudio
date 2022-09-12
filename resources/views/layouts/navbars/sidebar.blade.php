@@ -8,9 +8,11 @@ Tip 2: you can also add an image using data-image tag
     <div class="sidebar-wrapper" style="
     background: #ffc0cb;
 ">
-        <div class="logo">
+        <div class="logo" style="background-color: white; border: #0c0c0c; border-style: solid; border-top-style: hidden;
+         border-width: thin; border-color: lightgrey;" >
             <a href="https://lovelight.com.mx/" class="simple-text">
-                {{ __("Love Light Studio") }}
+                <img src="{{ asset('logo/love-light-studio-logo.jpg') }}" style="align-content: center"
+                     alt="Love Light Studio" width="230px">
             </a>
         </div>
         <ul class="nav">
@@ -44,14 +46,14 @@ Tip 2: you can also add an image using data-image tag
             </li>
             <li class="nav-item @if($activePage == 'reserves.sold.index') active @endif">
                 <a class="nav-link" href="{{route('reserves.sold.index')}}">
-                    <i class="nc-icon nc-notes"></i>
+                    <i class="bi bi-cart-check"></i>
                     <p>{{ __("vendidas") }}</p>
                 </a>
             </li>
             @if (Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 2 ||Auth::user()->idPerfil == 8 )
                 <li class="nav-item @if($activePage == 'reserva.historial.eliminada') active @endif">
                     <a class="nav-link" href="{{route('reserva.historial.eliminada')}}">
-                        <i class="nc-icon nc-notes"></i>
+                        <i class="bi bi-cart-x"></i>
                         <p>{{ __("canceladas") }}</p>
                     </a>
                 </li>
@@ -79,6 +81,18 @@ Tip 2: you can also add an image using data-image tag
                             <a class="nav-link" href="{{route('weddings.services.index')}}">
                                 <i class="bi bi-journal-album"></i>
                                 <p>{{ __("Paquetes") }}</p>
+                            </a>
+                        </li>
+                        <li class="nav-item @if($activePage == 'weddings.events.index') active @endif">
+                            <a class="nav-link" href="{{route('weddings.events.index')}}">
+                                <i class="bi bi-camera-reels"></i>
+                                <p>{{ __("Eventos") }}</p>
+                            </a>
+                        </li>
+                        <li class="nav-item @if($activePage == 'weddings.payments.index') active @endif">
+                            <a class="nav-link" href="{{route('weddings.payments.index')}}">
+                                <i class="bi bi-cash-coin"></i>
+                                <p>{{ __("Pagos") }}</p>
                             </a>
                         </li>
                     </ul>
