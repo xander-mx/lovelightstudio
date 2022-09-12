@@ -160,6 +160,8 @@ class EventsController extends Controller
           $emails[] = $data['email'];
         Mail::to($emails)->send(new EmailingTo($event, 'mail.videos', 'Links Boda',
           env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+        Mail::to(env('MAIL_INFO'))->send(new EmailingTo($event, 'mail.links_to_info', 'Links Boda',
+          env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
       }
     } catch (Throwable $th) {
       DB::rollBack();
@@ -203,6 +205,8 @@ class EventsController extends Controller
         if($data['email'])
           $emails[] = $data['email'];
         Mail::to($emails)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
+          env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+        Mail::to(env('MAIL_INFO'))->send(new EmailingTo($event, 'mail.links_to_info', 'Links Boda',
           env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
       }
       DB::commit();
