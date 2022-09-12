@@ -9,6 +9,7 @@ const showAnyModal = (element, title) => {
 }
 
 const questionModal = (title, deny, cancel, textConfirm, denyText = '', fnConfirm, messageCancel) => {
+    event.preventDefault()
     Swal.fire({
         title: title,
         showDenyButton: deny,
@@ -100,3 +101,4 @@ const numberOrdecimal = (evt) => {
         return true
     evt.preventDefault()
 }
+//# sourceURL=lovelight .js

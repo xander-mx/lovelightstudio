@@ -102,6 +102,17 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="form-group col-12">
+                    <label for="price">Coordinador/a</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-headset"></i>
+                        </span>
+                        <input type="text" name="coordinator" class="form-control" id="coordinator" required />
+                    </div>
+                </div>
+            </div>
         </form>
     @endslot
 

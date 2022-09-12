@@ -15,6 +15,7 @@ trait EventDataTable
       $search = strtoupper( $this->searchConfig['search'] );
       $query->where('customer', 'like', '%'. $search .'%')
         ->orWhere('service', 'like', '%'. $search .'%')
+        ->orWhere('coordinator', 'like', '%'. $search .'%')
         ->orWhere('center', 'like', '%'. $search .'%');
     }
 
@@ -46,6 +47,7 @@ trait EventDataTable
       'center' => $event->center,
       'service' => $event->service,
       'email' => $event->email,
+      'coordinator' => $event->coordinator,
       'phone' => $event->phone,
       'price' => '$ '.number_format($event->price,2),
       'balance' => '$ '.number_format($event->balance,2),
@@ -104,8 +106,14 @@ trait EventDataTable
     $deleteButton->addAttribute('data-id', $event->id);
     $deleteButton->setClick("deleteEvent(this)");
 
-    return $editButton->getIconButton()."    ".$deleteButton->getIconButton(). "    ". $paymentButton->getIconButton()
-      . "    ". $this->generateShowPaymentButton($event);
+    $cancelButton = ActionButton::getDefaultButton(' bi-calendar2-x', 'btn-danger', 'Cancelar Evento');
+    $cancelButton->addAttribute('data-id', $event->id);
+    $cancelButton->setClick('cancelEvent(this)');
+
+    $finalButtons = $editButton->getIconButton()."    ";
+    $finalButtons .= $event->status == 'CANCELADO' ? '' : $cancelButton->getIconButton();
+    $finalButtons .= "    ". $paymentButton->getIconButton(). "    ". $this->generateShowPaymentButton($event);
+    return $finalButtons;
   }
 
   private function generateButtonsFinalize($event): string
