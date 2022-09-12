@@ -9,6 +9,7 @@ const showAnyModal = (element, title) => {
 }
 
 const questionModal = (title, deny, cancel, textConfirm, denyText = '', fnConfirm, messageCancel) => {
+    event.preventDefault()
     Swal.fire({
         title: title,
         showDenyButton: deny,
@@ -92,3 +93,12 @@ const clearAnyForm = (FORM, fields) => {
         FORM.find("[name = '"+field+"']").val('')
     })
 }
+
+const numberOrdecimal = (evt) => {
+    let ASCIICode = (evt.which) ? evt.which : evt.keyCode
+    if (((ASCIICode < 65 || ASCIICode > 90) && (ASCIICode < 105 || ASCIICode > 111)
+        && (ASCIICode < 186 || ASCIICode > 222) && !evt.shiftKey) || (ASCIICode === 190 || ASCIICode === 110 ))
+        return true
+    evt.preventDefault()
+}
+//# sourceURL=lovelight .js

@@ -104,6 +104,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
       Route::post('/events/video/{id}', [EventsController::class, 'saveVideo'])->name('weddings.events.video');
       Route::delete('/events/delete/{id}', [EventsController::class, 'delete'])->name('weddings.events.delete');
       Route::put('/events/finalize/{id}', [EventsController::class, 'finalize'])->name('weddings.events.finalize');
+      Route::put('/events/cancel/{id}', [EventsController::class, 'cancel'])->name('weddings.events.cancel');
 
       Route::get('/payments/table', [PaymentsController::class, 'loadTable'])->name('weddings.payments.table');
       Route::get('/payments/index', [PaymentsController::class, 'index'])->name('weddings.payments.index');

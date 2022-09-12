@@ -23,8 +23,9 @@ class EventsController extends Controller
 
   const LIQUIDADO = 'LIQUIDADO';
   const FINALIZADO = 'FINALIZADO';
-  public static array $headers = array('Fecha','Cliente', 'Hotel', 'Paquete', 'Email', 'Teléfono', 'Costo', 'Saldo', 'Acciones');
-  public static array $fields = array('event_date', 'customer', 'center', 'service', 'email', 'phone', 'price', 'balance', 'actions');
+  const CANCELADO = 'CANCELADO';
+  public static array $headers = array('Fecha','Cliente', 'Hotel', 'Paquete', 'Email', 'Coordinador/a', 'Teléfono', 'Costo', 'Saldo', 'Acciones');
+  public static array $fields = array('event_date', 'customer', 'center', 'service', 'email', 'coordinator', 'phone', 'price', 'balance', 'actions');
   public static array $headersPayments = array('Fecha de Pago', 'Monto', 'Voucher', 'Forma de Pago');
   public static array $fieldsPayments = array('payment_date', 'amount', 'voucher', 'payment_type');
   public static string $routeIndexTable = 'weddings.events.table';
@@ -67,14 +68,16 @@ class EventsController extends Controller
       'customer' => 'required',
       'eventDate' => 'required',
       'center' => 'required',
-      'service' => 'required'
+      'service' => 'required',
+      'coordinator' => 'required'
     ];
 
     $messages = [
       'customer.required' => 'El cliente requerido!!!',
       'eventDate.required' => 'Fecha del evento es requerida!!!',
       'center.required' => 'El hotel es requerido!!!',
-      'service.required' => 'El paquete es requerido!!!'
+      'service.required' => 'El paquete es requerido!!!',
+      'coordinator.required' => 'El Coordinador/a es requerido!!!'
     ];
     $service_personalize = env('SERVICE_PERSONALIZE');
     $this->validate($request, $rules, $messages);
@@ -97,6 +100,7 @@ class EventsController extends Controller
       $event->center = $center->name;
       $event->service = $service->name;
       $event->id_service = $service->id;
+
       $event->save();
       DB::commit();
     } catch (Exception $ex) {
@@ -237,6 +241,20 @@ class EventsController extends Controller
     $event = Events::find($id);
     throw_if(!$event || $event->code != $code, 'no existe');
     return view('system.weddings.events.canvas', compact('event'));
+  }
+
+  public function cancel(int $id) {
+    try {
+      DB::beginTransaction();
+      $event = Events::find($id);
+      throw_if(!isset($event) , "No existe el evento!!!");
+      $event->status = self::CANCELADO;
+      $event->save();
+      DB::commit();
+    }catch (Throwable $th) {
+      DB::rollBack();
+      return response()->json(['message' => 'Error '. $th->getMessage(), 'code' => 401]);
+    }
   }
 
   public function autocomplete(string $search): array

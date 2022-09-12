@@ -79,7 +79,8 @@ de Eventos', 'activeButton' => 'weddings'])
                                     'headers' => EventsController::$headers,
                                     'fields' => EventsController::$fields,
                                     'urlTable' => route(EventsController::$routeIndexTable),
-                                    'columnProp' => [['prop' => 'width', 'propValue' => 250,'target' => '2,3']],
+                                    'columnProp' => [['prop' => 'width', 'propValue' => 150,'target' => '2,3,5']],
+                                    'autoWidth' => 'false',
                                     'dataFunction' => 'getStatus_fn'
                                 ])
                             </div>
@@ -109,6 +110,7 @@ de Eventos', 'activeButton' => 'weddings'])
         let routeVideoEvent = '{{ route('weddings.events.video',[':id']) }}';
         let routeFinalizeEvent = '{{ route('weddings.events.finalize', [':id']) }}';
         let routeGiftsObtain = ' {{ route('weddings.gifts.obtain', [':id']) }}';
+        let routeCancelEvent = ' {{ route('weddings.events.cancel', [':id']) }}';
         let routeInfoPaymentsRender;
     </script>
     {!! Html::script('assets/js/events.js') !!}

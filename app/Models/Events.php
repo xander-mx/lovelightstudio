@@ -9,7 +9,7 @@ class Events extends Model
 {
   protected $table = 'events';
   protected $fillable = ['customer', 'id_center', 'center', 'id_service', 'service', 'price', 'discount', 'balance',
-     'email', 'phone', 'personalize', 'status'];
+     'email', 'phone', 'personalize', 'status', 'coordinator'];
 
   public function payments(): HasMany
   {

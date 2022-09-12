@@ -89,7 +89,7 @@
                         <span class="input-group-text">
                             <i class="bi bi-currency-dollar"></i>
                         </span>
-                        <input type="text" name="price" class="form-control" id="price" readonly required />
+                        <input type="text" name="price" class="form-control" id="price" onkeydown="numberOrdecimal(event)" readonly required />
                     </div>
                 </div>
                 <div class="form-group col-sm-12 col-md-6 col-lg-6">
@@ -99,6 +99,17 @@
                             <i class="bi bi-currency-dollar"></i>
                         </span>
                         <input type="number" name="discount" class="form-control" id="discount" required />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-12">
+                    <label for="price">Coordinador/a</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-headset"></i>
+                        </span>
+                        <input type="text" name="coordinator" class="form-control" id="coordinator" required />
                     </div>
                 </div>
             </div>

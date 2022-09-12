@@ -38,8 +38,12 @@ const getDataServices = (id) => {
                 })
             })
     } else {
-        if(EVENTS_FORM.find("[name = 'id']").val() === '')
+        if(EVENTS_FORM.find("[name = 'id']").val() === '') {
             PRICE_FIELD.val("")
+        } else {
+            PRICE_FIELD.val(PRICE_FIELD.val().replace('$', ''))
+            PRICE_FIELD.val(PRICE_FIELD.val().replace(',', ''))
+        }
     }
 }
 
@@ -109,7 +113,11 @@ EVENTS_MODAL.on('hidden.bs.modal', function () {
 
 const saveEvent = () => {
     let formData = new FormData(document.getElementById("events-form"));
-    EVENTS_BTN_SAVE.prop( "disabled", true );
+    if(Number(formData.get('service')) === service_personalize) {
+        let reg = new RegExp(/^(\d)*(\.)?([0-9])*?$/)
+        if(!reg.test(formData.get("price"))) return;
+    }
+    EVENTS_BTN_SAVE.prop( "disabled", true )
 
     $.ajax ({
         url: routeSaveEvent,
@@ -179,6 +187,7 @@ const editEvent = (btn) => {
             EVENTS_FORM.find("[name='email']").val(response.data.email);
             EVENTS_FORM.find("[name='personalize']").val(response.data.personalize);
             EVENTS_FORM.find("[name = 'discount']").val(response.data.discount)
+            EVENTS_FORM.find("[name = 'coordinator']").val(response.data.coordinator)
             EVENTS_FORM.find("[name = 'eventDate']").val(moment(new Date(response.data.event_date)).format('YYYY-MM-DD'))
             showAnyModal(EVENTS_MODAL, 'Editar Evento')
         })
@@ -249,6 +258,54 @@ const saveAddPayment = () => {
             ADD_PAYMENT_BTN.prop( "disabled", false );
             ADD_PAYMENT_MODAL.modal('toggle');
         })
+}
+
+const cancelEvent = (btn) => {
+    let id = $(btn).data("id")
+    let routeCancelreplace = routeCancelEvent.replace(':id', id)
+
+    Swal.fire({
+        title: 'Cancelar',
+        text: '¿Esta seguro de cancelar el evento?',
+        icon: 'warning',
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '<i class="fa fa-thumbs-up"></i>  Si, cancelar',
+        cancelButtonText: '<i class="fa fa-thumbs-down"></i> No, regresar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: routeCancelreplace,
+                type: 'put',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+                    $(".content_loading").fadeIn("slow");
+                }
+            })
+                .done(function(response) {
+                    Swal.fire({title:'Exitoso', text: response.message,icon: 'success'});
+                    EVENTS_TABLE.DataTable().ajax.reload();
+                })
+                .fail(function(jqXHR, textStatus, errorThrown)  {
+                    Swal.fire({
+                        title: 'Ups!',
+                        text: jqXHR.responseJSON.message,
+                        type: "warning",
+                        animation: false,
+                        showConfirmButton: true
+                    })
+                })
+                .always(function() {
+                    $(".content_loading").fadeOut("slow");
+                })
+        } else if (result.isDenied) {
+            Swal.fire('Se cancelo ', '', 'info')
+        }
+    })
 }
 
 const infoPayment = (btn) => {
