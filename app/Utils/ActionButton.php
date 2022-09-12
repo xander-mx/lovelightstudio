@@ -34,7 +34,7 @@ class ActionButton
   public function __construct()
   {
     $this->addClassButton('btn btn-info btn-xs ');
-    $this->setIcon('glyphicon ');
+    $this->setIcon('bi ');
     $this->setSpinner(false);
   }
 
@@ -198,6 +198,27 @@ class ActionButton
     $button .= ">";
     $button .= "<i class=' ". $this->getIcon() ."'></i>";
     $button .= "</button>";
+    return $button;
+  }
+
+  public static function getDefaultEditButton(): ActionButton
+  {
+    return self::getDefaultButton("bi-pencil-square", "btn-warning", "Editar");
+  }
+
+  public static function getDefaultDeleteButton(): ActionButton
+  {
+    return self::getDefaultButton("bi-trash", "btn-danger", "Eliminar");
+  }
+
+  public static function getDefaultButton(string $icon, string $class, string $tooltip): ActionButton
+  {
+    $button = new ActionButton();
+    $button->setIcon($icon);
+    $button->removeClassButton('btn-info');
+    $button->removeClassButton('btn-xs');
+    $button->addClassButton($class);
+    $button->setToolTip($tooltip);
     return $button;
   }
 

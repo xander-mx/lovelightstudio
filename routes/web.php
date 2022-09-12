@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\EventsController;
+use App\Http\Controllers\Admin\GiftsController;
+use App\Http\Controllers\Admin\PaymentsController;
 use App\Http\Controllers\Admin\ReservaController;
 use App\Http\Controllers\Admin\ReservesSoldController;
 use App\Http\Controllers\Admin\ServicesController;
@@ -33,6 +36,8 @@ Route::get('/', function () {
 
 Route::get('/reserva/cliente/information', [ReservaController::class, 'cliente'])->name('reserva.info');
 Route::post('/reserva/cliente', [ReservaController::class, 'clientecrear'])->name('reserva.cliente.post');
+Route::get('/events/{id}/canvas/{code}', [EventsController::class, 'canvas'])->name('weddings.events.canvas');
+Route::post('/gifts/save', [GiftsController::class, 'save'])->name('weddings.gifts.save');
 
 Auth::routes(['excepts' => 'register']);
 
@@ -88,6 +93,26 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
       Route::get('/services/information/{id}', [ServicesController::class, 'getInformation'])->name('weddings.services.information');
       Route::delete('/services/delete/{id}', [ServicesController::class, 'delete'])->name('weddings.services.delete');
       Route::post('/services/save', [ServicesController::class, 'save'])->name('weddings.services.save');
+
+      Route::get('/events/index', [EventsController::class, 'index'])->name('weddings.events.index');
+      Route::get('/events/table', [EventsController::class, 'loadTable'])->name('weddings.events.table');
+      Route::get('/events/{id}/table', [EventsController::class, 'loadPaymentsTable'])->name('weddings.events.payments.table');
+      Route::get('/events/edit/{id}', [EventsController::class, 'getInformation'])->name('weddings.events.information');
+      Route::get('/events/autocomplete/{search}', [EventsController::class, 'autocomplete'])->name('weddings.events.autocomplete');
+      Route::post('/events/save', [EventsController::class, 'save'])->name('weddings.events.save');
+      Route::post('/events/links/{id}', [EventsController::class, 'saveLinks'])->name('weddings.events.links');
+      Route::post('/events/video/{id}', [EventsController::class, 'saveVideo'])->name('weddings.events.video');
+      Route::delete('/events/delete/{id}', [EventsController::class, 'delete'])->name('weddings.events.delete');
+      Route::put('/events/finalize/{id}', [EventsController::class, 'finalize'])->name('weddings.events.finalize');
+      Route::put('/events/cancel/{id}', [EventsController::class, 'cancel'])->name('weddings.events.cancel');
+
+      Route::get('/payments/table', [PaymentsController::class, 'loadTable'])->name('weddings.payments.table');
+      Route::get('/payments/index', [PaymentsController::class, 'index'])->name('weddings.payments.index');
+      Route::get('/payments/edit/{id}', [PaymentsController::class, 'getInformation'])->name('weddings.payments.information');
+      Route::post('/payments/save', [PaymentsController::class, 'save'])->name('weddings.payments.save');
+      Route::delete('/payments/delete/{id}', [PaymentsController::class, 'delete'])->name('weddings.payments.delete');
+
+      Route::get('/gifts/{id}', [GiftsController::class, 'getGiftsInfo'])->name('weddings.gifts.obtain');
     });
 
     Route::get('/notification', function () {
