@@ -46,7 +46,7 @@ const createService = () => {
                 });
                 Swal.fire({title: 'Error',text: message, icon:'error'})
             } else {
-                swal('Ops!', response.message, 'error')
+                Swal('Ops!', response.message, 'error')
             }
         })
         .fail(function(jqXHR, textStatus, errorThrown)  {
