@@ -65,6 +65,12 @@ Tip 2: you can also add an image using data-image tag
                         <p>{{ __("Sueldo") }}</p>
                     </a>
                 </li>
+                <li class="nav-item @if($activePage == 'commissions.index') active @endif">
+                    <a class="nav-link" href="{{route('web.commissions.index')}}">
+                        <i class="nc-icon nc-bag"></i>
+                        <p>{{ __("Comisiones") }}</p>
+                    </a>
+                </li>
             @endif
             @if (Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 10)
             <li class="nav-item">

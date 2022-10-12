@@ -14,23 +14,20 @@
 
     </style>
     <div class="content">
-        <div class="row ml-5">
-            <h1>{{ Auth::user()->name }} {{ Auth::user()->lastname }}</h1>
-        </div>
         <div class="row ">
-            <div class="col">
+            <div class="col-6 text-center text-primary">
+                <h1>{{ Auth::user()->name }} {{ Auth::user()->lastname }}</h1>
+            </div>
+            <div class="col-6">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col text-center">
-                                <strong>Numero de seguro social:</strong>
-                                <h2 class="text-center">{{ Auth::user()->seguro_social }}
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <h4 class="lbl-dashboard"><strong>Número de Seguro Social </strong>{{ Auth::user()->seguro_social }}</h4>
+                                <h4 class="lbl-dashboard"><strong>Curp </strong> {{ Auth::user()->curp }}</h4>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col text-center">
-                                <strong>Curp:</strong>
-                                <h2 class="text-center">{{ Auth::user()->curp }}</h2>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <h4 class="text-center"><strong>Sesiones Vendidas</strong><br>{{ Auth::user()->curp }}</h4>
                             </div>
                         </div>
                     </div>

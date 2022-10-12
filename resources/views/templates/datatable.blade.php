@@ -57,7 +57,7 @@
                 console.log('rowCallBack {{$tableId}}');
                 @if(isset($customViewButtons) && !is_null($customViewButtons))
                         {!! $customViewButtons !!}
-                        @endif
+                @endif
             },
             "preDrawCallback" : function(settings) {
                 let search = $('#{{ $tableId }}').DataTable().search();
@@ -108,7 +108,7 @@
                     "selectNone": "Deseleccionar todo"
                 },
                 "aria": {
-                    "sortAscending":  ": activate to sort column ascending",
+                    "sortAscending":  ": activate datatableto sort column ascending",
                     "sortDescending": ": activate to sort column descending"
                 }
             }

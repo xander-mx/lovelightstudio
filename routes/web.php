@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\CommissionsController;
 use App\Http\Controllers\Admin\EventsController;
 use App\Http\Controllers\Admin\GiftsController;
 use App\Http\Controllers\Admin\PaymentsController;
@@ -60,7 +61,11 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
         Route::post('/sueldo', [Admin\SueldosController::class, 'CrearComi'])->name('sueldo.create');
         Route::get('/sueldo/limpiar', [Admin\SueldosController::class, 'limpiar'])->name('sueldo.limpiar');
         Route::post('/eliminar', [Admin\SueldosController::class, 'changeState'])->name('sueldo.eliminar');
+    });
 
+    Route::group(['prefix' => 'commissions'], function() {
+      Route::get('/', [CommissionsController::class, 'index'])->name('web.commissions.index');
+      Route::get('/table', [CommissionsController::class, 'loadTable'])->name('web.commissions.table');
     });
 
     Route::group(['prefix' => 'reserva'], function() {

@@ -36,6 +36,7 @@ trait BaseDataTable
     $this->searchConfig['orderByColumn']        = $this->searchConfig['orderBy']['data'];
     $this->searchConfig['orderByDir']           = $this->searchConfig['order'][0]['dir'];
     $this->searchConfig['status']               = $request->get('status');
+    $this->searchConfig['employee']               = $request->get('employee');
     $this->searchConfig['filtered']             = false;
   }
 

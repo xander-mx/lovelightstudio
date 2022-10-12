@@ -960,3 +960,27 @@
     background-image: none;
     border-color: #17a2b8;
 }
+
+@media (max-width: 700px)  {
+    .lbl-dashboard {
+        text-align: center;
+    }
+}
+
+@media (min-width: 701px)  {
+    .lbl-dashboard {
+        text-align: justify;
+    }
+}
+
+.backRowInProcess {
+    background-color: #1DC7EA;
+}
+
+.backRowAuthorized {
+    background-color: #a5dc86;
+}
+
+.backRowRejected {
+    background-color: #dd4b39;
+}
