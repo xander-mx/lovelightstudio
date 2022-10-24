@@ -185,6 +185,9 @@ const editEvent = (btn) => {
             if(response.data.id_service === service_personalize) {
                 EVENTS_FORM.find("[name='price']").val(response.data.price.toString());
             }
+            if(response.data.id_center === externalHotel) {
+                EVENTS_FORM.find("[name='hotel']").val(response.data.center);
+            }
             EVENTS_FORM.find("[name='phone']").val(response.data.phone);
             EVENTS_FORM.find("[name='email']").val(response.data.email);
             EVENTS_FORM.find("[name='personalize']").val(response.data.personalize);
