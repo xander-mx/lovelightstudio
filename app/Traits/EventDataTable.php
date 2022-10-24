@@ -21,11 +21,11 @@ trait EventDataTable
 
     $this->searchConfig['recordsFiltered'] = $query->count();
     $events = $query->limit($this->searchConfig['length'])->offset( $this->searchConfig['start'] )
-      ->orderBy('event_date', 'desc')->get();
+      ->orderBy('event_date', 'asc')->get();
     $data = [];
     foreach($events as $event)
       $data[] = $this->getDataRow($event);
-    return $this->getSearchResult($data);
+    return $this->getSearchResult($data, false);
   }
 
   private function getDataRow($event): array
