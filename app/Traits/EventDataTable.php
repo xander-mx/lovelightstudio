@@ -21,15 +21,16 @@ trait EventDataTable
 
     $this->searchConfig['recordsFiltered'] = $query->count();
     $events = $query->limit($this->searchConfig['length'])->offset( $this->searchConfig['start'] )
-      ->orderBy('event_date', 'desc')->get();
+      ->orderBy('event_date', 'asc')->get();
     $data = [];
     foreach($events as $event)
       $data[] = $this->getDataRow($event);
-    return $this->getSearchResult($data);
+    return $this->getSearchResult($data, false);
   }
 
   private function getDataRow($event): array
   {
+    $service_personalize = env('SERVICE_PERSONALIZE');
     switch($event->status) {
       case 'LIQUIDADO':
         $finalButtons = $this->generateButtonsToSoldOut($event->id)."    ".$this->generateButtonsFinalize($event);
@@ -45,7 +46,7 @@ trait EventDataTable
       'event_date' => date('d-m-Y', strtotime($event->event_date)),
       'customer' => $event->customer,
       'center' => $event->center,
-      'service' => $event->service,
+      'service' => $event->id_service == $service_personalize ? $event->personalize : $event->service,
       'email' => $event->email,
       'coordinator' => $event->coordinator,
       'phone' => $event->phone,
