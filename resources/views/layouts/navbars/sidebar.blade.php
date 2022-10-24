@@ -65,11 +65,34 @@ Tip 2: you can also add an image using data-image tag
                         <p>{{ __("Sueldo") }}</p>
                     </a>
                 </li>
-                <li class="nav-item @if($activePage == 'commissions.index') active @endif">
-                    <a class="nav-link" href="{{route('web.commissions.index')}}">
-                        <i class="nc-icon nc-bag"></i>
-                        <p>{{ __("Comisiones") }}</p>
+            @endif
+            @if (Auth::user()->idPerfil == 1)
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#payroll-menu" @if($activeButton == 'commissions') aria-expanded="true" @endif>
+                        <i class="bi bi-cash-stack"></i>
+                        <p>
+                            {{ __('Nomina') }}
+                            <b class="caret"></b>
+                        </p>
                     </a>
+                    <div class="collapse @if($activeButton =='commissions') show @endif" id="payroll-menu">
+                        <ul class="nav pl-2">
+                            <li class="nav-item @if($activePage == 'commissions.index') active @endif">
+                                <a class="nav-link" href="{{route('web.commissions.index')}}">
+                                    <i class="bi bi-card-checklist"></i>
+                                    <p>{{ __("Comisiones") }}</p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav pl-2">
+                            <li class="nav-item @if($activePage == 'payrolls.index') active @endif">
+                                <a class="nav-link" href="{{route('web.payrolls.index')}}">
+                                    <i class="bi bi-journals"></i>
+                                    <p>{{ __("Arqueos") }}</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
             @endif
             @if (Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 10)

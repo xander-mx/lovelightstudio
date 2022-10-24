@@ -5,9 +5,11 @@ use App\Http\Controllers\Admin\CommissionsController;
 use App\Http\Controllers\Admin\EventsController;
 use App\Http\Controllers\Admin\GiftsController;
 use App\Http\Controllers\Admin\PaymentsController;
+use App\Http\Controllers\Admin\PayrollController;
 use App\Http\Controllers\Admin\ReservaController;
 use App\Http\Controllers\Admin\ReservesSoldController;
 use App\Http\Controllers\Admin\ServicesController;
+use App\Models\Payrolls;
 use App\Models\Services;
 use App\Models\User;
 use App\Notifications\newReserva;
@@ -66,6 +68,11 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
     Route::group(['prefix' => 'commissions'], function() {
       Route::get('/', [CommissionsController::class, 'index'])->name('web.commissions.index');
       Route::get('/table', [CommissionsController::class, 'loadTable'])->name('web.commissions.table');
+    });
+
+    Route::group(['prefix' => 'payrolls'], function() {
+      Route::get('/', [PayrollController::class, 'index'])->name('web.payrolls.index');
+      Route::get('/table', [PayrollController::class, 'loadTable'])->name('web.payrolls.table');
     });
 
     Route::group(['prefix' => 'reserva'], function() {

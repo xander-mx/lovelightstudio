@@ -23,7 +23,7 @@ class Reservations extends Model
         if($nombre != null && $nombre != ""){
             $separar = explode("-",$nombre);
             $fecha = $nombre." 00:00:00";
-            return $query->where('date','like',"%$fecha%");
+            return $query->where('(date','like',"%$fecha%");
 
         }
     }

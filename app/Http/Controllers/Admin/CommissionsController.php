@@ -21,8 +21,9 @@ class CommissionsController extends Controller
     $this->setUpSearchConfig($request);
     $commissions = DB::table('commissions')
       ->Join('users', 'users.idUser', '=', 'commissions.employee')
-      ->leftJoin('reservations', 'commissions.reservation', '=', 'reservations.idReservation' )
-      ->whereIn('status',['PENDIENTE', 'AUTORIZADO'])->when($this->searchConfig['employee'] != 0, function ($query) {
+      ->leftJoin('reservations', 'commissions.reservation', '=', 'reservations.idReservation')
+      ->whereIn('status',['PENDIENTE', 'AUTORIZADO'])->when($this->searchConfig['employee'] != 0,
+        function ($query) {
         $query->where('commissions.employee', '=',$this->searchConfig['employee']);
       })
       ->select('commissions.id', 'users.idUser', 'commissions.date', DB::raw('users.name as employee'),
