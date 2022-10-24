@@ -77,13 +77,14 @@ const changeStatusFilter = (status) => {
 }
 
 EVENTS_MODAL.on('shown.bs.modal', function () {
+    let currentDate = moment().format('YYYY-MM-DD')
     rome(eventDate, {
         time: false,
         styles: {
             container: "rd-container datepicker-rome"
         },
         initialValue: moment().format('YYYY-MM-DD'),
-        dateValidator: rome.val.afterEq(eventDate),
+        dateValidator: rome.val.afterEq(currentDate),
         autoHideOnBlur: false
     })
     SERVICE_FIELD.trigger("change")
@@ -108,7 +109,8 @@ INFO_PAYMENT_MODAL.on('shown.bs.modal', function() {
 })
 
 EVENTS_MODAL.on('hidden.bs.modal', function () {
-    clearAnyForm(EVENTS_FORM, ['id', 'customer', 'phone', 'email', 'price', 'discount', 'personalize'])
+    clearAnyForm(EVENTS_FORM, ['id', 'customer', 'phone', 'email', 'price', 'discount', 'personalize',
+        'coordinator', 'personalize', 'hotel'])
 })
 
 const saveEvent = () => {
