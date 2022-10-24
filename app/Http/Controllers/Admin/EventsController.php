@@ -80,6 +80,7 @@ class EventsController extends Controller
       'coordinator.required' => 'El Coordinador/a es requerido!!!'
     ];
     $service_personalize = env('SERVICE_PERSONALIZE');
+    $external_hotel = env('EXTERNAL_HOTEL');
     $this->validate($request, $rules, $messages);
     $data = $request->all();
 
@@ -92,12 +93,15 @@ class EventsController extends Controller
       if($service->id != $service_personalize) {
         $event->price = $service->price;
       }
+
       if(!filled($data['id'])) $event->balance = $event->price;
       if(filled($data['discount']) && $data['discount'] > 0) $event->balance -= $event->discount;
       $event->event_date = date('Y-m-d H:i:s', strtotime($data['eventDate'] . " 00:00:00"));
       $event->phone = str_replace(' ','',$data['phone']);
       $event->id_center = $center->idCenter;
       $event->center = $center->name;
+      if($center->idCenter == $external_hotel)
+        $event->center = $data['hotel'];
       $event->service = $service->name;
       $event->id_service = $service->id;
 

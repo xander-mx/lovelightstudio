@@ -30,6 +30,7 @@ trait EventDataTable
 
   private function getDataRow($event): array
   {
+    $service_personalize = env('SERVICE_PERSONALIZE');
     switch($event->status) {
       case 'LIQUIDADO':
         $finalButtons = $this->generateButtonsToSoldOut($event->id)."    ".$this->generateButtonsFinalize($event);
@@ -45,7 +46,7 @@ trait EventDataTable
       'event_date' => date('d-m-Y', strtotime($event->event_date)),
       'customer' => $event->customer,
       'center' => $event->center,
-      'service' => $event->service,
+      'service' => $event->id_service == $service_personalize ? $event->personalize : $event->service,
       'email' => $event->email,
       'coordinator' => $event->coordinator,
       'phone' => $event->phone,
