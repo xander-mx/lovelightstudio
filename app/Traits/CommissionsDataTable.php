@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Enums\CommissionStatus;
 use App\Utils\ActionButton;
+use Illuminate\Support\Facades\DB;
 
 trait CommissionsDataTable
 {
@@ -13,8 +14,10 @@ trait CommissionsDataTable
   {
     if ( !is_null( $this->searchConfig['search'] ) ) {
       $search = strtoupper( $this->searchConfig['search'] );
-      $query->where('employee', 'like', '%'. $search .'%')
-        ->orWhere('coalesce(reservation.customer,"")', 'like', '%'. $search .'%');
+      $query->where(function($query) use ($search) {
+        $query->where(DB::raw('CONCAT(users.name, " ", COALESCE(users.lastname, ""))'), 'like', '%'. $search .'%');
+        $query->orWhere(DB::raw('coalesce(reservations.customer,"")'), 'like', '%'. $search .'%');
+      });
     }
 
     $this->searchConfig['recordsFiltered'] = $query->count();
@@ -30,9 +33,13 @@ trait CommissionsDataTable
   {
     $authorizeButton = ActionButton::getDefaultButton('bi-hand-thumbs-up', 'btn-primary', 'Autorizar');
     $authorizeButton->addAttribute('data-id', $commission->id);
+    $authorizeButton->addAttribute('data-status', 'AUTORIZADO');
+    $authorizeButton->setClick('statusCommission(this)');
 
     $rejectButton = ActionButton::getDefaultButton('bi-hand-thumbs-down', 'btn-danger', 'Rechazar');
     $rejectButton->addAttribute('data-id', $commission->id);
+    $rejectButton->addAttribute('data-status', 'RECHAZADO');
+    $rejectButton->setClick('statusCommission(this)');
 
     $badge = "badge";
     $showButtons = "";

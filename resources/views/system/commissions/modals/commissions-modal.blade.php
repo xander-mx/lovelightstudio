@@ -1,7 +1,7 @@
 @component('templates.modal', ['modalId' => 'commissions-modal', 'title' => 'Nueva Comisión', 'close' => true,
                                'backdrop' => true])
     @slot('body')
-        <form id="events-form">
+        <form id="commissions-form">
             <input type="hidden" name="id" id="id" />
             <div class="row">
                 <div class="form-group col-sm-12 col-md-12 col-lg-12">
@@ -47,6 +47,6 @@
 
     @slot('footer')
         <button type="button" class="btn btn-danger" onclick="closeAnyModal($('#commissions-modal'))">Cancelar</button>
-        <button type="button" id="createCommissionBtn" onclick="saveEvent()" class="btn btn-primary">Aceptar</button>
+        <button type="button" id="createCommissionBtn" onclick="saveCommission()" class="btn btn-primary">Aceptar</button>
     @endslot
 @endcomponent

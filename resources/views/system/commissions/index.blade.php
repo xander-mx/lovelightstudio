@@ -53,5 +53,9 @@
 @endsection
 
 @push('js')
+    <script>
+        let routeCommissionSave = '{{ route('web.commissions.save') }}'
+        let routeCommissionStatus = '{{ route('web.commissions.status', [':status', ':id']) }}'
+    </script>
     {!! Html::script('assets/js/commissions.js') !!}
 @endpush

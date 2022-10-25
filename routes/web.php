@@ -68,6 +68,8 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
     Route::group(['prefix' => 'commissions'], function() {
       Route::get('/', [CommissionsController::class, 'index'])->name('web.commissions.index');
       Route::get('/table', [CommissionsController::class, 'loadTable'])->name('web.commissions.table');
+      Route::post('/saveCommission', [CommissionsController::class, 'save'])->name('web.commissions.save');
+      Route::put('/update/{status}/{id}', [CommissionsController::class, 'changeStatus'])->name('web.commissions.status');
     });
 
     Route::group(['prefix' => 'payrolls'], function() {
