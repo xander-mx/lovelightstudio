@@ -20,6 +20,6 @@
 <h4><a href="{{ $event->photos }}">Click para ver fotos de la boda</a></h4>
 @endisset
 <h4>Compartelos al cliente por medio de este link</h4>
-<h4> Whatsapp : <a href="https://api.whatsapp.com/send?phone={{ str_replace('+','',$reserva->phone) }}">{{ $reserva->phone }}</a></h4>
+<h4> Whatsapp : <a href="https://api.whatsapp.com/send?phone={{ str_replace('+','',$event->phone) }}">{{ $event->phone }}</a></h4>
 </body>
 </html>
