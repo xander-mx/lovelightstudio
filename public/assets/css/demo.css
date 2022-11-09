@@ -984,3 +984,41 @@
 .backRowRejected {
     background-color: #dd4b39;
 }
+
+.card-header {
+    padding: .75rem 1.25rem !important;
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, .03) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, .125)
+}
+
+.btn-primary-lovelight {
+    color: #fff;
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.btn-primary-lovelight:hover {
+    color: #fff;
+    background-color: #0069d9 !important;
+    border-color: #0062cc !important;
+}
+
+.btn-primary-lovelight.focus,
+.btn-primary-lovelight:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, .5) !important;
+}
+
+.btn-primary-lovelight.disabled,
+.btn-primary-lovelight:disabled {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.btn-primary-lovelight.active,
+.btn-primary-lovelight:active,
+.show>.btn-primary-lovelight.dropdown-toggle {
+    background-color: #0069d9 !important;
+    background-image: none !important;
+    border-color: #0062cc !important;
+}

@@ -11,6 +11,8 @@ use App\Mail\cancelacion;
 use App\Mail\CorreoFinalizar;
 use App\Models\Centers;
 use App\Models\comisiones;
+use App\Models\Commissions;
+use App\Models\Configurations;
 use App\Models\ParameterValues;
 use App\Models\ReservaInfo;
 use App\Models\Reservations;
@@ -30,6 +32,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use stdClass;
+use Throwable;
 
 class ReservaController extends Controller
 {
@@ -152,7 +155,7 @@ class ReservaController extends Controller
             $reservaInfo->save();
             DB::commit();
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
           DB::rollBack();
           dd($request->all(),$th);
           return redirect()->back()->with('message_error', 'error');
@@ -388,7 +391,7 @@ class ReservaController extends Controller
         $reservation->state = 1;
         $reservation->save();
         DB::commit();
-      } catch (\Throwable $th) {
+      } catch (Throwable $th) {
         DB::rollback();
         return response()->json([
           'code' => 401,
@@ -464,7 +467,7 @@ class ReservaController extends Controller
             $reserva->idManager = $request->idManager;
             $reserva->update();
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             //throw $th;
             DB::rollBack();
         }
@@ -512,7 +515,7 @@ class ReservaController extends Controller
             $reserva->idManager = $request->idFotografo;
             $reserva->update();
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
           DB::rollBack();
           return redirect()->back()->with('message_error', 'error');
         }
@@ -543,13 +546,13 @@ class ReservaController extends Controller
         ];
         $status = "Activo";
         $this->validate($request, $rules, $messages);
-        DB::beginTransaction();
         try {
+          DB::beginTransaction();
             $reserva = Reservations::where('idReservation', $request->idReserva)->first();
             $reserva->state = $request->state;
             $reserva->update();
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
           DB::rollBack();
           return redirect()->back()->with('message_error', 'error');
         }
@@ -601,7 +604,7 @@ class ReservaController extends Controller
         $reservaInfo->autoriza_fotografia = $request->autoriza;
         $reservaInfo->save();
         DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
           DB::rollBack();
           return redirect()->back()->with('message_error', 'error');
         }
@@ -634,19 +637,20 @@ class ReservaController extends Controller
 
         DB::beginTransaction();
         try {
-            $reserva = Reservations::where('idReservation', $request->idReserva)->first();
-            $reserva->state = 3;//osea falta que el admin o el otro cabron finalice
-            $reserva->save();
-            $reservaInfo = ReservaInfo::where('id',$reserva->receptioninfo->id)->first();
-            $reservaInfo->forma_cobro = $request->formaCobro;
-            $reservaInfo->total_venta = $request->montoCobrado;
-            $reservaInfo->micelaneo = $request->micelaneo;
-            $reservaInfo->linkPagina = $request->link;
-            $reservaInfo->codigoFoto = $request->pwsd;
-            $reservaInfo->recibo = $request->recibo;
-            $reservaInfo->save();
-            DB::commit();
-        } catch (\Throwable $th) {
+          $reserva = Reservations::where('idReservation', $request->idReserva)->first();
+          $reserva->state = 3;//osea falta que el admin o el otro cabron finalice
+          $reserva->save();
+          $reservaInfo = ReservaInfo::where('id',$reserva->receptioninfo->id)->first();
+          $reservaInfo->forma_cobro = $request->formaCobro;
+          $reservaInfo->total_venta = $request->montoCobrado;
+          $reservaInfo->micelaneo = $request->micelaneo;
+          $reservaInfo->linkPagina = $request->link;
+          $reservaInfo->codigoFoto = $request->pwsd;
+          $reservaInfo->recibo = $request->recibo;
+          $this->generateCommissions($request->montoCobrado, $reserva);
+          $reservaInfo->save();
+          DB::commit();
+        } catch (Throwable $th) {
           DB::rollBack();
           return redirect()->back()->with('message_error', 'error');
         }
@@ -685,7 +689,7 @@ class ReservaController extends Controller
             $comision->monto_comision = $monto;
             $comision->save();
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
           DB::rollBack();
           return false;
         }
@@ -700,6 +704,22 @@ class ReservaController extends Controller
       ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
       ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
       ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva');
+  }
+
+  private function generateCommissions($amount, $reservation)
+  {
+    $configuration = Configurations::where('name', '=', 'comision_fotografo')->first();
+    $commissionPhotographer = new Commissions(['concept' => 'Comisión por venta Fotógrafo',
+      'employee' => $reservation->idManager, 'date' => date('Y-m-d h:i:s'), 'reservation' => $reservation->idReservation]);
+    throw_if(!isset($configuration),Throwable::class, 'No esta definida la comisión!!!');
+    $commissionPhotographer->amount = (($configuration->value / 100) * $amount);
+
+    $commissionRecepcionist = new Commissions(['concept' => 'Comisión por venta Recepcionista',
+      'employee' => $reservation->idReceptionist, 'date' => date('Y-m-d h:i:s'), 'reservation' => $reservation->idReservation]);
+    $commissionRecepcionist->amount = $amount <= 500 ? 150 : 300;
+
+    $commissionPhotographer->save();
+    $commissionRecepcionist->save();
   }
 
 }

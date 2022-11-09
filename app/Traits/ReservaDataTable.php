@@ -53,7 +53,7 @@ trait ReservaDataTable
     $info->client = $reservation->client;
     $info->pax = $reservation->pax;
 
-    if(Auth::user()->idPerfil == 3) {
+    if(Auth::user()->idPerfil == 3 || Auth::user()->idPerfil == 1) {
       if(filled($reservation->id_reserva)) {
         $finalizeButton = new ActionButton();
         $finalizeButton->removeClassButton('btn-xs');
@@ -86,7 +86,7 @@ trait ReservaDataTable
   }
 
   private function addStatus($reservation,&$info) {
-    if(Auth::user()->idPerfil == 3 || Auth::user()->idPerfil == 4) {
+    if(Auth::user()->idPerfil == 3 || Auth::user()->idPerfil == 4 || Auth::user()->idPerfil == 1) {
       $labelStatus = "";
       switch ($reservation->state) {
         case 1: $labelStatus = "<span class='badge badge-success'>Activo</span>"; break;

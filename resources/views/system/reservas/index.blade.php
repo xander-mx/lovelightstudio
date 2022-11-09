@@ -66,6 +66,7 @@ Reserva', 'activeButton' => 'reservas'])
                             @else
                                 @switch(Auth::user()->idPerfil)
                                     @case(3)
+                                    @case(1)
                                         @include('templates.datatable', [
                                           'tableId' => 'reservations-table',
                                           'title' => 'Listado de Reservas',
@@ -93,7 +94,7 @@ Reserva', 'activeButton' => 'reservas'])
         </div>
     </div>
 
-    @if (Auth::user()->idPerfil == 3)
+    @if (Auth::user()->idPerfil == 3 || Auth::user()->idPerfil == 1)
         @include('system.reservas.modals.finalize-modal')
     @endif
 

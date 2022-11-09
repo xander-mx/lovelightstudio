@@ -49,4 +49,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(ParameterValues::class, 'idValueParameter', 'idPerfil');
     }
+
+    public function isAdmin(): bool
+    {
+      return $this->idPerfil == 1;
+    }
+
+  public function isPhotographer(): bool
+  {
+    return $this->idPerfil == 3;
+  }
 }

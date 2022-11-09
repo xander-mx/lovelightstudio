@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Admin\CommissionsController;
+use App\Http\Controllers\Admin\ConfigurationsController;
 use App\Http\Controllers\Admin\EventsController;
 use App\Http\Controllers\Admin\GiftsController;
 use App\Http\Controllers\Admin\PaymentsController;
@@ -14,6 +15,7 @@ use App\Models\Services;
 use App\Models\User;
 use App\Notifications\newReserva;
 use App\Notifications\sendSupervisor;
+use Faker\Provider\ro_RO\Text;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -68,6 +70,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
     Route::group(['prefix' => 'commissions'], function() {
       Route::get('/', [CommissionsController::class, 'index'])->name('web.commissions.index');
       Route::get('/table', [CommissionsController::class, 'loadTable'])->name('web.commissions.table');
+      Route::get('/nextPayrollTable', [PayrollController::class, 'loadNextPayrollTable'])->name('web.commissions.nextTable');
       Route::post('/saveCommission', [CommissionsController::class, 'save'])->name('web.commissions.save');
       Route::put('/update/{status}/{id}', [CommissionsController::class, 'changeStatus'])->name('web.commissions.status');
     });
@@ -75,6 +78,15 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
     Route::group(['prefix' => 'payrolls'], function() {
       Route::get('/', [PayrollController::class, 'index'])->name('web.payrolls.index');
       Route::get('/table', [PayrollController::class, 'loadTable'])->name('web.payrolls.table');
+      Route::post('/create', [PayrollController::class, 'create'])->name('web.payrolls.create');
+      Route::put('/status/{id}/{status}', [PayrollController::class, 'changeStatus'])->name('web.payrolls.status');
+    });
+
+    Route::group(['prefix' => 'configurations'], function() {
+      Route::get('/', [ConfigurationsController::class, 'index'])->name('web.configurations.index');
+      Route::get('/table', [ConfigurationsController::class, 'loadTable'])->name('web.configurations.table');
+      Route::get('/information/{id}', [ConfigurationsController::class, 'getInformation'])->name('web.configurations.information');
+      Route::post('/update', [ConfigurationsController::class, 'update'])->name('web.configurations.update');
     });
 
     Route::group(['prefix' => 'reserva'], function() {

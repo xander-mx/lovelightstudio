@@ -71,7 +71,7 @@ Tip 2: you can also add an image using data-image tag
                     <a class="nav-link" data-toggle="collapse" href="#payroll-menu" @if($activeButton == 'commissions') aria-expanded="true" @endif>
                         <i class="bi bi-cash-stack"></i>
                         <p>
-                            {{ __('Nomina') }}
+                            {{ __('Nómina') }}
                             <b class="caret"></b>
                         </p>
                     </a>
@@ -127,6 +127,14 @@ Tip 2: you can also add an image using data-image tag
                     </ul>
                 </div>
             </li>
+            @endif
+            @if (Auth::user()->idPerfil == 1)
+                <li class="nav-item @if($activePage == 'configurations') active @endif">
+                    <a class="nav-link" href="{{route('web.configurations.index')}}">
+                        <i class="nc-icon nc-settings-tool-66"></i>
+                        <p>{{ __("Configuraciones") }}</p>
+                    </a>
+                </li>
             @endif
         </ul>
     </div>

@@ -1,5 +1,7 @@
 <?php
 
+use App\Facades\ConfigurationsFacade;
+
 return [
 
     /*
@@ -174,6 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\TwilioSenderProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        App\Providers\ConfigurationsServiceProvider::class
 
     ],
 
@@ -231,6 +234,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
       'Form' => Collective\Html\FormFacade::class,
       'Html' => Collective\Html\HtmlFacade::class,
+      'Configurations' => ConfigurationsFacade::class
     ],
 
 ];

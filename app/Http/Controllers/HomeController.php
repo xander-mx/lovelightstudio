@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\ConfigurationsFacade;
 use App\Models\Centers;
 use App\Models\comisiones;
+use App\Models\Commissions;
+use App\Models\Payrolls;
 use App\Models\Reservations;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Constraint\Count;
 
 class HomeController extends Controller
@@ -29,6 +34,23 @@ class HomeController extends Controller
      */
     public function index()
     {
+      $lastDatePayroll = Payrolls::where('status', 'PAGADO')->max('closeDate');
+      $initDate = filled($lastDatePayroll) ? Carbon::parse($lastDatePayroll)->format('Y-m-d') : $lastDatePayroll;
+      $initDate = $initDate ?? Carbon::now()->startOfMonth()->format('Y-m-d');
+      $endDate = ConfigurationsFacade::closeDate();
+      $reservations = Reservations::whereBetween('date', [$initDate, $endDate->value])
+        ->when(Auth::user()->isPhotographer(),function($query) {
+          $query->where('idManager', '=', Auth::user()->idUser);
+        })->get();
+      $actives = $reservations->count();
+      $sold = $reservations->where('state', 3)->count();
+      $commissions = Commissions::with('employeeData')->whereBetween('date', [$initDate, $endDate->value])
+        ->when(Auth::user()->isPhotographer(), function($query) {
+          $query->where('employee', Auth::user()->idUser);
+        })->when(Auth::user()->isAdmin(), function($query) {
+          $query->addSelect('employee', DB::raw('sum(amount) as total'))->groupBy('employee');
+        })->get();
+
         $totalFinalCentros = 0;
         $mesHoy = date('m');
         $ano = date('Y');
@@ -37,7 +59,6 @@ class HomeController extends Controller
         $diaInicial = 0;
         $diaFinal = 0;
         if ($diaHoy < 15) {
-            # code...
             $diaFinal = 15;
         } else {
             $diaInicial = 15;
@@ -46,13 +67,9 @@ class HomeController extends Controller
         $quincena = 0;
         $comisionesA = comisiones::where('mes', $mesHoy)
             ->where('id_trabajador', Auth::user()->idUser)
-            // ->where('ano', $ano)
-            // ->where('dia', '>=', $diaInicial)
-            // ->where('dia', '<=', $diaFinal)
             ->where('state', 1)
             ->get();
         foreach ($comisionesA as $key => $value) {
-            # code...
             $quincena = $quincena + $value->monto_comision;
         }
         $fechaInicial = $ano . '-' . $mesHoy . '-' . $diaInicial . ' 00:00:00';
@@ -134,23 +151,18 @@ class HomeController extends Controller
                 $totalComisionTrabajador = 0;
                 $comisionesTrabajadoress = comisiones::where('id_trabajador', $value->idUser)->where('state', 1)->get();
                 foreach ($comisionesTrabajadoress as    $comisionnnn) {
-                    # code...
                     $totalComisionTrabajador = $totalComisionTrabajador + $comisionnnn->monto_comision * 1;
                 }
                 $sumaTrabajadores[$value->idUser] =$totalComisionTrabajador;
                 $numReseTrabaAdmin[$value->idUser] = Count($reserva3343s);
                 $totallocal = 0;
                 foreach ($reserva3343s as $key => $value2) {
-                    # code...
-                    // dd($value2->receptioninfo->total_venta);
-
                     $totallocal = $totallocal + intval($value2->receptioninfo->total_venta);
                 }
                 $totalReseTrabajador[$value->idUser] = $totallocal;
             }
         }
-        // dd($totalReseTrabajador);
-        // dd($quincena, $reservas, $reservasFotografo);
+
         return view('dashboard', compact(
             'quincena',
             'reservas',
@@ -163,7 +175,10 @@ class HomeController extends Controller
             'numReseTrabaAdmin',
             'totalReseTrabajador',
             'totalFinalCentros',
-            'sumaTrabajadores'
+            'sumaTrabajadores',
+          'actives',
+          'sold',
+          'commissions'
         ));
     }
 }

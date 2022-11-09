@@ -31,7 +31,7 @@ trait CommissionsDataTable
 
   private function getDataRow($commission): array
   {
-    $authorizeButton = ActionButton::getDefaultButton('bi-hand-thumbs-up', 'btn-primary', 'Autorizar');
+    $authorizeButton = ActionButton::getDefaultButton('bi-hand-thumbs-up', 'btn-primary-lovelight', 'Autorizar');
     $authorizeButton->addAttribute('data-id', $commission->id);
     $authorizeButton->addAttribute('data-status', 'AUTORIZADO');
     $authorizeButton->setClick('statusCommission(this)');

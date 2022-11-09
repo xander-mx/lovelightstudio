@@ -66,7 +66,7 @@ class CommissionsController extends Controller
       $commission->created_at = $commission->created_at ?? time();
       $commission->date = $commission->date ?? date('Y-m-d h:i:s');
       $commission->employee = $data['photographer'];
-      $commission->status = CommissionStatus::memberByKey('PENDIENTE');
+      $commission->status = CommissionStatus::memberByKey('AUTORIZADO');
       $commission->save();
       DB::commit();
     } catch(Throwable $th) {
