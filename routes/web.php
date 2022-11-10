@@ -102,11 +102,10 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
       Route::post('/asignar', [ReservaController::class, 'asignar'])->name('reserva.asignar');
       Route::post('/changeState', [ReservaController::class, 'changeState'])->name('reserva.changeState');
       Route::post('/finalizar', [ReservaController::class, 'finalizar'])->name('reserva.finalizar');
-      Route::get('/finalizar/supervisor', [ReservaController::class, 'reservaFinalizada'])->name('reserva.supervisor.finalizar');
-      Route::post('/finalizar/supervisor', [ReservaController::class, 'finalizarSupervisor'])->name('reserva.supervisor.finalizar.post');
-
       Route::get('/sold/table', [ReservesSoldController::class, 'loadTable'])->name('reserves.sold.table');
       Route::get('/sold/index', [ReservesSoldController::class, 'index'])->name('reserves.sold.index');
+      Route::get('/reserve/info/{id}', [ReservaController::class, 'getInformation'])->name('reserves.actives.getInformation');
+      Route::post('/reserve/edit', [ReservaController::class, 'editReserve'])->name('reserves.actives.edit');
     });
 
     Route::group(['prefix' => 'ajax'], function () {

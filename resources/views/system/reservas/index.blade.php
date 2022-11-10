@@ -31,22 +31,6 @@ Reserva', 'activeButton' => 'reservas'])
                         </div>
                     </div>
                 @endif
-                @if (count($errors) > 0)
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="alert alert-warning alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                                <p> {{ trans('restaurantes.corregirErrores') }} </p>
-                                <ul>
-                                    @foreach ($errors->all() as $message)
-                                        <li>{{ $message }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                @endif
                 <div class="row">
                     <div class="col">
                         <h3>Sesiones  Activas: {{ Count($reservations) }}</h3>
@@ -104,14 +88,17 @@ Reserva', 'activeButton' => 'reservas'])
         @include('system.reservas.modals.assign-photographer-modal')
         @include('system.reservas.modals.client-modal')
     @endif
+    @include('system.reservas.modals.edit-reservation-modal')
 @endsection
 
 @push('js')
     <script>
-        let foto =JSON.parse( '{!! $trabajadores !!}');
-        let routeEditReservation = '{{ route('reserva.edit', [':center',':id']) }}';
-        let routeClientForm = '{{route('reserva.info')}}';
-        let routeFinalizeReserve = '{{ route('reserva.finalizar') }}';
+        let foto = JSON.parse( '{!! $trabajadores !!}')
+        let routeEditReservation = '{{ route('reserva.edit', [':center',':id']) }}'
+        let routeClientForm = '{{route('reserva.info')}}'
+        let routeFinalizeReserve = '{{ route('reserva.finalizar') }}'
+        let routeGetInfoReserve = '{{ route('reserves.actives.getInformation', [':id']) }}'
+        let routeEditReserve = '{{ route('reserves.actives.edit') }}'
     </script>
     {!! Html::script('assets/js/reservationsIndex.js') !!}
 @endpush

@@ -78,7 +78,18 @@ trait ReservaDataTable
     $actionButton->removeClassButton('btn-info');
     $actionButton->removeClassButton('btn-xs');
     $actionButton->setClick("openAction(". $reservation->idReservation.",".$reservation->idCenter.")");
+
+    $editButton = new ActionButton();
+    $editButton->addClassButton(" btn-sm mr-2");
+    $editButton->addClassButton(' btn-facebook');
+    $editButton->removeClassButton('btn-xs');
+    $editButton->removeClassButton('btn-info');
+    $editButton->setLabel("Editar");
+    $editButton->addAttribute('data-id', $reservation->idReservation);
+    $editButton->setClick('getInformation(this)');
+
     $info->actions = $actionButton->getRowButton();
+    $info->actions .= $editButton->getRowButton();
     $info->actions .= isset($finalizeButton) ? $finalizeButton->getRowButton() : "";
     $info->actions .= isset($clientButton) ? $clientButton->getRowButton() : "";
 

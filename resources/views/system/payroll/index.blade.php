@@ -67,7 +67,6 @@
 @push('js')
     <script>
         let routeCreatePayroll = '{{ route('web.payrolls.create') }}'
-        let routeRecalculate = '{{ route('web.payrolls.recalculate', [':id']) }}'
         let routeStatusPayroll = '{{ route('web.payrolls.status', [':id', ':status']) }}'
     </script>
     {!! Html::script('assets/js/payrolls.js') !!}
