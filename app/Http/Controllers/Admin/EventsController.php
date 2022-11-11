@@ -201,8 +201,8 @@ class EventsController extends Controller
         return response()->json(['message' => 'No existe el evento!!!', 'code' => 401]);
       }
       $event->photos = $data['photos'];
-      $event->canvas = filled($data['canvas']) ? $data['canvas'] : 1;
-      $event->photobooks = filled($data['photobooks']) ? $data['photobooks'] : 1;
+      $event->canvas = $data['canvas'] ?? 0;
+      $event->photobooks =  $data['photobooks'] ?? 0;
       $event->code = filled($event->code) ? $event->code : rand(1000,10000);
       $event->save();
       if(!env('TESTING')) {
