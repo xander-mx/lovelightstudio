@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
+use function PHPUnit\Framework\isNull;
 
 class EventsController extends Controller
 {
@@ -170,7 +171,7 @@ class EventsController extends Controller
     } catch (Throwable $th) {
       DB::rollBack();
       $error = '';
-      if(sizeOf($th->validator->messages()) > 0) {
+      if(isset($th->validator) && sizeOf($th->validator->messages()) > 0) {
         foreach ($th->validator->messages()->all() as $message)
           $error .= $message. ' ';
       }  else {
@@ -208,8 +209,11 @@ class EventsController extends Controller
         $emails[] = $event->email;
         if($data['email'])
           $emails[] = $data['email'];
-        Mail::to($emails)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
-          env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+        $emails = array_filter($emails, fn($value) => !is_null($value) && $value !== '');
+        throw_if(sizeof($emails) == 0, Exception::class, 'No existen emails a cuales enviar la información!!!');
+        if(sizeof($emails) > 0)
+          Mail::to($emails)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
+            env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
         Mail::to(env('MAIL_INFO'))->send(new EmailingTo($event, 'mail.links_to_info', 'Links Boda',
           env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
       }
@@ -217,7 +221,7 @@ class EventsController extends Controller
     } catch (Throwable $th) {
       DB::rollBack();
       $error = '';
-      if(sizeOf($th->validator->messages()) > 0) {
+      if(isset($th->validator) && sizeOf($th->validator->messages()) > 0) {
         foreach ($th->validator->messages()->all() as $message)
           $error .= $message. ' ';
       }  else {
