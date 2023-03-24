@@ -31,6 +31,6 @@ class avisarCliente extends Mailable
     public function build()
     {
         return $this->view('mail.alertarCliente')
-        ->subject("Tu sesión fotográfica con Love Light Studio");
+        ->subject("Tu sesión fotográfica");
     }
 }
