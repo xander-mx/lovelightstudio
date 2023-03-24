@@ -15,6 +15,6 @@
     @if ($reservation->center->extra != null)
         <p><h4>Ubicación : {{ $reservation->center->extra }}</h4></p>
     @endif
-    <p><h3>¡Gracias por ser parte de Love Light Studio!</h3></p>
+    <p><h3>{{ $reservation->center->footer_message }}</h3></p>
 </body>
 </html>

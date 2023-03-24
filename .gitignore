@@ -25,3 +25,5 @@ Homestead.json
 /.idea
 .idea/*
 composer.lock
+.idea/php.xml
+.idea/Lovelight.iml
