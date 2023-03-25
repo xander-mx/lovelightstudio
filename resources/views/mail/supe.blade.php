@@ -9,7 +9,7 @@
 <body>
 
 <h4>¡Hola! </h4>
-<h4>Tiene una reserva con Love Light Studio el día  {{ date('d/F/Y', strtotime($reserva->date)) }}  {{ $reserva->schedule->hour }}:{{  $reserva->schedule->minute  }} en el hotel {{ $reserva->center->name }}</h4>
+<h4>Tiene una reserva con {{ $reserva->center->idCenter == 8 ? 'Costa Imagen parte de ' : '' }} Love Light Studio el día  {{ date('d/F/Y', strtotime($reserva->date)) }}  {{ $reserva->schedule->hour }}:{{  $reserva->schedule->minute  }} en el hotel {{ $reserva->center->name }}</h4>
 <h4>¡Gracias!</h4>
 <h4> Fecha de sesión : </strong>{{ date('d/F/Y', strtotime($reserva->date)) }}  {{ $reserva->schedule->hour }}:{{  $reserva->schedule->minute  }}</h4>
 <h4> Nombre de cliente : {{ $reserva->customer }}</h4>

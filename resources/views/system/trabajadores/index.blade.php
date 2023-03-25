@@ -86,7 +86,7 @@
                                                 {{ $trabajador->email }}
                                             </td>
                                             <td>
-                                                {{$trabajador->getPerfil->name}}
+                                                {{$trabajador->getPerfil->name ?? '' }}
                                             </td>
                                             <td>
                                                 {{ $reservasNumeroHoy[$trabajador->idUser] }}
@@ -99,8 +99,8 @@
                                                         <input type="hidden" name="id" value="{{ $trabajador->idUser }}">
                                                         <input type="hidden" name="state" value="1">
                                                         <button type="submit" class="btn btn-warning">
-                                                            Inactivo
-                                                        </span>
+                                                            <span>Inactivo</span>
+                                                        </button>
                                                     </form>
                                                  
                                                         @break
@@ -110,8 +110,8 @@
                                                         <input type="hidden" name="id" value="{{ $trabajador->idUser }}">
                                                         <input type="hidden" name="state" value="0">
                                                         <button type="submit" class="btn btn-success">
-                                                            Activo
-                                                        </span>
+                                                            <span>Activo</span>
+                                                        </button>
                                                     </form>
                                                         
                                                         @break

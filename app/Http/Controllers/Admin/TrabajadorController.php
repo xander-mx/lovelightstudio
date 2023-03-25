@@ -17,7 +17,7 @@ class TrabajadorController extends Controller
 {
     public function index()
     {
-        $trabajadores = User::whereNotIn('idPerfil', [1,6])->whereIn('state', [0,1])->get();
+          $trabajadores = User::whereNotIn('idPerfil', [1,6])->whereIn('state', [0,1])->get();
         $reservasNumeroHoy =[];
         foreach ($trabajadores as $key => $value) {
             # code...

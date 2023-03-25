@@ -122,7 +122,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
         $invoice->year = "2021";
         $invoice->site = "Patio";
         $invoice->hour = "08:00";
-        $invoice->nameHotel = "Hotelas";
+        $invoice->nameHotel = "Hoteles";
         return (new sendSupervisor($invoice))
                 ->toMail($invoice);
     });

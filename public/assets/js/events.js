@@ -77,13 +77,14 @@ const changeStatusFilter = (status) => {
 }
 
 EVENTS_MODAL.on('shown.bs.modal', function () {
+    let currentDate = moment().format('YYYY-MM-DD')
     rome(eventDate, {
         time: false,
         styles: {
             container: "rd-container datepicker-rome"
         },
         initialValue: moment().format('YYYY-MM-DD'),
-        dateValidator: rome.val.afterEq(eventDate),
+        dateValidator: rome.val.afterEq(currentDate),
         autoHideOnBlur: false
     })
     SERVICE_FIELD.trigger("change")
@@ -108,7 +109,8 @@ INFO_PAYMENT_MODAL.on('shown.bs.modal', function() {
 })
 
 EVENTS_MODAL.on('hidden.bs.modal', function () {
-    clearAnyForm(EVENTS_FORM, ['id', 'customer', 'phone', 'email', 'price', 'discount', 'personalize'])
+    clearAnyForm(EVENTS_FORM, ['id', 'customer', 'phone', 'email', 'price', 'discount', 'personalize',
+        'coordinator', 'personalize', 'hotel'])
 })
 
 const saveEvent = () => {
@@ -182,6 +184,9 @@ const editEvent = (btn) => {
             SERVICE_FIELD.val(response.data.id_service).change();
             if(response.data.id_service === service_personalize) {
                 EVENTS_FORM.find("[name='price']").val(response.data.price.toString());
+            }
+            if(response.data.id_center === externalHotel) {
+                EVENTS_FORM.find("[name='hotel']").val(response.data.center);
             }
             EVENTS_FORM.find("[name='phone']").val(response.data.phone);
             EVENTS_FORM.find("[name='email']").val(response.data.email);

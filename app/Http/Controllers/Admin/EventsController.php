@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
+use function PHPUnit\Framework\isNull;
 
 class EventsController extends Controller
 {
@@ -80,6 +81,7 @@ class EventsController extends Controller
       'coordinator.required' => 'El Coordinador/a es requerido!!!'
     ];
     $service_personalize = env('SERVICE_PERSONALIZE');
+    $external_hotel = env('EXTERNAL_HOTEL');
     $this->validate($request, $rules, $messages);
     $data = $request->all();
 
@@ -92,12 +94,15 @@ class EventsController extends Controller
       if($service->id != $service_personalize) {
         $event->price = $service->price;
       }
+
       if(!filled($data['id'])) $event->balance = $event->price;
       if(filled($data['discount']) && $data['discount'] > 0) $event->balance -= $event->discount;
       $event->event_date = date('Y-m-d H:i:s', strtotime($data['eventDate'] . " 00:00:00"));
       $event->phone = str_replace(' ','',$data['phone']);
       $event->id_center = $center->idCenter;
       $event->center = $center->name;
+      if($center->idCenter == $external_hotel)
+        $event->center = $data['hotel'];
       $event->service = $service->name;
       $event->id_service = $service->id;
 
@@ -166,7 +171,7 @@ class EventsController extends Controller
     } catch (Throwable $th) {
       DB::rollBack();
       $error = '';
-      if(sizeOf($th->validator->messages()) > 0) {
+      if(isset($th->validator) && sizeOf($th->validator->messages()) > 0) {
         foreach ($th->validator->messages()->all() as $message)
           $error .= $message. ' ';
       }  else {
@@ -196,16 +201,19 @@ class EventsController extends Controller
         return response()->json(['message' => 'No existe el evento!!!', 'code' => 401]);
       }
       $event->photos = $data['photos'];
-      $event->canvas = filled($data['canvas']) ? $data['canvas'] : 1;
-      $event->photobooks = filled($data['photobooks']) ? $data['photobooks'] : 1;
+      $event->canvas = $data['canvas'] ?? 0;
+      $event->photobooks =  $data['photobooks'] ?? 0;
       $event->code = filled($event->code) ? $event->code : rand(1000,10000);
       $event->save();
       if(!env('TESTING')) {
         $emails[] = $event->email;
         if($data['email'])
           $emails[] = $data['email'];
-        Mail::to($emails)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
-          env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
+        $emails = array_filter($emails, fn($value) => !is_null($value) && $value !== '');
+        throw_if(sizeof($emails) == 0, Exception::class, 'No existen emails a cuales enviar la información!!!');
+        if(sizeof($emails) > 0)
+          Mail::to($emails)->send(new EmailingTo($event, 'mail.photos', 'Fotos Boda',
+            env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
         Mail::to(env('MAIL_INFO'))->send(new EmailingTo($event, 'mail.links_to_info', 'Links Boda',
           env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME')));
       }
@@ -213,7 +221,7 @@ class EventsController extends Controller
     } catch (Throwable $th) {
       DB::rollBack();
       $error = '';
-      if(sizeOf($th->validator->messages()) > 0) {
+      if(isset($th->validator) && sizeOf($th->validator->messages()) > 0) {
         foreach ($th->validator->messages()->all() as $message)
           $error .= $message. ' ';
       }  else {
