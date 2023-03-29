@@ -48,7 +48,7 @@
                               'headers' => ReservesSoldController::$headers,
                               'fields' => ReservesSoldController::$fields,
                               'urlTable' => route(ReservesSoldController::$routeIndex),
-                              'columnProp' => [['prop' => 'width', 'propValue' => 70,'target' => '0,9,10,11,12,13']]
+                              'columnProp' => [['prop' => 'width', 'propValue' => 80,'target' => '0,9,10,11,12,13']]
                             ])
                         @endif
 

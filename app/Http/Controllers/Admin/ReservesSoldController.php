@@ -35,7 +35,7 @@ class ReservesSoldController extends Controller
       })
       ->select('reservations.idReservation', 'reservations.date', DB::raw('centers.name as center'),
         DB::raw("reservations.customer as client"),
-        DB::raw('COALESCE(reservations_info_finish.total_venta, 0) as sale'), 'reservations_info_finish.micelaneo',
+        DB::raw('COALESCE(reservations_info_finish.total_venta, 0) as total_venta'), 'reservations_info_finish.micelaneo',
         'reservations_info_finish.recibo',
         DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"),
         DB::raw("CONCAT(manager.name,' ', COALESCE(manager.lastname,'')) as manager"), 'reservations.idManager',

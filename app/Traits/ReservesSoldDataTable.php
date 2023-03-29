@@ -42,8 +42,8 @@ trait ReservesSoldDataTable
     $info->date = date('d-m-Y', strtotime($reservation->date));
     $info->center = $reservation->center;
     $info->customer = $reservation->client;
-    if(Auth::user()->idPerfil <= 2 || Auth::user()->idPerfil == 8) {
-      if(Auth::user()->idPerfil ==1) $info->sale = '$'.number_format($reservation->total_venta);
+    if(Auth::user()->idPerfil <= 2 || Auth::user()->idPerfil == 8 || Auth::user()->idPerfil == 9) {
+      if(Auth::user()->idPerfil == 1 || Auth::user()->idPerfil == 9) $info->sale = '$'.number_format($reservation->total_venta);
       $info->miscellaneous = $reservation->micelaneo;
       $info->ticket = $reservation->recibo;
       $info->receptionist = $reservation->receptionist;
