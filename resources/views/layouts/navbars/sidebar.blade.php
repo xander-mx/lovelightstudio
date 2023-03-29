@@ -32,6 +32,7 @@ Tip 2: you can also add an image using data-image tag
                     </a>
                 </li>
             @endif
+            @if(Auth::user()->idPerfil != 9)
             <li class="nav-item @if($activePage == 'reservas.create') active @endif">
                 <a class="nav-link" href="{{route('reserva.create')}}">
                     <i class="nc-icon nc-simple-add"></i>
@@ -44,6 +45,7 @@ Tip 2: you can also add an image using data-image tag
                     <p>{{ __("reservas activas") }}</p>
                 </a>
             </li>
+            @endif
             <li class="nav-item @if($activePage == 'reserves.sold.index') active @endif">
                 <a class="nav-link" href="{{route('reserves.sold.index')}}">
                     <i class="bi bi-cart-check"></i>
