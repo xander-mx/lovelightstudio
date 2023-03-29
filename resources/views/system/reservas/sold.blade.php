@@ -39,7 +39,7 @@
                 </div>
                 <div class="card col-md-12">
                     <div class="card-body">
-                        @if (Auth::user()->idPerfil <= 2 || Auth::user()->idPerfil == 8)
+                        @if (Auth::user()->idPerfil <= 2 || Auth::user()->idPerfil == 8 || Auth::user()->idPerfil == 9)
                             @include('templates.datatable', [
                               'tableId' => 'sold-table',
                               'title' => 'Listado de Sesiones Vendidas',
@@ -52,7 +52,7 @@
                             ])
                         @endif
 
-                        @if (Auth::user()->idPerfil > 2 && Auth::user()->idPerfil != 8)
+                        @if (Auth::user()->idPerfil > 2 && Auth::user()->idPerfil != 8 && Auth::user()->idPerfil != 9)
                                 @include('templates.datatable', [
                                   'tableId' => 'sold-table',
                                   'title' => 'Listado de Reservas Vendidas',
