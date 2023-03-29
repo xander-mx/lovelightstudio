@@ -25,11 +25,15 @@ class ReservesSoldController extends Controller
   public function loadTable(Request $request): array
   {
     $isPhotographer = Auth::user()->idPerfil == 3;
+    $isCostaImage = Auth::user()->idPerfil == 9;
     $this->setUpSearchConfig($request);
     $reservations = $this->reservationsJoins()->where('reservations.state',3)
       ->when($isPhotographer, function($query) {
         $query->where('reservations.idManager','=', Auth::user()->idUser);
-      })->select('reservations.idReservation', 'reservations.date', DB::raw('centers.name as center'),
+      })->when($isCostaImage, function($query) {
+        $query->where('reservations.idCenter', '=', 8);
+      })
+      ->select('reservations.idReservation', 'reservations.date', DB::raw('centers.name as center'),
         DB::raw("reservations.customer as client"), 'reservations_info_finish.total_venta', 'reservations_info_finish.micelaneo',
         'reservations_info_finish.recibo',
         DB::raw("CONCAT(receptionist.name,' ', COALESCE(receptionist.lastname,'')) as receptionist"),
