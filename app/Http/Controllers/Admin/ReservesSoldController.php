@@ -52,6 +52,16 @@ class ReservesSoldController extends Controller
     return view('system.reservas.sold');
   }
 
+  public function getSalesTotal(string $init, string $end) {
+    $isCostaImage = Auth::user()->idPerfil == 9;
+    $total = number_format(DB::table('reservations')->leftJoin('reservations_info_finish',
+      'reservations.idReservation','=','reservations_info_finish.id_reserva')
+      ->whereBetween('reservations.date',[$init, $end])->when($isCostaImage, function($query) {
+        $query->where('reservations.idCenter', '=', 8);
+      })->sum('reservations_info_finish.total_venta'),2);
+    return response()->json(['data' => "$ $total", 'code' => 200]);
+  }
+
   private function reservationsJoins(): Builder
   {
     return DB::table('reservations')
