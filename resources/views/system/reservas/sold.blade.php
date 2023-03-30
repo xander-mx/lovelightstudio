@@ -41,8 +41,8 @@
                                 <i class="bi bi-file-earmark-excel"></i>  Exportar a excel</button>
                         </div>
                     </div>
-                    <div class="float-right row pt-2 pl-2 pb-1 col-8">
-                        <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                    <div class="float-right row pt-2 pl-2 pb-1">
+                        <div class="form-group col-sm-12 col-md-3 col-lg-3">
                             <label for="initDate">Fecha Inicial</label>
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -51,7 +51,7 @@
                                 <input type="text" class="form-control datepicker-rome" id="initDate" name="initDate" readonly required />
                             </div>
                         </div>
-                        <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                        <div class="form-group col-sm-12 col-md-3 col-lg-3">
                             <label for="endDate">Fecha Final</label>
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -60,12 +60,16 @@
                                 <input type="text" class="form-control datepicker-rome" id="endDate" name="endDate" readonly required />
                             </div>
                         </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-group col-sm-12 col-md-2 col-lg-2">
                             <label></label>
                             <div class="input-group pt-1">
                             <button type="button" class="btn btn-esmerald" id="searchSolds">
                                 <i class="bi bi-search-heart"></i> Buscar</button>
                             </div>
+                        </div>
+                        <div class="form-group col-sm-12 col-md-3 col-lg-3 text-center">
+                            <label>Venta Total</label>
+                            <span class="input-group-text" id="totalSales">$ 0</span>
                         </div>
                     </div>
                 </div>
@@ -118,4 +122,7 @@
 
 @push('js')
     {!! Html::script('assets/js/reservessold.js') !!}
+    <script>
+        let routeSalesTotal = '{{ route('reserves.sold.total',[':init',':end']) }}'
+    </script>
 @endpush
