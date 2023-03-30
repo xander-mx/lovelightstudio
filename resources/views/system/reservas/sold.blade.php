@@ -82,7 +82,8 @@
                               'headers' => ReservesSoldController::$headers,
                               'fields' => ReservesSoldController::$fields,
                               'urlTable' => route(ReservesSoldController::$routeIndex),
-                              'columnProp' => [['prop' => 'width', 'propValue' => 80,'target' => '0,9,10,11,12,13']]
+                              'dataFunction' => 'filter_dates_fn',
+                              'columnProp' => [['prop' => 'width', 'propValue' => 70,'target' => '0,9,10,11,12,13']]
                             ])
                         @endif
 
@@ -93,7 +94,8 @@
                                   'serverSide' => 'true',
                                   'headers' => ReservesSoldController::$headersPhotographer,
                                   'fields' => ReservesSoldController::$fieldsPhotographer,
-                                  'urlTable' => route(ReservesSoldController::$routeIndex)
+                                  'urlTable' => route(ReservesSoldController::$routeIndex),
+                                  'dataFunction' => 'filter_dates_fn'
                                 ])
                         @endif
                             @if (Auth::user()->idPerfil == 9)
