@@ -21,7 +21,9 @@ trait BaseDataTable
     'filtered'        => false,
     'recordsTotal'    => 0,
     'recordsFiltered' => 0,
-    'status'
+    'status',
+    'init_date',
+    'end_date'
   ];
 
   protected function setUpSearchConfig(&$request)
@@ -37,6 +39,8 @@ trait BaseDataTable
     $this->searchConfig['orderByDir']           = $this->searchConfig['order'][0]['dir'];
     $this->searchConfig['status']               = $request->get('status');
     $this->searchConfig['filtered']             = false;
+    $this->searchConfig['init_date']            = $request->get('init_date');
+    $this->searchConfig['end_date']            = $request->get('end_date');
   }
 
   protected function getSortedData(array &$data): array

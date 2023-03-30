@@ -16,10 +16,12 @@ class ReservesSoldController extends Controller
     'Fotógrafo', 'Tipo de Pago', 'Comisión Reserva', 'Comisión Fotógrafo', 'Comisión Supervisor Reserva', 'Emails',
     'Telefónos', 'Canvas', 'Autorización', 'Dirección');
   public static array $headersPhotographer = array('Fecha', 'Hotel', 'Cliente', 'Comisión Reserva', 'Comisión Fotógrafo');
+  public static array $headersReader = array('Fecha', 'Hotel', 'Cliente', 'Venta');
   public static array $fields = array('date', 'center', 'customer', 'sale', 'miscellaneous', 'ticket', 'receptionist',
     'manager', 'payment_method', 'comission_recep', 'comission_manager', 'comission_super', 'emails', 'phones',
     'canva', 'authorized', 'direction');
   public static array $fieldsPhotographer = array('date', 'center', 'customer', 'comission_recep', 'comission_manager');
+  public static array $fieldsReader = array('date', 'center', 'customer', 'sale');
   public static string $routeIndex = 'reserves.sold.table';
 
   public function loadTable(Request $request): array
