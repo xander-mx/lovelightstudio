@@ -81,6 +81,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
 
       Route::get('/sold/table', [ReservesSoldController::class, 'loadTable'])->name('reserves.sold.table');
       Route::get('/sold/index', [ReservesSoldController::class, 'index'])->name('reserves.sold.index');
+      Route::get('/sold/total/{init}/{end}', [ReservesSoldController::class, 'getSalesTotal'])->name('reserves.sold.total');
     });
 
     Route::group(['prefix' => 'ajax'], function () {

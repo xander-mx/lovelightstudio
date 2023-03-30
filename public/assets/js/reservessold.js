@@ -4,7 +4,10 @@ const END_DATE = $('#endDate')
 const BTN_SEARCH_SOLDS = $('#searchSolds')
 const TABLE_SOLDS = $('#sold-table')
 
-BTN_SEARCH_SOLDS.click(() => TABLE_SOLDS.DataTable().ajax.reload())
+BTN_SEARCH_SOLDS.click(() => {
+    TABLE_SOLDS.DataTable().ajax.reload()
+    salesTotal()
+})
 const exportTableToExcel = (tableID, filename = '') => {
     let downloadLink;
     let dataType = 'application/vnd.ms-excel';
@@ -66,6 +69,33 @@ const filter_dates_fn = (d) => {
     d.init_date = INIT_DATE.val()
     d.end_date = END_DATE.val()
     return d
+}
+
+const salesTotal = () => {
+    let init = INIT_DATE.val()
+    let end = END_DATE.val()
+    let replaceSalesTotalRoute = routeSalesTotal.replace(':init',init)
+    replaceSalesTotalRoute = replaceSalesTotalRoute.replace(':end',end)
+
+    $.ajax({
+        url: replaceSalesTotalRoute,
+        type: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    })
+        .done(function (response) {
+            $('#totalSales').text(response.data)
+        })
+        .fail(function(jqXHR, textStatus, errorThrown)  {
+            Swal.fire({
+                title: 'Ups!',
+                text: jqXHR.responseJSON.message,
+                type: "warning",
+                animation: false,
+                showConfirmButton: true
+            })
+        })
 }
 
 //# sourceURL=reservesSolds.js
