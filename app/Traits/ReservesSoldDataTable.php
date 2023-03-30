@@ -24,7 +24,7 @@ trait ReservesSoldDataTable
           ->orWhere('reservations_info_finish.recibo', 'like', '%'. $search .'%');
       });
     }
-
+    $query->whereBetween('reservations.date', [$this->searchConfig['init_date'], $this->searchConfig['end_date']]);
     $this->searchConfig['recordsFiltered'] = $query->count();
     $reservations = $query->limit( $this->searchConfig['length'] )->offset( $this->searchConfig['start'] )
       ->orderBy('date', 'desc')->get();
