@@ -26,15 +26,9 @@ class ReservesSoldController extends Controller
 
   public function loadTable(Request $request): array
   {
-    $isPhotographer = Auth::user()->idPerfil == 3;
-    $isCostaImage = Auth::user()->idPerfil == 9;
+
     $this->setUpSearchConfig($request);
-    $reservations = $this->reservationsJoins()->where('reservations.state',3)
-      ->when($isPhotographer, function($query) {
-        $query->where('reservations.idManager','=', Auth::user()->idUser);
-      })->when($isCostaImage, function($query) {
-        $query->where('reservations.idCenter', '=', 8);
-      })
+    $reservations = $this->reservationsFilters($this->reservationsJoins())
       ->select('reservations.idReservation', 'reservations.date', DB::raw('centers.name as center'),
         DB::raw("reservations.customer as client"),
         DB::raw('COALESCE(reservations_info_finish.total_venta, 0) as total_venta'), 'reservations_info_finish.micelaneo',
@@ -53,12 +47,12 @@ class ReservesSoldController extends Controller
   }
 
   public function getSalesTotal(string $init, string $end) {
-    $isCostaImage = Auth::user()->idPerfil == 9;
-    $total = number_format(DB::table('reservations')->leftJoin('reservations_info_finish',
-      'reservations.idReservation','=','reservations_info_finish.id_reserva')
-      ->whereBetween('reservations.date',[$init, $end])->when($isCostaImage, function($query) {
-        $query->where('reservations.idCenter', '=', 8);
-      })->sum('reservations_info_finish.total_venta'),2);
+    $total = number_format($this->reservationsFilters(
+      DB::table('reservations')->leftJoin('reservations_info_finish',
+      'reservations.idReservation','=','reservations_info_finish.id_reserva'))
+      ->where('reservations.state',3)
+      ->whereBetween('reservations.date',[$init, $end])
+      ->sum('reservations_info_finish.total_venta'),2);
     return response()->json(['data' => "$ $total", 'code' => 200]);
   }
 
@@ -70,5 +64,17 @@ class ReservesSoldController extends Controller
       ->join('centers', 'reservations.idCenter', '=', 'centers.idCenter')
       ->join('schedules', 'reservations.idSchedule', '=', 'schedules.idSchedule')
       ->leftJoin('reservations_info_finish', 'reservations.idReservation','=','reservations_info_finish.id_reserva');
+  }
+
+  private function reservationsFilters(Builder $build): Builder
+  {
+    $isPhotographer = Auth::user()->idPerfil == 3;
+    $isCostaImage = Auth::user()->idPerfil == 9;
+    return $build->where('reservations.state',3)
+      ->when($isPhotographer, function($query) {
+        $query->where('reservations.idManager','=', Auth::user()->idUser);
+      })->when($isCostaImage, function($query) {
+        $query->where('reservations.idCenter', '=', 8);
+      });
   }
 }
