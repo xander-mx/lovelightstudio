@@ -658,10 +658,10 @@ class ReservaController extends Controller
           Mail::to($value['email'])->send(new AvisarSupervisor($reservaInfo, $reserva));
         }
       }
-      $monto = $request->montoCobrado * 0.21;
+      $monto = $request->montoCobrado * 0.18;
       $this->agregarComi(Auth::user()->idUser,"Comision por venta Fotografo", $monto);
 
-      $montoreserva = $request->montoCobrado <= 500 ? 150 : 300;
+      $montoreserva = $request->montoCobrado <= 500 ? 150 : ($request->montoCobrado * .10);
       $this->agregarComi($reserva->idReceptionist,"Comision por venta Recepcionista",$montoreserva);
 
       $supervisor = User::where('idPerfil',8)->where('state',1)->get();
