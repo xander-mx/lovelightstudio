@@ -12,7 +12,7 @@ trait ReservaDataTable
 {
   use BaseDataTable;
 
-  protected function getSearchDataResult($query): array
+  protected function getSearchDataResult(&$query): array
   {
     $search = strtoupper( $this->searchConfig['search'] );
 

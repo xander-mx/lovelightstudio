@@ -131,7 +131,7 @@
                                                     
                                                 </button>
                                             </form>
-                                            <a href="{{ route('trabajador.editt') }}?idUser={{ $trabajador->idUser }}" class="btn btn-info">Editar</a>
+                                            <a href="{{ route('trabajador.edit.view') }}?idUser={{ $trabajador->idUser }}" class="btn btn-info">Editar</a>
                                         
                                         </td>
                                         </tr>

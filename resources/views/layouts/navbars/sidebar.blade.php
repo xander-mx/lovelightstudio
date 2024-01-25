@@ -61,7 +61,7 @@ Tip 2: you can also add an image using data-image tag
                 </li>
             @endif
             @if (Auth::user()->idPerfil == 1)
-                <li class="nav-item @if($activePage == 'trabajador') active @endif">
+                <li class="nav-item @if($activePage == 'sueldo') active @endif">
                     <a class="nav-link" href="{{route('sueldo.index')}}">
                         <i class="nc-icon nc-bag"></i>
                         <p>{{ __("Sueldo") }}</p>

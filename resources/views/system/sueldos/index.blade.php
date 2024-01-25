@@ -1,5 +1,5 @@
-@extends('layouts.app', ['activePage' => 'reservas.index', 'title' => 'LLS - Listado Reserva', 'navName' => 'Listado
-Reserva', 'activeButton' => 'reservas'])
+@extends('layouts.app', ['activePage' => 'sueldo', 'title' => 'LLS - Listado Sueldos', 'navName' => 'Listado
+Sueldos', 'activeButton' => 'reservas'])
 
 @section('stylebb')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"

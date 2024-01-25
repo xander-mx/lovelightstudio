@@ -18,7 +18,7 @@
         <div class="col-12">
             <div class="alert alert-warning alert-dismissible" role="alert">
           
-                <p> {{ trans('restaurantes.corregirErrores') }} </p>
+                <p> {{ trans('Atención') }} </p>
                 <ul>
                     @foreach ($errors->all() as $message)
                         <li>{{ $message }}</li>

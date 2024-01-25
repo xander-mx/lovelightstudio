@@ -14,7 +14,7 @@ class User extends Authenticatable
 
   protected $table = "users";
   protected $primaryKey = 'idUser';
-  protected $fillable = ['name', 'email', 'cellphone', 'password'];
+  protected $fillable = ['name', 'email', 'phone', 'password'];
   protected $hidden = ['password', 'remember_token'];
   protected $casts = ['email_verified_at' => 'datetime'];
 
