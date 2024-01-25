@@ -51,10 +51,10 @@ Route::group(['prefix' => 'administrator', 'middleware' => 'auth'], function () 
 
     Route::group(['prefix' => 'trabajadores'], function(){
         Route::get('/', [Admin\TrabajadorController::class, 'index'])->name('trabajador.index');
-        Route::get('/create', [Admin\TrabajadorController::class, 'create'])->name('trabajador.create');
-        Route::get('/editt', [Admin\TrabajadorController::class, 'editt'])->name('trabajador.editt');
+        Route::get('/create', [Admin\TrabajadorController::class, 'createView'])->name('trabajador.create');
+        Route::get('/edit', [Admin\TrabajadorController::class, 'edit'])->name('trabajador.edit.view');
         Route::post('/create', [Admin\TrabajadorController::class, 'store'])->name('trabajador.store');
-        Route::post('/put', [Admin\TrabajadorController::class, 'put'])->name('trabajador.puti');
+        Route::post('/put', [Admin\TrabajadorController::class, 'put'])->name('trabajador.edit');
         Route::post('/change', [Admin\TrabajadorController::class, 'change'])->name('trabajador.change');
         Route::get('/sueldo', [Admin\SueldosController::class, 'index'])->name('sueldo.index');
         Route::post('/sueldo', [Admin\SueldosController::class, 'CrearComi'])->name('sueldo.create');

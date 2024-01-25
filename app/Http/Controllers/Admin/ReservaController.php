@@ -339,6 +339,7 @@ class ReservaController extends Controller
         ];
       $this->validate($request, $rules, $messages);
       $data = $request->all();
+      $data["phone"] = str_replace(' ', '', $data["phone"]);
       $center = Centers::where('idCenter',$request->idCenter)->first();
       if(empty($center)){
         return response()->json([
@@ -658,16 +659,12 @@ class ReservaController extends Controller
           Mail::to($value['email'])->send(new AvisarSupervisor($reservaInfo, $reserva));
         }
       }
-      $monto = $request->montoCobrado * 0.18;
+
+      $monto = $request->montoCobrado * 0.10;
       $this->agregarComi(Auth::user()->idUser,"Comision por venta Fotografo", $monto);
 
-      $montoreserva = $request->montoCobrado <= 500 ? 150 : ($request->montoCobrado * .10);
+      $montoreserva = $request->montoCobrado * 0.10;
       $this->agregarComi($reserva->idReceptionist,"Comision por venta Recepcionista",$montoreserva);
-
-      $supervisor = User::where('idPerfil',8)->where('state',1)->get();
-      foreach ($supervisor as $key => $value) {
-        $this->agregarComi($value->idUser,"Comision por venta supervisor reserva",50);
-      }
 
       return redirect()->back()->with('message', 'Reserva finalizada correctamente');
     }

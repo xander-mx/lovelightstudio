@@ -30,7 +30,7 @@
                         <div class="col-12">
                             <div class="alert alert-warning alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <p> {{  trans('restaurantes.corregirErrores') }} </p>
+                                <p> {{  trans('Atención') }} </p>
                                 <ul>
                                     @foreach ($errors->all() as $message)
                                         <li>{{ $message }}</li>
@@ -53,7 +53,7 @@
                         </div>
                         <div class="card-body">
                             <div class="col-md-12">
-                                <form action="{{route('trabajador.puti')}}" method="post">
+                                <form action="{{route('trabajador.edit')}}" method="post">
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-6">
@@ -70,15 +70,21 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="email">Correo</label>
-                                                <input class="form-control" type="email" name="email" id="email" required placeholder="Digite un correo" value="{{ $usuario->email }}" disabled>
+                                                <input class="form-control" type="email" name="email" id="email" required value="{{ $usuario->email }}" disabled>
                                             </div>
                                         </div>
-                                    </div>
-                                 
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="email">Teléfono</label>
+                                                <input class="form-control" type="text" pattern="[0-9]{10}" name="phone" id="phone" value="{{ $usuario->phone }}"
+                                                       required placeholder="Ingrese un número de teléfono de 10 dígitos" title="Ingrese 10 digitos">
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="row">
@@ -103,7 +109,7 @@
                                                 <input class="form-control" type="password" min="1" maxlength="15" name="pwsd" id="password" required placeholder="Digite la contraseña">
                                             </div>
                                         </div>
-                                      
+                                    </div>
 
                                     <div class="row">
                                         <div class="col-md-12">
