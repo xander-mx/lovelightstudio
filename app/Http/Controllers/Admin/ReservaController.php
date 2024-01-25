@@ -659,6 +659,7 @@ class ReservaController extends Controller
           Mail::to($value['email'])->send(new AvisarSupervisor($reservaInfo, $reserva));
         }
       }
+
       $monto = $request->montoCobrado * 0.10;
       $this->agregarComi(Auth::user()->idUser,"Comision por venta Fotografo", $monto);
 
