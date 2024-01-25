@@ -34,7 +34,7 @@
                 <div class="form-group col-sm-12 col-md-6, col-lg-6">
                     <label for="cellphone">Teléfono</label>
                     <input type="text" name="phone" id="phone" class="form-control"
-                           value="+52 @isset($reserva){{ $reserva->phone}}@endisset" required>
+                           value="+52 @isset($reserva){{$reserva->phone}}@endisset" required>
                 </div>
                 <div class="form-group col-sm-12 col-md-6, col-lg-6">
                     <label for="pax">Número de Habitación</label>

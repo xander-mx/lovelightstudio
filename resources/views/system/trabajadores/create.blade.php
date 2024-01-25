@@ -30,7 +30,7 @@
                         <div class="col-12">
                             <div class="alert alert-warning alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <p> {{  trans('restaurantes.corregirErrores') }} </p>
+                                <p> {{  trans('Atención') }} </p>
                                 <ul>
                                     @foreach ($errors->all() as $message)
                                         <li>{{ $message }}</li>
@@ -42,7 +42,6 @@
                     @endif
                 <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
                 <div class="row">
-
                     <div class="card col-md-12">
                         <div class="card-header">
                             <div class="row align-items-center">
@@ -70,10 +69,16 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="email">Correo</label>
                                                 <input class="form-control" type="email" name="email" id="email" required placeholder="Digite un correo">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="email">Teléfono</label>
+                                                <input class="form-control" type="text" name="phone" id="phone" required placeholder="Ingrese un número de teléfono" >
                                             </div>
                                         </div>
                                     </div>
@@ -89,24 +94,6 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        {{-- <div class="col-md-6">
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <div class="form-group">
-                                                        <label for="indicativo">Indicativo</label>
-                                                        <select name="indicativo" id="indicativo" class="form-control">
-                                                            <option value="+52" selected> + 52</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-10">
-                                                    <div class="form-group">
-                                                        <label for="cellphone">Teléfono</label>
-                                                        <input class="form-control" type="number" min="1" maxlength="15" name="cellphone" id="cellphone" required placeholder="Digite el número de teléfono">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> --}}
                                     </div>
 
                                     <div class="row">

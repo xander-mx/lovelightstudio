@@ -27,8 +27,8 @@ const createReserva = () => {
             console.log(response)
             if (response.code === 200) {
                 Swal.fire({title: 'Muy bien!', text: 'La reserva se ha realizado correctamente', icon:'success'});
-                let table = $('#reservation-table').DataTable();
-                table.row.add(response.data).draw();
+                //let table = $('#reservation-table').DataTable();
+                RESERVATION_DATATABLE.row.add(Object.values(response.data)).draw();
                 setTimeout(() => {
                     window.location = routeReservaIndex
                 }, 1000);
@@ -82,7 +82,9 @@ const selectDay = (day) => {
         .done(function(response) {
             console.log(response)
             RESERVATION_DATATABLE.clear().draw();
-            RESERVATION_DATATABLE.rows.add(response.table).draw();
+            response.table.forEach(function(row) {
+                RESERVATION_DATATABLE.row.add(Object.values(row)).draw();
+            });
             $(".content_loading").fadeOut("slow");
             showHorarios(response.data);
             fechaSelected = day;
