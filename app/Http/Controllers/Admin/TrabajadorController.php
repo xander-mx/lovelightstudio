@@ -87,7 +87,7 @@ class TrabajadorController extends Controller
             $trabajador->curp =$request->curp;
             $trabajador->idPerfil = $request->perfil;
             $trabajador->state = 1;
-            //$trabajador->save();
+            $trabajador->save();
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();
