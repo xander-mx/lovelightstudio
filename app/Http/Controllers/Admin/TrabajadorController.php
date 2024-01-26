@@ -41,10 +41,7 @@ class TrabajadorController extends Controller
         $validate = Validator::make($request->all(),[
             'name' => 'required|string',
             'lastname' => 'required|string',
-            'email' => ['required', 'email',
-                Rule::exists('users', 'email')->where(function($query) {
-                    return $query->where('state', '!=' ,1);
-                })],
+            'email' => ['required', 'email'],
             'password' => 'required',
             'seguro_social' => 'required',
             'curp' => 'required',
@@ -90,7 +87,7 @@ class TrabajadorController extends Controller
             $trabajador->curp =$request->curp;
             $trabajador->idPerfil = $request->perfil;
             $trabajador->state = 1;
-            //$trabajador->save();
+            $trabajador->save();
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();
